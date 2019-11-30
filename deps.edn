@@ -1,0 +1,31 @@
+{:paths ["src"]
+
+ :deps {org.clojure/clojure               {:mvn/version "1.10.1"}
+        org.clojure/tools.deps.alpha      {:mvn/version "0.8.584"}
+        org.clojure/tools.namespace       {:mvn/version "0.3.1"}
+        org.eclipse.jgit/org.eclipse.jgit {:mvn/version "5.5.1.201910021850-r"}
+        meander/epsilon                   {:mvn/version "LATEST"}
+        metosin/sieppari                  {:mvn/version "0.0.0-alpha7"}
+
+        metav               {:local/root "/Users/jeremyschoffen/Documents/GitHub/metav"}
+        badigeon/badigeon   {:git/url "https://github.com/EwenG/badigeon.git"
+                             :sha "c7588e6d2c66284dcda1a339adcba8cb9c74a8b0"
+                             :tag "0.0.9"}}
+
+ :aliases
+ {:dev {:extra-paths ["dev"]}
+
+  :test {:extra-paths ["test" "resources-test"]
+         :extra-deps {pjstadig/humane-test-output {:mvn/version "0.9.0"}
+                      lambdaisland/kaocha {:mvn/version "0.0-541"}
+                      org.clojure/test.check {:mvn/version "0.10.0"}}}
+
+  :nrepl {:extra-deps {nrepl/nrepl {:mvn/version "0.6.0"}}}
+
+
+  :logger {:extra-deps {org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version"2.12.1"}
+                        org.apache.logging.log4j/log4j-core {:mvn/version "2.12.1"}}}}}
+
+
+
+
