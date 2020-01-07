@@ -12,8 +12,9 @@
    [clojure.string :as string]
    [clojure.spec.alpha :as s]
    [clojure.tools.logging :as log]
-   [com.jeremyschoffen.mbt.api.version.metav.protocols :refer [SCMHosted Bumpable]]
-   [com.jeremyschoffen.mbt.api.version.metav.common :as common]))
+   [com.jeremyschoffen.mbt.api.version.metav.common :as common]
+   [com.jeremyschoffen.mbt.api.git :as git]
+   [com.jeremyschoffen.mbt.api.version.protocols :as vp]))
 
 
 
@@ -40,14 +41,14 @@
         (compare [(vec (.subversions this)) (.distance this) (.dirty? this)]
                  [(vec (.subversions that)) (.distance that) (.dirty? that)]))
       (throw (IllegalArgumentException. (format "Can't compare a SemVer with %s." that)))))
-  SCMHosted
+  common/SCMHosted
   (subversions [this] subversions)
   (tag [this] (string/join "." (conj subversions distance)))
   (distance [this] distance)
   (sha [this] sha)
   (dirty? [this] dirty?)
-  Bumpable
-  (bump [this level]
+  common/Bumpable
+  (bump* [this level]
     (condp contains? level
       #{:major :minor :patch} (let [subversions (common/bump-subversions subversions level)]
                                 (SemVer. (vec subversions) 0 sha dirty?))
@@ -70,3 +71,19 @@
      (let [subversions (parse-base base)]
        (SemVer. subversions distance sha dirty?))
      (SemVer. common/default-initial-subversions distance sha dirty?))))
+
+
+(def version-scheme
+  (reify vp/VersionScheme
+    (initial-version [_]
+      (version))
+    (current-version [_ state]
+      (let [{tag :git.tag/name
+             dist :git.describe/distance
+             sha :git/sha
+             dirty? :git.repo/dirty?} (git/describe state)]
+        (version tag dist sha dirty?)))
+    (bump [_ version]
+      (common/safer-bump version :patch))
+    (bump [_ version level]
+      (common/safer-bump version level))))

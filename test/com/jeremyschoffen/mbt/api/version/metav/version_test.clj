@@ -2,8 +2,7 @@
   (:require
     [clojure.test :as test :refer [deftest testing]]
     [testit.core :refer :all]
-    [com.jeremyschoffen.mbt.api.version.metav.protocols :as version]
-    [com.jeremyschoffen.mbt.api.version.metav.common :as version-common]
+    [com.jeremyschoffen.mbt.api.version.metav.common :as common]
     [com.jeremyschoffen.mbt.api.version.metav.maven :as maven]
     [com.jeremyschoffen.mbt.api.version.metav.semver :as semver]))
 
@@ -11,12 +10,12 @@
 (defn unsafe-bump [v & bumps]
   (reduce
     (fn [v b]
-      (version/bump v b))
+      (common/bump* v b))
     v
     bumps))
 
 
-(def safer-bump version-common/bump)
+(def safer-bump common/safer-bump)
 
 
 (defn semver-like-progression [v]

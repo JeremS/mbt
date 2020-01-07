@@ -33,7 +33,7 @@
 
 
 
-(defn make-temp-repo []
+(defn make-temp-repo! []
   (let [temp-dir (fs/create-temp-directory! "temp_repo")
         repo (git-p/git-init :dir temp-dir)]
     (git-p/git-commit repo "Initial commit")

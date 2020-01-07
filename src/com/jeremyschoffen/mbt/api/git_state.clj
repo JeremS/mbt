@@ -8,7 +8,8 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.api.git :as git]
     [com.jeremyschoffen.mbt.api.specs]
-    [com.jeremyschoffen.mbt.api.utils :as u])
+    [com.jeremyschoffen.mbt.api.utils :as u]
+    [com.jeremyschoffen.mbt.api.version.protocols :as vp])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -92,47 +93,33 @@
                                   :module/name
                                   :artefact/name])))
 
-
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; version
 ;;----------------------------------------------------------------------------------------------------------------------
-(defrecord SimpleVersion [base-number distance sha dirty]
-  Object
-  (toString [this]
-    (-> (str base-number)
-        (cond-> (pos? distance) (str "." distance "-0x" sha)
-                dirty           (str "-DIRTY")))))
-
-(def initial-simple-version (SimpleVersion. 0 0 "" false))
-
-(defn bump [v]
-  (let [{:keys [base-number distance sha dirty]} v]
-    (when dirty
-      (throw (ex-info (format "Can't bump a dirty version: %s" v)
-                      {::anom/category ::anom/forbidden})))
-    (SimpleVersion. (+ base-number distance) 0 sha dirty)))
-
-
-(defn- tag->version-number [artefact-name tag-name]
-  (let [pattern (format "^%s-v(\\d*).*$" artefact-name)
-        [_ n-str] (re-matches (re-pattern pattern) tag-name)]
-    (Integer/parseInt n-str)))
-
-
-(defn current-version [{repo :git/repo
-                        artefact-name :artefact/name}]
-  (let [{tag-name :git.tag/name
-         distance :git.describe/distance
-         sha      :git/sha
-         dirty    :git.repo/dirty?} (git/describe {:git/repo repo
-                                                   :git.describe/tag-pattern (str artefact-name "*")})
-        last-version-number (tag->version-number artefact-name tag-name)]
-    (SimpleVersion. last-version-number distance sha dirty)))
+(defn current-version [{s :version/scheme :as param}]
+  (vp/current-version s param))
 
 (u/spec-op current-version
-           (s/keys :req [:git/repo :artefact/name])
-           :project/version)
+           (s/keys :req [:version/scheme]))
 
+
+(defn initial-version [{h :version/scheme}]
+  (vp/initial-version h))
+
+(u/spec-op initial-version
+           (s/keys :req [:version/scheme]))
+
+
+(defn bump [{s :version/scheme
+             v :project/version
+             l :version/bump-level}]
+  (if l
+    (vp/bump s v l)
+    (vp/bump s v)))
+
+(u/spec-op bump
+           (s/keys :req [:version/scheme :project/version]
+                   :opt [:version/bump-level]))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Tags
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -156,7 +143,7 @@
                       git-prefix    :git/prefix
                       :as           param}]
   {:artefact-name artefact-name
-   :version       v
+   :version       (str v)
    :tag           (tag-name param)
    :generated-at  (iso-now)
    :path          (or (and git-prefix (str git-prefix))
@@ -178,9 +165,7 @@
                          :git/prefix]))
 
 (defn tag [param]
-  (let [m (-> param
-              (update :project/version bump)
-              make-tag-data)]
+  (let [m (make-tag-data param)]
     {:git.tag/name (:tag m)
      :git.tag/message (pr-str m)}))
 
@@ -264,7 +249,7 @@
 (defn create-first-tag! [param]
   (-> param
       check-not-initialized
-      (assoc :project/version initial-simple-version)
+      (u/assoc-computed :project/version initial-version)
       (u/merge-computed tag)
       tag!))
 
@@ -273,14 +258,14 @@
            :git/tag)
 
 
-(defn create-new-tag! [param]
+(defn bump-tag! [param]
   (-> param
       (u/assoc-computed :project/version current-version)
-      (update :project/version bump)
+      (u/assoc-computed :project/version bump)
       (u/merge-computed tag)
       tag!))
 
-(u/spec-op create-new-tag!
+(u/spec-op bump-tag!
            (s/keys :req [:artefact/name :git/repo :git/prefix])
            :git/tag)
 

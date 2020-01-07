@@ -1,7 +1,8 @@
 (ns com.jeremyschoffen.mbt.api.specs
   (:require
     [clojure.spec.alpha :as s]
-    [com.jeremyschoffen.java.nio.file :as fs])
+    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.mbt.api.version.protocols :as vp])
   (:import (org.eclipse.jgit.api Git)))
 
 (def path? fs/path?)
@@ -16,7 +17,8 @@
 (s/def :module/name string?)
 (s/def :artefact/name string?)
 
-
+(s/def :version/bump-level keyword?)
+(s/def :version/scheme #(satisfies? vp/VersionScheme %))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------

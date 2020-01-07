@@ -1,6 +1,18 @@
 (ns com.jeremyschoffen.mbt.api.version.metav.common
   (:require
-    [com.jeremyschoffen.mbt.api.version.metav.protocols :as protocols]))
+    [cognitect.anomalies :as anom]))
+
+(defprotocol SCMHosted
+  (subversions [this])
+  (tag [this])
+  (distance [this])
+  (sha [this])
+  (dirty? [this]))
+
+
+(defprotocol Bumpable
+  (bump* [this level]))
+
 
 (def default-initial-subversions [0 1 0])
 
@@ -14,8 +26,8 @@
 
 
 (defn duplicating-version? [v level]
-  (let [[_ minor patch] (protocols/subversions v)
-        distance (protocols/distance v)
+  (let [[_ minor patch] (subversions v)
+        distance (distance v)
         same-patch? (= level :patch)
         same-minor? (and (= level :minor)
                          (= patch 0))
@@ -34,12 +46,16 @@
 
 (defn assert-bump? [old-version level new-version]
   (when (duplicating-version? old-version level)
-    (throw (Exception. (str "Aborted released, bumping with level: " level
-                            " would create version: " new-version " pointing to the same commit as version: " old-version "."))))
+    (throw (ex-info (str "Aborted released, bumping with level: " level
+                         " would create version: " new-version " pointing to the same commit as version: " old-version ".")
+                    {::anom/category ::anom/forbidden
+                     :mbt/error :versioning/duplicating-tag})))
   (when (going-backwards? old-version new-version)
-    (throw (Exception. (str "Can't bump version to an older one : " old-version " -> " new-version " isn't allowed.")))))
+    (throw (ex-info (str "Can't bump version to an older one : " old-version " -> " new-version " isn't allowed.")
+                    {::anom/category ::anom/forbidden
+                     :mbt/error :versioning/going-backward}))))
 
-(defn bump [v level]
-  (let [new-v (protocols/bump v level)]
+(defn safer-bump [v level]
+  (let [new-v (bump* v level)]
     (assert-bump? v level new-v)
     new-v))

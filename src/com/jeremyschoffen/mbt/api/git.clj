@@ -13,7 +13,7 @@
     (org.eclipse.jgit.revwalk RevTag)
     (org.eclipse.jgit.lib Ref)
     (org.eclipse.jgit.api Status Git)
-    (org.eclipse.jgit.api.errors RefAlreadyExistsException)))
+    (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
@@ -97,6 +97,12 @@
                         :annotated? true
                         :signed? (boolean sign?))
     (catch RefAlreadyExistsException e
+      (throw (ex-info (format "The tag %s already exists." name)
+                      {::anom/category ::anom/forbidden
+                       :mbt/error :tag-already-exists}
+                      e)))
+
+    (catch JGitInternalException e
       (throw (ex-info (format "The tag %s already exists." name)
                       {::anom/category ::anom/forbidden
                        :mbt/error :tag-already-exists}

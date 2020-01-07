@@ -18,8 +18,9 @@
   "An implementation of version protocols that complies with Maven v3"
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [com.jeremyschoffen.mbt.api.version.metav.protocols :refer :all]
-            [com.jeremyschoffen.mbt.api.version.metav.common :as common])
+            [com.jeremyschoffen.mbt.api.version.protocols :as vp]
+            [com.jeremyschoffen.mbt.api.version.metav.common :as common]
+            [com.jeremyschoffen.mbt.api.git :as git])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning ComparableVersion DefaultArtifactVersion]))
 
@@ -68,14 +69,14 @@
                        dirty? (.dirty? that)]
                    (DefaultArtifactVersion. (to-string subversions qualifier distance nil dirty?)))))
       (throw (IllegalArgumentException. (format "Can't compare a MavenVersion with %s." that)))))
-  SCMHosted
+  common/SCMHosted
   (subversions [this] subversions)
   (tag [this] (to-string subversions qualifier))
   (distance [this] distance)
   (sha [this] sha)
   (dirty? [this] dirty?)
-  Bumpable
-  (bump [this level]
+  common/Bumpable
+  (bump* [this level]
     (condp contains? level
       #{:major :minor :patch} (let [subversions (common/bump-subversions subversions level)]
                                 (MavenVersion. (vec subversions) nil 0 sha dirty?))
@@ -89,13 +90,12 @@
 
       (throw (Exception. (str "Not a supported bump operation: " level))))))
 
-
+(def tag-pattern #".*v(\d+.\d+.\d+)(?:-(.*))?$")
 (defn- parse-tag [vstring]
-  (let [[sstr qstr & _] (string/split vstring #"-")
-        subversions (into [] (map #(Integer/parseInt %)) (string/split sstr #"\."))
-        qualifier (and qstr (string->qualifier qstr))]
+  (let [[_ subs q] (re-matches tag-pattern vstring)
+        subversions (into [] (map #(Integer/parseInt %)) (string/split subs #"\."))
+        qualifier (and q (string->qualifier q))]
     [subversions qualifier]))
-
 
 (defn version
   ([] (MavenVersion. common/default-initial-subversions nil nil 0 nil))
@@ -104,3 +104,19 @@
      (let [[subversions qualifier] (parse-tag tag)]
        (MavenVersion. subversions qualifier distance sha dirty?))
      (MavenVersion. common/default-initial-subversions nil distance sha dirty?))))
+
+(def version-scheme
+  (reify vp/VersionScheme
+    (initial-version [_]
+      (version))
+    (current-version [_ state]
+      (let [{tag :git.tag/name
+             dist :git.describe/distance
+             sha :git/sha
+             dirty? :git.repo/dirty?} (git/describe state)]
+        (version tag dist sha dirty?)))
+
+    (bump [_ version]
+      (common/safer-bump version :patch))
+    (bump [_ version level]
+      (common/safer-bump version level))))
