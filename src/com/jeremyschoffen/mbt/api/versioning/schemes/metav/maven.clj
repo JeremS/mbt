@@ -14,13 +14,13 @@
 ;;; 1.2.3-rc4 => major 1, minor 2, patch 3, qualifier rc incremented to 4
 ;;; NB: java -jar ~/.m2/repository/org/apache/maven/maven-artifact/3.2.5/maven-artifact-3.2.5.jar <v1> <v2> ...<vn>
 
-(ns com.jeremyschoffen.mbt.api.versioning.version.metav.maven
+(ns com.jeremyschoffen.mbt.api.versioning.schemes.metav.maven
   "An implementation of version protocols that complies with Maven v3"
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [com.jeremyschoffen.mbt.api.versioning.version.protocols :as vp]
-            [com.jeremyschoffen.mbt.api.versioning.version.common :as common]
-            [com.jeremyschoffen.mbt.api.versioning.version.metav.common :as metav-common])
+            [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp]
+            [com.jeremyschoffen.mbt.api.versioning.schemes.common :as common]
+            [com.jeremyschoffen.mbt.api.versioning.schemes.metav.common :as metav-common])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 

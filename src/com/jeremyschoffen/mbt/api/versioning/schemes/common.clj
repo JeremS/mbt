@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.versioning.version.common
+(ns com.jeremyschoffen.mbt.api.versioning.schemes.common
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.mbt.api.specs]

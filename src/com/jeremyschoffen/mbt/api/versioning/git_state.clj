@@ -7,8 +7,8 @@
     [com.jeremyschoffen.mbt.api.git :as git]
     [com.jeremyschoffen.mbt.api.specs]
     [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.versioning.version.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.versioning.version.common :as version-common])
+    [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.versioning.schemes.common :as version-common])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))

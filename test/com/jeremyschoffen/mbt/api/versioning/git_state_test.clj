@@ -12,7 +12,7 @@
     [com.jeremyschoffen.mbt.api.classic-scheme :as cs]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.versioning.version :as version]))
+    [com.jeremyschoffen.mbt.api.versioning.schemes :as version]))
 
 
 (st/instrument)
