@@ -4,6 +4,7 @@
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.mbt.api.git :as git]
     [com.jeremyschoffen.mbt.api.version.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.version.common :as common]
     [com.jeremyschoffen.mbt.api.utils :as u]))
 
 
@@ -25,20 +26,19 @@
                       {::anom/category ::anom/forbidden})))
     (SimpleVersion. (+ base-number distance) 0 sha dirty)))
 
-
+;; TODO: get rid of the format, the regex shouldn't need the artefact's name
 (defn- tag->version-number [artefact-name tag-name]
   (let [pattern (format "^%s-v(\\d*).*$" artefact-name)
         [_ n-str] (re-matches (re-pattern pattern) tag-name)]
     (Integer/parseInt n-str)))
 
 
-(defn current-version* [{repo :git/repo
-                         artefact-name :artefact/name}]
+(defn current-version* [{artefact-name :artefact/name
+                         :as param}]
   (let [{tag-name :git.tag/name
          distance :git.describe/distance
          sha      :git/sha
-         dirty    :git.repo/dirty?} (git/describe {:git/repo repo
-                                                   :git.describe/tag-pattern (str artefact-name "*")})
+         dirty    :git.repo/dirty?} (common/most-recent-description param)
         last-version-number (tag->version-number artefact-name tag-name)]
     (SimpleVersion. last-version-number distance sha dirty)))
 
@@ -51,7 +51,8 @@
 
 (def version-scheme
   (reify vp/VersionScheme
-    (initial-version [_] initial-simple-version)
+    (initial-version [_]
+      initial-simple-version)
     (current-version [_ state]
       (current-version* state))
     (bump [_ version]

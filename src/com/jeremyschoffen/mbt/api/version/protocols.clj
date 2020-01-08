@@ -1,5 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.version.protocols
-  "Handle abstract versions as a set of malleable components")
+(ns com.jeremyschoffen.mbt.api.version.protocols)
 
 (defprotocol VersionScheme
   (initial-version [this])

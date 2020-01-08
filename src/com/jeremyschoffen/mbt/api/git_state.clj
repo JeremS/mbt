@@ -9,7 +9,8 @@
     [com.jeremyschoffen.mbt.api.git :as git]
     [com.jeremyschoffen.mbt.api.specs]
     [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.version.protocols :as vp])
+    [com.jeremyschoffen.mbt.api.version.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.version.common :as version-common])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -24,7 +25,6 @@
 
 (u/spec-op project-name
            (s/keys :req [:git/top-level]))
-
 
 
 (defn module-name [{project-name :project/name
@@ -234,9 +234,13 @@
            :git/tag)
 
 
-(defn- check-not-initialized [{artefact-name :artefact/name
+(defn- check-not-initialized [{repo :git/repo
+                               artefact-name :artefact/name
                                :as param}]
-  (when (git/describe-raw param)
+  (when (try
+          (version-common/most-recent-description param)
+          (catch Exception _
+            nil))
     (throw (ex-info (format "Already started versioning %s." artefact-name)
                     (merge param {::anom/category ::anom/forbidden
                                   :mbt/error :already-tagged}))))

@@ -179,3 +179,81 @@
         monorepo-maven (make-test-repo! version/maven-scheme "container1" "project-maven")]
     (maven-style-versioning2 monorepo-semver)
     (maven-style-versioning2 monorepo-maven)))
+
+
+(deftest mono-repo-versioning
+  (let [repo (h/make-temp-repo!)
+        p-maven-name "p-maven"
+        p-semver-name "p-semver"
+        p-simple-name "p-simple"
+        p-maven (make-project! repo "c1" p-maven-name)
+        p-semver (make-project! repo "c1" p-semver-name)
+        p-simple (make-project! repo "c1" p-simple-name)
+
+        state-p-maven (gs/get-state {:project/working-dir (u/safer-path repo p-maven)
+                                     :version/scheme      version/maven-scheme})
+        state-p-semver (gs/get-state {:project/working-dir (u/safer-path repo p-semver)
+                                      :version/scheme      version/semver-scheme})
+        state-p-simple (gs/get-state {:project/working-dir (u/safer-path repo p-simple)
+                                      :version/scheme      version/simple-scheme})]
+    (h/add-all! repo)
+    (git/git-commit repo "added p-maven & p-semver & p-simple")
+    (git/git-log repo)
+
+    (gs/create-first-tag! state-p-maven)
+    (gs/create-first-tag! state-p-semver)
+    (gs/create-first-tag! state-p-simple)
+
+    (testing "Every project is at its initial version."
+      (facts
+        (str (gs/current-version state-p-maven)) => "0.1.0"
+        (str (gs/current-version state-p-semver)) => "0.1.0"
+        (str (gs/current-version state-p-simple)) => "0"))
+
+    (testing "Added a src to p-maven, comitted and bumped."
+      (h/add-src repo "c1" p-maven-name "src")
+      (h/add-all! repo)
+      (git/git-commit repo "added a src to p1")
+      (gs/bump-tag! state-p-maven)
+
+      (facts
+        (str (gs/current-version state-p-maven)) => "0.1.1"
+        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-1-0x.*"
+        (str (gs/current-version state-p-simple)) =in=> #"0.1-0x.*"))
+
+
+    (testing "Added and comitted a src to p-simple"
+      (h/add-src repo "c1" p-simple-name "src")
+      (h/add-all! repo)
+      (git/git-commit repo "added a src to p-simple")
+
+      (facts
+        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
+        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
+        (str (gs/current-version state-p-simple)) =in=> #"0.2-0x.*"))
+
+    (testing "Just bumped p-simple"
+      (gs/bump-tag! state-p-simple)
+
+      (facts
+        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
+        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
+        (str (gs/current-version state-p-simple)) =in=> "2"))
+
+    (testing "Just added a src to semver"
+      (h/add-src repo "c1" p-semver-name "src")
+
+      (facts
+        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*-DIRTY$"
+        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*-DIRTY$"
+        (str (gs/current-version state-p-simple)) => "2-DIRTY"))
+
+    (testing "Comitted the src to semver and bumped it."
+      (h/add-all! repo)
+      (git/git-commit repo "added a src to p2")
+      (gs/bump-tag! state-p-semver)
+
+      (facts
+        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-2-0x.*$"
+        (str (gs/current-version state-p-semver)) =in=> #"0.1.1"
+        (str (gs/current-version state-p-simple)) =in=> #"2.1-0x.*$"))))

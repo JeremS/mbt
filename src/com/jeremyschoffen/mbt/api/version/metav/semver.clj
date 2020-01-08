@@ -9,12 +9,14 @@
 (ns com.jeremyschoffen.mbt.api.version.metav.semver
   "An implementation of version protocols that complies with Semantic Versioning 2.0.0"
   (:require
-   [clojure.string :as string]
-   [clojure.spec.alpha :as s]
-   [clojure.tools.logging :as log]
-   [com.jeremyschoffen.mbt.api.version.metav.common :as common]
-   [com.jeremyschoffen.mbt.api.git :as git]
-   [com.jeremyschoffen.mbt.api.version.protocols :as vp]))
+    [clojure.string :as string]
+    [clojure.spec.alpha :as s]
+    [clojure.tools.logging :as log]
+    [com.jeremyschoffen.mbt.api.version.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.version.common :as common]
+    [com.jeremyschoffen.mbt.api.version.metav.common :as metav-common]
+    [com.jeremyschoffen.mbt.api.git :as git]
+    [com.jeremyschoffen.mbt.api.utils :as u]))
 
 
 
@@ -28,8 +30,8 @@
   Object
   (toString [this] (let [be (string/join "." subversions); (conj subversions distance))
                          _ (log/debug "be" be)
-                         metadata (string/join "." (cond-> []
-                                                     (and distance (pos? distance)) (conj (str "0x" sha))
+                         metadata (string/join "-" (cond-> []
+                                                     (and distance (pos? distance)) (conj (str distance "-0x" sha))
                                                      dirty? (conj "DIRTY")))
                          _ (log/debug "metadata" metadata)]
                      (cond-> be
@@ -41,16 +43,16 @@
         (compare [(vec (.subversions this)) (.distance this) (.dirty? this)]
                  [(vec (.subversions that)) (.distance that) (.dirty? that)]))
       (throw (IllegalArgumentException. (format "Can't compare a SemVer with %s." that)))))
-  common/SCMHosted
+  metav-common/SCMHosted
   (subversions [this] subversions)
   (tag [this] (string/join "." (conj subversions distance)))
   (distance [this] distance)
   (sha [this] sha)
   (dirty? [this] dirty?)
-  common/Bumpable
+  metav-common/Bumpable
   (bump* [this level]
     (condp contains? level
-      #{:major :minor :patch} (let [subversions (common/bump-subversions subversions level)]
+      #{:major :minor :patch} (let [subversions (metav-common/bump-subversions subversions level)]
                                 (SemVer. (vec subversions) 0 sha dirty?))
       ;#{:patch} (throw (Exception. "Patch bump are implicit by commit distance"))
       (throw (Exception. (str "Not a supported bump operation: " level))))))
@@ -65,25 +67,28 @@
 
 
 (defn version
-  ([] (SemVer. common/default-initial-subversions 0 nil nil))
+  ([] (SemVer. metav-common/default-initial-subversions 0 nil nil))
   ([base distance sha dirty?]
    (if base
      (let [subversions (parse-base base)]
        (SemVer. subversions distance sha dirty?))
-     (SemVer. common/default-initial-subversions distance sha dirty?))))
+     (SemVer. metav-common/default-initial-subversions distance sha dirty?))))
 
+
+(defn- current-version* [param]
+  (let [{tag :git.tag/name
+         dist :git.describe/distance
+         sha :git/sha
+         dirty? :git.repo/dirty?} (common/most-recent-description param)]
+    (version tag dist sha dirty?)))
 
 (def version-scheme
   (reify vp/VersionScheme
     (initial-version [_]
       (version))
     (current-version [_ state]
-      (let [{tag :git.tag/name
-             dist :git.describe/distance
-             sha :git/sha
-             dirty? :git.repo/dirty?} (git/describe state)]
-        (version tag dist sha dirty?)))
+      (current-version* state))
     (bump [_ version]
-      (common/safer-bump version :patch))
+      (metav-common/safer-bump version :patch))
     (bump [_ version level]
-      (common/safer-bump version level))))
+      (metav-common/safer-bump version level))))

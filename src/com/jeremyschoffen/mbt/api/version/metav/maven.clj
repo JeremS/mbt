@@ -19,8 +19,10 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
             [com.jeremyschoffen.mbt.api.version.protocols :as vp]
-            [com.jeremyschoffen.mbt.api.version.metav.common :as common]
-            [com.jeremyschoffen.mbt.api.git :as git])
+            [com.jeremyschoffen.mbt.api.version.common :as common]
+            [com.jeremyschoffen.mbt.api.version.metav.common :as metav-common]
+            [com.jeremyschoffen.mbt.api.git :as git]
+            [com.jeremyschoffen.mbt.api.utils :as u])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning ComparableVersion DefaultArtifactVersion]))
 
@@ -69,16 +71,16 @@
                        dirty? (.dirty? that)]
                    (DefaultArtifactVersion. (to-string subversions qualifier distance nil dirty?)))))
       (throw (IllegalArgumentException. (format "Can't compare a MavenVersion with %s." that)))))
-  common/SCMHosted
+  metav-common/SCMHosted
   (subversions [this] subversions)
   (tag [this] (to-string subversions qualifier))
   (distance [this] distance)
   (sha [this] sha)
   (dirty? [this] dirty?)
-  common/Bumpable
+  metav-common/Bumpable
   (bump* [this level]
     (condp contains? level
-      #{:major :minor :patch} (let [subversions (common/bump-subversions subversions level)]
+      #{:major :minor :patch} (let [subversions (metav-common/bump-subversions subversions level)]
                                 (MavenVersion. (vec subversions) nil 0 sha dirty?))
 
       #{:alpha :beta :rc} (MavenVersion. subversions (qualify* qualifier (name level)) 0 sha dirty?)
@@ -98,25 +100,28 @@
     [subversions qualifier]))
 
 (defn version
-  ([] (MavenVersion. common/default-initial-subversions nil nil 0 nil))
+  ([] (MavenVersion. metav-common/default-initial-subversions nil nil 0 nil))
   ([tag distance sha dirty?]
    (if tag
      (let [[subversions qualifier] (parse-tag tag)]
        (MavenVersion. subversions qualifier distance sha dirty?))
-     (MavenVersion. common/default-initial-subversions nil distance sha dirty?))))
+     (MavenVersion. metav-common/default-initial-subversions nil distance sha dirty?))))
+
+
+(defn- current-version* [param]
+  (let [{tag :git.tag/name
+         dist :git.describe/distance
+         sha :git/sha
+         dirty? :git.repo/dirty?} (common/most-recent-description param)]
+    (version tag dist sha dirty?)))
 
 (def version-scheme
   (reify vp/VersionScheme
     (initial-version [_]
       (version))
     (current-version [_ state]
-      (let [{tag :git.tag/name
-             dist :git.describe/distance
-             sha :git/sha
-             dirty? :git.repo/dirty?} (git/describe state)]
-        (version tag dist sha dirty?)))
-
+      (current-version* state))
     (bump [_ version]
-      (common/safer-bump version :patch))
+      (metav-common/safer-bump version :patch))
     (bump [_ version level]
-      (common/safer-bump version level))))
+      (metav-common/safer-bump version level))))

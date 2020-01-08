@@ -141,8 +141,7 @@
 
 
 (defn describe-raw [{repo        :git/repo
-                     tag-pattern :git.describe/tag-pattern
-                     :as         param}]
+                     tag-pattern :git.describe/tag-pattern}]
   (-> ^Git repo
       .describe
       (.setLong true)
