@@ -44,7 +44,6 @@
     (when-not (= wd repo)
       (fs/relativize repo wd))))
 
-
 (u/spec-op prefix
            (s/keys :req [:project/working-dir])
            :git/prefix)
@@ -83,8 +82,9 @@
 
 
 (defn- get-tag* [repo id]
-  (datafy (with-open [walk (git-i/new-rev-walk repo)]
-            (.parseTag walk (git-i/resolve-object id repo)))))
+  (datafy
+    (with-open [walk (git-i/new-rev-walk repo)]
+      (.parseTag walk (git-i/resolve-object id repo)))))
 
 
 (defn- create-tag!*
@@ -92,10 +92,12 @@
   [{:git/keys [repo]
     :git.tag/keys [name message sign?]}]
   (try
-    (git/git-tag-create repo name
+    (git/git-tag-create repo
+                        name
                         :message message
                         :annotated? true
                         :signed? (boolean sign?))
+
     (catch RefAlreadyExistsException e
       (throw (ex-info (format "The tag %s already exists." name)
                       {::anom/category ::anom/forbidden
@@ -107,6 +109,7 @@
                       {::anom/category ::anom/forbidden
                        :mbt/error :tag-already-exists}
                       e)))))
+
 
 (defn create-tag! [{repo :git/repo :as param}]
   (let [tag-ref (create-tag!* param)]
@@ -135,6 +138,7 @@
   (not (.isClean ^Status (git/git-status repo :jgit? true))))
 
 (u/spec-op dirty? (s/keys :req [:git/repo]) boolean?)
+
 
 (defn describe-raw [{repo        :git/repo
                      tag-pattern :git.describe/tag-pattern
@@ -165,7 +169,6 @@
 
 
 (def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
-
 
 (defn parse-description [{desc :git/raw-description}]
   (let [[_ tag distance sha] (re-matches raw-description-regex desc)]

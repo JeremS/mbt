@@ -9,7 +9,7 @@
 
 (defrecord SimpleVersion [base-number distance sha dirty]
   Object
-  (toString [this]
+  (toString [_]
     (-> (str base-number)
         (cond-> (pos? distance) (str "." distance "-0x" sha)
                 dirty           (str "-DIRTY")))))
