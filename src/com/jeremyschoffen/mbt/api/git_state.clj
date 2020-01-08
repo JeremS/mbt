@@ -16,98 +16,33 @@
            [java.text SimpleDateFormat]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Names
-;;----------------------------------------------------------------------------------------------------------------------
-(defn project-name [{top-level :git/top-level}]
-  (-> top-level
-      fs/file-name
-      str))
-
-(u/spec-op project-name
-           (s/keys :req [:git/top-level]))
-
-
-(defn module-name [{project-name :project/name
-                    prefix :git/prefix}]
-  (if prefix
-    (->> prefix seq (interpose "-") (apply str))
-    project-name))
-
-(u/spec-op module-name
-           (s/keys :req [:project/name]
-                   :opt [:git/prefix])
-           :module/name)
-
-
-(defn artefact-name [{project-name :project/name
-                      module-name :module/name}]
-  (if (= project-name module-name)
-    project-name
-    (str project-name "-" module-name)))
-
-(u/spec-op artefact-name
-           (s/keys :req [:project/name :module/name])
-           :artefact/name)
-
-
-;;----------------------------------------------------------------------------------------------------------------------
 ;; basic state
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn assoc-names [context]
-  (u/assoc-computed context
-                    :project/name project-name
-                    :module/name module-name
-                    :artefact/name artefact-name))
-
-
-(defn project-names [param]
-  (-> param
-      assoc-names
-      (select-keys #{:project/name :module/name :artefact/name})))
-
-(u/spec-op project-names
-           (s/keys :req [:git/top-level :git/prefix])
-           (s/keys :req [:project/name
-                         :module/name
-                         :artefact/name]))
-
-
 (defn basic-git-state [param]
   (u/assoc-computed param
     :git/top-level git/top-level
     :git/prefix git/prefix
     :git/repo git/make-jgit-repo))
 
-(u/spec-op basic-git-state (s/keys :req [:project/working-dir]) :git/basic-state)
-
-
-(defn get-state [param]
-  (-> param
-      basic-git-state
-      assoc-names))
-
-(u/spec-op get-state
+(u/spec-op basic-git-state
            (s/keys :req [:project/working-dir])
-           (s/merge :git/basic-state
-                    (s/keys :req [:project/name
-                                  :module/name
-                                  :artefact/name])))
+           :git/basic-state)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; version
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn current-version [{s :version/scheme :as param}]
-  (vp/current-version s param))
-
-(u/spec-op current-version
-           (s/keys :req [:version/scheme]))
-
-
 (defn initial-version [{h :version/scheme}]
   (vp/initial-version h))
 
 (u/spec-op initial-version
            (s/keys :req [:version/scheme]))
+
+
+(defn current-version [{s :version/scheme :as param}]
+  (vp/current-version s param))
+
+(u/spec-op current-version
+           (s/keys :req [:version/scheme :git/repo :artefact/name]))
 
 
 (defn bump [{s :version/scheme
@@ -176,7 +111,7 @@
            :git/tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Checks
+;; Operations!
 ;;----------------------------------------------------------------------------------------------------------------------
 (def module-build-file "deps.edn")
 
@@ -220,9 +155,7 @@
                                   :mbt/error :dirty-repo}))))
   param)
 
-;;----------------------------------------------------------------------------------------------------------------------
-;; Operations!
-;;----------------------------------------------------------------------------------------------------------------------
+
 (defn tag! [param]
   (-> param
       check-repo-in-order
@@ -230,12 +163,12 @@
       git/create-tag!))
 
 (u/spec-op tag!
-           (s/merge (s/keys :req [:git/repo]) :git/tag)
+           (s/merge (s/keys :req [:git/repo])
+                    :git/tag)
            :git/tag)
 
 
-(defn- check-not-initialized [{repo :git/repo
-                               artefact-name :artefact/name
+(defn- check-not-initialized [{artefact-name :artefact/name
                                :as param}]
   (when (try
           (version-common/most-recent-description param)

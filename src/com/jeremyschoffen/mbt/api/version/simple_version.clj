@@ -18,14 +18,6 @@
 
 (def initial-simple-version (SimpleVersion. 0 0 "" false))
 
-
-(defn- bump* [v]
-  (let [{:keys [base-number distance sha dirty]} v]
-    (when dirty
-      (throw (ex-info (format "Can't bump a dirty version: %s" v)
-                      {::anom/category ::anom/forbidden})))
-    (SimpleVersion. (+ base-number distance) 0 sha dirty)))
-
 ;; TODO: get rid of the format, the regex shouldn't need the artefact's name
 (defn- tag->version-number [artefact-name tag-name]
   (let [pattern (format "^%s-v(\\d*).*$" artefact-name)
@@ -47,7 +39,12 @@
            (s/keys :req [:git/repo :artefact/name])
            :project/version)
 
-
+(defn- bump* [v]
+  (let [{:keys [base-number distance sha dirty]} v]
+    (when dirty
+      (throw (ex-info (format "Can't bump a dirty version: %s" v)
+                      {::anom/category ::anom/forbidden})))
+    (SimpleVersion. (+ base-number distance) 0 sha dirty)))
 
 (def version-scheme
   (reify vp/VersionScheme

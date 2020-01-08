@@ -8,8 +8,8 @@
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git]
     [com.jeremyschoffen.mbt.api.helpers_test :as h]
-    [com.jeremyschoffen.mbt.api.git :as mbt-git]
     [com.jeremyschoffen.mbt.api.git-state :as gs]
+    [com.jeremyschoffen.mbt.api.classic-scheme :as cs]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.api.utils :as u]
     [com.jeremyschoffen.mbt.api.version :as version]
@@ -29,7 +29,7 @@
 (defn make-test-repo! [version-scheme & dirs]
   (let [repo (h/make-temp-repo!)
         project (apply  make-project! repo dirs)]
-    (gs/get-state {:project/working-dir (u/safer-path repo project)
+    (cs/get-state {:project/working-dir (u/safer-path repo project)
                    :version/scheme      version-scheme})))
 
 (defn test-name [& dirs]
@@ -190,11 +190,11 @@
         p-semver (make-project! repo "c1" p-semver-name)
         p-simple (make-project! repo "c1" p-simple-name)
 
-        state-p-maven (gs/get-state {:project/working-dir (u/safer-path repo p-maven)
+        state-p-maven (cs/get-state {:project/working-dir (u/safer-path repo p-maven)
                                      :version/scheme      version/maven-scheme})
-        state-p-semver (gs/get-state {:project/working-dir (u/safer-path repo p-semver)
+        state-p-semver (cs/get-state {:project/working-dir (u/safer-path repo p-semver)
                                       :version/scheme      version/semver-scheme})
-        state-p-simple (gs/get-state {:project/working-dir (u/safer-path repo p-simple)
+        state-p-simple (cs/get-state {:project/working-dir (u/safer-path repo p-simple)
                                       :version/scheme      version/simple-scheme})]
     (h/add-all! repo)
     (git/git-commit repo "added p-maven & p-semver & p-simple")
