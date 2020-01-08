@@ -2,7 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.git-state :as gs]
+    [com.jeremyschoffen.mbt.api.versioning.git-state :as gs]
     [com.jeremyschoffen.mbt.api.utils :as u]))
 
 

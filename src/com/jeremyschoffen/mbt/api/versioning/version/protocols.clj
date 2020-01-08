@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.version.protocols)
+(ns com.jeremyschoffen.mbt.api.versioning.version.protocols)
 
 (defprotocol VersionScheme
   (initial-version [this])

@@ -1,4 +1,5 @@
-(ns com.jeremyschoffen.mbt.api.version.metav.common
+;; Taken from https://github.com/jgrodziski/metav
+(ns com.jeremyschoffen.mbt.api.versioning.version.metav.common
   (:require
     [cognitect.anomalies :as anom]))
 

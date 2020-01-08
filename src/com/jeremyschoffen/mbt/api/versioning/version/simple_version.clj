@@ -1,10 +1,10 @@
-(ns com.jeremyschoffen.mbt.api.version.simple-version
+(ns com.jeremyschoffen.mbt.api.versioning.version.simple-version
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.mbt.api.git :as git]
-    [com.jeremyschoffen.mbt.api.version.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.version.common :as common]
+    [com.jeremyschoffen.mbt.api.versioning.version.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.versioning.version.common :as common]
     [com.jeremyschoffen.mbt.api.utils :as u]))
 
 

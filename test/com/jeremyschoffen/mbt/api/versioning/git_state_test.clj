@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.git-state-test
+(ns com.jeremyschoffen.mbt.api.versioning.git-state-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.alpha :as s]
@@ -8,12 +8,11 @@
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git]
     [com.jeremyschoffen.mbt.api.helpers_test :as h]
-    [com.jeremyschoffen.mbt.api.git-state :as gs]
+    [com.jeremyschoffen.mbt.api.versioning.git-state :as gs]
     [com.jeremyschoffen.mbt.api.classic-scheme :as cs]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.version :as version]
-    [clojure.test :as test]))
+    [com.jeremyschoffen.mbt.api.versioning.version :as version]))
 
 
 (st/instrument)
@@ -257,3 +256,4 @@
         (str (gs/current-version state-p-maven)) =in=> #"0.1.1-2-0x.*$"
         (str (gs/current-version state-p-semver)) =in=> #"0.1.1"
         (str (gs/current-version state-p-simple)) =in=> #"2.1-0x.*$"))))
+(clojure.test/run-tests)

@@ -1,16 +1,14 @@
-(ns com.jeremyschoffen.mbt.api.git-state
+(ns com.jeremyschoffen.mbt.api.versioning.git-state
   (:require
-    [clojure.edn :as edn]
     [clojure.spec.alpha :as s]
-    [clojure.spec.test.alpha :as st]
     [clojure.tools.logging :as log]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.api.git :as git]
     [com.jeremyschoffen.mbt.api.specs]
     [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.version.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.version.common :as version-common])
+    [com.jeremyschoffen.mbt.api.versioning.version.protocols :as vp]
+    [com.jeremyschoffen.mbt.api.versioning.version.common :as version-common])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -205,10 +203,3 @@
 (u/spec-op bump-tag!
            (s/keys :req [:artefact/name :git/repo :git/prefix])
            :git/tag)
-
-(comment
-  (-> (get-state {:project/working-dir (u/safer-path)})
-      (u/assoc-computed :artefact/name artefact-name)
-      (u/merge-computed make-initial-tag)
-      :git.tag/message
-      clojure.edn/read-string))
