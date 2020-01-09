@@ -1,6 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.specs
   (:require
     [clojure.spec.alpha :as s]
+    [clojure.tools.deps.alpha.specs :as deps-specs]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp])
   (:import (org.eclipse.jgit.api Git)))
@@ -19,6 +20,15 @@
 
 (s/def :version/bump-level keyword?)
 (s/def :version/scheme #(satisfies? vp/VersionScheme %))
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Deps
+;;----------------------------------------------------------------------------------------------------------------------
+(s/def :project/deps ::deps-specs/deps-map)
+(s/def :project.deps/aliases (s/coll-of keyword? :into #{}))
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
