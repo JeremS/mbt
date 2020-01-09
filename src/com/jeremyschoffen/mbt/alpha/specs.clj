@@ -1,8 +1,8 @@
-(ns com.jeremyschoffen.mbt.api.specs
+(ns com.jeremyschoffen.mbt.alpha.specs
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp])
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp])
   (:import (org.eclipse.jgit.api Git)))
 
 (def path? fs/path?)

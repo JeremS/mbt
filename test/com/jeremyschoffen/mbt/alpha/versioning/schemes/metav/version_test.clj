@@ -1,10 +1,10 @@
-(ns com.jeremyschoffen.mbt.api.versioning.schemes.metav.version-test
+(ns com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.version-test
   (:require
     [clojure.test :as test :refer [deftest testing]]
     [testit.core :refer :all]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.metav.common :as common]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.metav.maven :as maven]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.metav.semver :as semver]))
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.common :as common]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.maven :as maven]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.semver :as semver]))
 
 
 (defn unsafe-bump [v & bumps]

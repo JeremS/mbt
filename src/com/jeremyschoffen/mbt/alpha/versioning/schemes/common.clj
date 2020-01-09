@@ -1,9 +1,9 @@
-(ns com.jeremyschoffen.mbt.api.versioning.schemes.common
+(ns com.jeremyschoffen.mbt.alpha.versioning.schemes.common
   (:require
     [clojure.spec.alpha :as s]
-    [com.jeremyschoffen.mbt.api.specs]
-    [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.git :as git]))
+    [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [com.jeremyschoffen.mbt.alpha.git :as git]))
 
 
 (defn most-recent-description [{repo :git/repo

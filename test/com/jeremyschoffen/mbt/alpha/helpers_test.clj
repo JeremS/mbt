@@ -1,11 +1,11 @@
-(ns com.jeremyschoffen.mbt.api.helpers_test
+(ns com.jeremyschoffen.mbt.alpha.helpers_test
   (:require
     [clojure.test :refer [deftest testing]]
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git-p]
     [com.jeremyschoffen.java.nio.internal.coercions :as coercions]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import (org.eclipse.jgit.api Git)))
 
 (defn get-dir [^Git repo]

@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.git
+(ns com.jeremyschoffen.mbt.alpha.git
   (:require
     [clojure.spec.alpha :as s]
     [clojure.core.protocols :as cp]
@@ -7,8 +7,8 @@
     [clj-jgit.porcelain :as git]
     [clj-jgit.internal :as git-i]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.specs]
-    [com.jeremyschoffen.mbt.api.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (org.eclipse.jgit.revwalk RevTag)
     (org.eclipse.jgit.lib Ref)

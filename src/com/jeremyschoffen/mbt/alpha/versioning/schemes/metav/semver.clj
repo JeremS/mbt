@@ -6,15 +6,15 @@
 ;;; appropriate.  There is no support for Semantic Version's pre-releases!  The ordering/
 ;;; precedence rules cannot be reconciled with the automatic assignment of patch releases.
 ;;; http://semver.org/spec/v2.0.0.html
-(ns com.jeremyschoffen.mbt.api.versioning.schemes.metav.semver
+(ns com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.semver
   "An implementation of version protocols that complies with Semantic Versioning 2.0.0"
   (:require
     [clojure.string :as string]
     [clojure.spec.alpha :as s]
     [clojure.tools.logging :as log]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.common :as common]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.metav.common :as metav-common]))
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as common]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.common :as metav-common]))
 
 
 

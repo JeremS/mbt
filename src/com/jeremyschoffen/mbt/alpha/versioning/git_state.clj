@@ -1,14 +1,14 @@
-(ns com.jeremyschoffen.mbt.api.versioning.git-state
+(ns com.jeremyschoffen.mbt.alpha.versioning.git-state
   (:require
     [clojure.spec.alpha :as s]
     [clojure.tools.logging :as log]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.git :as git]
-    [com.jeremyschoffen.mbt.api.specs]
-    [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.common :as version-common])
+    [com.jeremyschoffen.mbt.alpha.git :as git]
+    [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as version-common])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))

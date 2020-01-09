@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.api.versioning.git-state-test
+(ns com.jeremyschoffen.mbt.alpha.versioning.git-state-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.alpha :as s]
@@ -7,12 +7,12 @@
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git]
-    [com.jeremyschoffen.mbt.api.helpers_test :as h]
-    [com.jeremyschoffen.mbt.api.versioning.git-state :as gs]
-    [com.jeremyschoffen.mbt.api.classic-scheme :as cs]
+    [com.jeremyschoffen.mbt.alpha.helpers_test :as h]
+    [com.jeremyschoffen.mbt.alpha.versioning.git-state :as gs]
+    [com.jeremyschoffen.mbt.alpha.classic-scheme :as cs]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.utils :as u]
-    [com.jeremyschoffen.mbt.api.versioning.schemes :as version]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes :as version]))
 
 
 (st/instrument)

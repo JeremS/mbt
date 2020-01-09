@@ -1,7 +1,6 @@
-(ns com.jeremyschoffen.mbt.api.utils
+(ns com.jeremyschoffen.mbt.alpha.utils
   (:require
     [clojure.spec.alpha :as s]
-    [clojure.tools.logging :as log]
     [com.jeremyschoffen.java.nio.file :as fs]))
 
 

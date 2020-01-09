@@ -1,11 +1,10 @@
-(ns com.jeremyschoffen.mbt.api.versioning.schemes.simple-version
+(ns com.jeremyschoffen.mbt.alpha.versioning.schemes.simple-version
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
-    [com.jeremyschoffen.mbt.api.git :as git]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.api.versioning.schemes.common :as common]
-    [com.jeremyschoffen.mbt.api.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as common]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defrecord SimpleVersion [base-number distance sha dirty]

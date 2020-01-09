@@ -1,9 +1,9 @@
-(ns com.jeremyschoffen.mbt.api.classic-scheme
+(ns com.jeremyschoffen.mbt.alpha.classic-scheme
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.api.versioning.git-state :as gs]
-    [com.jeremyschoffen.mbt.api.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.versioning.git-state :as gs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defn project-name [{top-level :git/top-level}]
