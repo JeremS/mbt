@@ -17,20 +17,20 @@
 
 (def initial-simple-version (SimpleVersion. 0 0 "" false))
 
-;; TODO: get rid of the format, the regex shouldn't need the artefact's name
-(defn- tag->version-number [artefact-name tag-name]
-  (let [pattern (format "^%s-v(\\d*).*$" artefact-name)
-        [_ n-str] (re-matches (re-pattern pattern) tag-name)]
+
+(def tag-pattern #".*-v(\d*).*$")
+
+(defn- tag->version-number [tag-name]
+  (let [[_ n-str] (re-matches tag-pattern tag-name)]
     (Integer/parseInt n-str)))
 
 
-(defn current-version* [{artefact-name :artefact/name
-                         :as param}]
+(defn current-version* [param]
   (let [{tag-name :git.tag/name
          distance :git.describe/distance
          sha      :git/sha
          dirty    :git.repo/dirty?} (common/most-recent-description param)
-        last-version-number (tag->version-number artefact-name tag-name)]
+        last-version-number (tag->version-number tag-name)]
     (SimpleVersion. last-version-number distance sha dirty)))
 
 
