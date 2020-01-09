@@ -15,6 +15,7 @@
 (s/def :project/working-dir (every-pred path-like? fs/absolute?))
 (s/def :project/name string?)
 (s/def :project/version any?)
+(s/def :project/author string?)
 (s/def :module/name string?)
 (s/def :artefact/name string?)
 
@@ -28,6 +29,12 @@
 (s/def :project/deps ::deps-specs/deps-map)
 (s/def :project.deps/aliases (s/coll-of keyword? :into #{}))
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Jar
+;;----------------------------------------------------------------------------------------------------------------------
+(s/def :jar/main-ns symbol?)
+(s/def :jar.manifest/overrides map?)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
