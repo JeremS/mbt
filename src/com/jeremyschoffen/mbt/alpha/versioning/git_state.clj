@@ -7,8 +7,7 @@
     [com.jeremyschoffen.mbt.alpha.git :as git]
     [com.jeremyschoffen.mbt.alpha.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as version-common])
+    [com.jeremyschoffen.mbt.alpha.versioning.schemes :as vs])
 
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -27,34 +26,7 @@
            :git/basic-state)
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; version
-;;----------------------------------------------------------------------------------------------------------------------
-(defn initial-version [{h :version/scheme}]
-  (vp/initial-version h))
-
-(u/spec-op initial-version
-           (s/keys :req [:version/scheme]))
-
-
-(defn current-version [{s :version/scheme :as param}]
-  (vp/current-version s param))
-
-(u/spec-op current-version
-           (s/keys :req [:version/scheme :git/repo :artefact/name]))
-
-
-(defn bump [{s :version/scheme
-             v :project/version
-             l :version/bump-level}]
-  (if l
-    (vp/bump s v l)
-    (vp/bump s v)))
-
-(u/spec-op bump
-           (s/keys :req [:version/scheme :project/version]
-                   :opt [:version/bump-level]))
-;;----------------------------------------------------------------------------------------------------------------------
-;; Tags
+;; Buidling tags
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn tag-name [{artefact-name :artefact/name
                  v             :project/version}]
@@ -97,7 +69,9 @@
                          :project/version
                          :git/prefix]))
 
-(defn tag [param]
+(defn tag
+  "Creates tag data usable by our git wrapper."
+  [param]
   (let [m (make-tag-data param)]
     {:git.tag/name (:tag m)
      :git.tag/message (pr-str m)}))
@@ -154,7 +128,9 @@
   param)
 
 
-(defn tag! [param]
+(defn- tag!
+  "Checks that the repo is in order and creates a git tag."
+  [param]
   (-> param
       check-repo-in-order
       check-not-dirty
@@ -169,7 +145,7 @@
 (defn- check-not-initialized [{artefact-name :artefact/name
                                :as param}]
   (when (try
-          (version-common/most-recent-description param)
+          (vs/current-version param)
           (catch Exception _
             nil))
     (throw (ex-info (format "Already started versioning %s." artefact-name)
@@ -181,22 +157,26 @@
            (s/keys :req [:git/repo :artefact/name]))
 
 
-(defn create-first-tag! [param]
+(defn create-first-tag!
+  "Creates the first tag of a project using the initial verison of the used version scheme."
+  [param]
   (-> param
       check-not-initialized
-      (u/assoc-computed :project/version initial-version)
+      (u/assoc-computed :project/version vs/initial-version)
       (u/merge-computed tag)
       tag!))
 
 (u/spec-op create-first-tag!
-           (s/keys :req [:artefact/name :git/repo :git/prefix])
+           (s/keys :req [:version/scheme :artefact/name :git/repo :git/prefix])
            :git/tag)
 
 
-(defn bump-tag! [param]
+(defn bump-tag!
+  "Creates a new tag for the current commit bumping the version number in this new tag."
+  [param]
   (-> param
-      (u/assoc-computed :project/version current-version)
-      (u/assoc-computed :project/version bump)
+      (u/assoc-computed :project/version vs/current-version)
+      (u/assoc-computed :project/version vs/bump)
       (u/merge-computed tag)
       tag!))
 
