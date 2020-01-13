@@ -5,12 +5,11 @@
     [com.jeremyschoffen.java.nio.file :as fs]
 
     [com.jeremyschoffen.mbt.alpha.specs]
-    [com.jeremyschoffen.mbt.alpha.building.classptah :as classpath]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 ;; inspired by https://github.com/luchiniatwork/cambada/blob/master/src/cambada/compile.clj
-(defn dirs->nss [dirs]
+(defn- dirs->nss [dirs]
   (into []
         (comp
           (map fs/file)
@@ -18,49 +17,34 @@
         dirs))
 
 
-(defn determine-nss-to-compile [{:clojure.compilation/keys [namespaces include-external-sources]
-                                 :or {namespaces :all
-                                      include-external-sources false}
-                                 :as param}]
-  (let [[type v] (s/conform :clojure.compilation/namespaces namespaces)
-        cp (delay (classpath/indexed-classpath param))
+(defn project-nss [{cp :classpath/indexed}]
+  (-> cp :dir dirs->nss))
 
-        nss-to-compile (if (= type :coll)
-                         v
-                         (-> @cp :dir dirs->nss))]
-    (-> nss-to-compile
-        (cond-> include-external-sources
-                (concat (-> @cp :ext-dep dirs->nss)))
-        vec)))
+(u/spec-op project-nss
+           (s/keys :req [:classpath/indexed])
+           :clojure.compilation/namespaces)
 
-(u/spec-op determine-nss-to-compile
-           (s/keys :req [:project/working-dir
-                         :project/deps]
-                   :opt [:project.deps/aliases
-                         :clojure.compilation/namespaces
-                         :clojure.compilation/include-external-sources]))
+
+(defn external-nss [{cp :classpath/indexed}]
+  (-> cp :ext-dep dirs->nss))
+
+(u/spec-op external-nss
+           (s/keys :req [:classpath/indexed])
+           :clojure.compilation/namespaces)
 
 
 ;; TODO: would be nice to have something like boot's pods to isolate
 ;; the current environment while compiling.
-
 (defn compile! [{output-dir :clojure.compilation/output-dir
-                 :as param}]
-  (let [nss-to-compile (determine-nss-to-compile param)]
-    (fs/create-directories! output-dir)
-    (binding [*compile-path* output]
-      (doseq [n nss-to-compile]
-        (compile n)))))
+                 namespaces :clojure.compilation/namespaces}]
+  (fs/create-directories! output-dir)
+  (binding [*compile-path* output-dir]
+    (doseq [n namespaces]
+      (compile n))))
 
 (u/spec-op compile!
-           (s/keys :req [:project/working-dir
-                         :clojure.compilation/output-dir
-                         :project/deps]
-                   :opt [:project.deps/aliases
-                         :clojure.compilation/namespaces
-                         :clojure.compilation/include-external-sources]))
-
-
+           (s/keys :req [:clojure.compilation/output-dir
+                         :clojure.compilation/namespaces]))
 
 
 

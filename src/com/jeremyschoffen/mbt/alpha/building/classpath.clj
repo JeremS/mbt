@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.building.classptah
+(ns com.jeremyschoffen.mbt.alpha.building.classpath
   (:require
     [clojure.spec.alpha :as s]
     [clojure.string :as string]
@@ -21,7 +21,8 @@
 (u/spec-op raw-classpath
            (s/keys :req [:project/deps]
                    :opt [:project.deps/aliases])
-           string?)
+           :classpath/raw)
+
 
 (defn jar? [path]
   (string/ends-with? path ".jar"))
@@ -49,6 +50,7 @@
            sort
            (group-by (partial classify wd)))))
 
+
 (defn indexed-classpath [{wd :project/working-dir
                           :as param}]
   (-> param
@@ -59,7 +61,7 @@
            (s/keys :req [:project/working-dir
                          :project/deps]
                    :opt [:project.deps/aliases])
-           (s/keys :opt-un [:-/inexistant :-/jar :-/dir :-/ext-dep]))
+           :classpath/indexed)
 
 
 (comment
