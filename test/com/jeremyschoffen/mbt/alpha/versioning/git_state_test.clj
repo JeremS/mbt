@@ -64,8 +64,8 @@
 
     (testing "No tag yet."
       (facts
-        (gs/current-version state) =throws=> (ex-info? identity {::anom/category ::anom/not-found
-                                                                 :mbt/error :no-description})
+        (version/current-version state) =throws=> (ex-info? identity {::anom/category ::anom/not-found
+                                                                      :mbt/error :no-description})
         (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category  ::anom/not-found
                                                            :mbt/error :no-description})))
 
@@ -78,8 +78,8 @@
 
     (testing "Still no tag."
       (facts
-        (gs/current-version state) =throws=> (ex-info? identity {::anom/category ::anom/not-found
-                                                                 :mbt/error :no-description})
+        (version/current-version state) =throws=> (ex-info? identity {::anom/category ::anom/not-found
+                                                                      :mbt/error :no-description})
         (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category  ::anom/not-found
                                                            :mbt/error :no-description})))))
 
@@ -102,7 +102,7 @@
     (gs/create-first-tag! state)
 
     (facts
-      (str (gs/current-version state)) => "0"
+      (str (version/current-version state)) => "0"
 
       (gs/create-first-tag! state) =throws=> (ex-info? identity {::anom/category ::anom/forbidden
                                                                  :mbt/error :already-tagged})
@@ -119,7 +119,7 @@
 
     (gs/bump-tag! state)
     (testing "after 2 commits, version is 2"
-      (fact (str (gs/current-version state)) => "2"))))
+      (fact (str (version/current-version state)) => "2"))))
 
 
 (deftest testing-simple-versioning
@@ -140,7 +140,7 @@
       (gs/create-first-tag! state)
 
       (facts
-        (str (gs/current-version state)) => "0.1.0"
+        (str (version/current-version state)) => "0.1.0"
 
         (gs/create-first-tag! state) =throws=> (ex-info? identity {::anom/category ::anom/forbidden
                                                                    :mbt/error :already-tagged})
@@ -160,7 +160,7 @@
       (gs/bump-tag! state)
 
       (fact
-        (str (gs/current-version state)) => "0.1.1"))
+        (str (version/current-version state)) => "0.1.1"))
 
     (testing "Re-patching directly won't work"
       (fact
@@ -205,9 +205,9 @@
 
     (testing "Every project is at its initial version."
       (facts
-        (str (gs/current-version state-p-maven)) => "0.1.0"
-        (str (gs/current-version state-p-semver)) => "0.1.0"
-        (str (gs/current-version state-p-simple)) => "0"))
+        (str (version/current-version state-p-maven)) => "0.1.0"
+        (str (version/current-version state-p-semver)) => "0.1.0"
+        (str (version/current-version state-p-simple)) => "0"))
 
     (testing "Added a src to p-maven, comitted and bumped."
       (h/add-src repo "c1" p-maven-name "src")
@@ -216,9 +216,9 @@
       (gs/bump-tag! state-p-maven)
 
       (facts
-        (str (gs/current-version state-p-maven)) => "0.1.1"
-        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-1-0x.*"
-        (str (gs/current-version state-p-simple)) =in=> #"0.1-0x.*"))
+        (str (version/current-version state-p-maven)) => "0.1.1"
+        (str (version/current-version state-p-semver)) =in=> #"0.1.0-1-0x.*"
+        (str (version/current-version state-p-simple)) =in=> #"0.1-0x.*"))
 
 
     (testing "Added and comitted a src to p-simple"
@@ -227,25 +227,25 @@
       (git/git-commit repo "added a src to p-simple")
 
       (facts
-        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
-        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
-        (str (gs/current-version state-p-simple)) =in=> #"0.2-0x.*"))
+        (str (version/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
+        (str (version/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
+        (str (version/current-version state-p-simple)) =in=> #"0.2-0x.*"))
 
     (testing "Just bumped p-simple"
       (gs/bump-tag! state-p-simple)
 
       (facts
-        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
-        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
-        (str (gs/current-version state-p-simple)) =in=> "2"))
+        (str (version/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*"
+        (str (version/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*"
+        (str (version/current-version state-p-simple)) =in=> "2"))
 
     (testing "Just added a src to semver"
       (h/add-src repo "c1" p-semver-name "src")
 
       (facts
-        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*-DIRTY$"
-        (str (gs/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*-DIRTY$"
-        (str (gs/current-version state-p-simple)) => "2-DIRTY"))
+        (str (version/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*-DIRTY$"
+        (str (version/current-version state-p-semver)) =in=> #"0.1.0-2-0x.*-DIRTY$"
+        (str (version/current-version state-p-simple)) => "2-DIRTY"))
 
     (testing "Comitted the src to semver and bumped it."
       (h/add-all! repo)
@@ -253,7 +253,6 @@
       (gs/bump-tag! state-p-semver)
 
       (facts
-        (str (gs/current-version state-p-maven)) =in=> #"0.1.1-2-0x.*$"
-        (str (gs/current-version state-p-semver)) =in=> #"0.1.1"
-        (str (gs/current-version state-p-simple)) =in=> #"2.1-0x.*$"))))
-(clojure.test/run-tests)
+        (str (version/current-version state-p-maven)) =in=> #"0.1.1-2-0x.*$"
+        (str (version/current-version state-p-semver)) =in=> #"0.1.1"
+        (str (version/current-version state-p-simple)) =in=> #"2.1-0x.*$"))))
