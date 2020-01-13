@@ -13,7 +13,6 @@
     [clojure.spec.alpha :as s]
     [clojure.tools.logging :as log]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as common]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.common :as metav-common]))
 
 
@@ -73,19 +72,18 @@
      (SemVer. metav-common/default-initial-subversions distance sha dirty?))))
 
 
-(defn- current-version* [param]
-  (let [{tag :git.tag/name
-         dist :git.describe/distance
-         sha :git/sha
-         dirty? :git.repo/dirty?} (common/most-recent-description param)]
-    (version tag dist sha dirty?)))
+(defn- current-version* [{tag :git.tag/name
+                          dist :git.describe/distance
+                          sha :git/sha
+                          dirty? :git.repo/dirty?}]
+  (version tag dist sha dirty?))
 
 (def version-scheme
   (reify vp/VersionScheme
     (initial-version [_]
       (version))
-    (current-version [_ state]
-      (current-version* state))
+    (current-version [_ git-description]
+      (current-version* git-description))
     (bump [_ version]
       (metav-common/safer-bump version :patch))
     (bump [_ version level]

@@ -26,6 +26,42 @@
            :git/basic-state)
 
 ;;----------------------------------------------------------------------------------------------------------------------
+;; Versioning
+;;----------------------------------------------------------------------------------------------------------------------
+(defn- most-recent-description [{repo :git/repo
+                                 artefact-name :artefact/name}]
+  (git/describe {:git/repo repo
+                 :git.describe/tag-pattern (str artefact-name "*")}))
+
+(u/spec-op most-recent-description
+           (s/keys :req [:git/repo :artefact/name])
+           (s/nilable :git/description))
+
+
+(defn current-version [param]
+  (when-let[desc (most-recent-description param)]
+    (-> param
+        (assoc :git/description desc)
+        (vs/current-version))))
+
+(u/spec-op current-version
+           (s/keys :req [:git/repo :artefact/name])
+           (s/nilable :project/version))
+
+
+(defn next-version [param]
+  (if-let [desc (most-recent-description param)]
+    (-> param
+        (assoc :git/description desc)
+        (u/assoc-computed :project/version vs/current-version)
+        vs/bump)
+    (vs/initial-version param)))
+
+(u/spec-op next-version
+           (s/keys :req [:git/repo :artefact/name])
+           :project/version)
+
+;;----------------------------------------------------------------------------------------------------------------------
 ;; Buidling tags
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn tag-name [{artefact-name :artefact/name
@@ -33,7 +69,8 @@
   (str artefact-name "-v" v))
 
 (u/spec-op tag-name
-           (s/keys :req [:artefact/name :project/version]))
+           (s/keys :req [:artefact/name :project/version])
+           :git.tag/name)
 
 
 (defn- iso-now []
@@ -60,14 +97,6 @@
                          :git/prefix])
            map?)
 
-(defn tag-message [param]
-  (pr-str (make-tag-data param)))
-
-
-(u/spec-op tag-message
-           (s/keys :req [:artefact/name
-                         :project/version
-                         :git/prefix]))
 
 (defn tag
   "Creates tag data usable by our git wrapper."
@@ -82,6 +111,17 @@
                          :git/prefix])
            :git/tag)
 
+
+(defn next-tag [param]
+  (-> param
+      (u/assoc-computed :project/version next-version)
+      tag))
+
+
+(u/spec-op next-tag
+           (s/keys :req [:artefact/name :git/repo :git/prefix])
+           :git/tag)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Operations!
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -94,7 +134,9 @@
   (let [build-file (u/safer-path wd module-build-file)]
     (fs/exists? build-file)))
 
-(u/spec-op has-build-file? (s/keys :req [:project/working-dir]))
+(u/spec-op has-build-file?
+           (s/keys :req [:project/working-dir])
+           boolean?)
 
 
 (defn check-repo-in-order
@@ -142,44 +184,15 @@
            :git/tag)
 
 
-(defn- check-not-initialized [{artefact-name :artefact/name
-                               :as param}]
-  (when (try
-          (vs/current-version param)
-          (catch Exception _
-            nil))
-    (throw (ex-info (format "Already started versioning %s." artefact-name)
-                    (merge param {::anom/category ::anom/forbidden
-                                  :mbt/error :already-tagged}))))
-  param)
-
-(u/spec-op check-not-initialized
-           (s/keys :req [:git/repo :artefact/name]))
-
-
-(defn create-first-tag!
-  "Creates the first tag of a project using the initial verison of the used version scheme."
-  [param]
-  (-> param
-      check-not-initialized
-      (u/assoc-computed :project/version vs/initial-version)
-      (u/merge-computed tag)
-      tag!))
-
-(u/spec-op create-first-tag!
-           (s/keys :req [:version/scheme :artefact/name :git/repo :git/prefix])
-           :git/tag)
-
-
 (defn bump-tag!
-  "Creates a new tag for the current commit bumping the version number in this new tag."
+  "Creates a new tag for the current commit bumping the version number for the selected artefact-name."
   [param]
   (-> param
-      (u/assoc-computed :project/version vs/current-version)
-      (u/assoc-computed :project/version vs/bump)
-      (u/merge-computed tag)
+      (u/merge-computed next-tag)
       tag!))
 
 (u/spec-op bump-tag!
            (s/keys :req [:artefact/name :git/repo :git/prefix])
            :git/tag)
+
+

@@ -7,7 +7,7 @@
     [clj-jgit.porcelain :as git]
     [clj-jgit.internal :as git-i]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (org.eclipse.jgit.revwalk RevTag)
@@ -154,43 +154,28 @@
            (s/nilable :git/raw-description))
 
 
-(defn safe-describe-raw [{tag-pattern :git.describe/tag-pattern
-                          :as         param}]
-  (or (describe-raw param)
-      (throw (ex-info (str "Can't get a description." (when tag-pattern (format "(tag pattern: %s)" tag-pattern)))
-                      (merge param {::anom/category ::anom/not-found
-                                    :mbt/error :no-description})))))
-
-(u/spec-op safe-describe-raw
-           (s/keys :req [:git/repo]
-                   :opt [:git.describe/tag-pattern])
-           :git/raw-description)
-
-
 (def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
 
-(defn parse-description [{desc :git/raw-description}]
+(defn- parse-description [desc]
   (let [[_ tag distance sha] (re-matches raw-description-regex desc)]
     {:git.tag/name tag
      :git.describe/distance (Integer/parseInt distance)
      :git/sha sha}))
 
-(u/spec-op parse-description
-           (s/keys :req [:git/raw-description])
-           (s/keys :req [:git.tag/name :git.describe/distance :git/sha]))
-
 
 (defn describe [param]
-  (-> param
-      (u/assoc-computed :git/raw-description safe-describe-raw)
-      (u/merge-computed parse-description)
-      (u/merge-computed get-tag)
-      (u/assoc-computed :git.repo/dirty? dirty?)))
+  (when-let [desc (describe-raw param)]
+    (-> param
+        (assoc :git/raw-description desc)
+        (merge (parse-description desc))
+        (u/merge-computed get-tag)
+        (u/assoc-computed :git.repo/dirty? dirty?)
+        (select-keys specs/description-keys))))
 
 (u/spec-op describe
            (s/keys :req [:git/repo]
                    :opt [:git.describe/tag-pattern])
-           :git/description)
+           (s/nilable :git/description))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
@@ -201,4 +186,6 @@
       empty?
       not))
 
-(u/spec-op any-commit? (s/keys :req [:git/repo]) boolean?)
+(u/spec-op any-commit?
+           (s/keys :req [:git/repo])
+           boolean?)

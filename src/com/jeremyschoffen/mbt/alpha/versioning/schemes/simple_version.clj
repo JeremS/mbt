@@ -3,7 +3,6 @@
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.alpha.versioning.schemes.common :as common]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
@@ -25,18 +24,18 @@
     (Integer/parseInt n-str)))
 
 
-(defn current-version* [param]
-  (let [{tag-name :git.tag/name
-         distance :git.describe/distance
-         sha      :git/sha
-         dirty    :git.repo/dirty?} (common/most-recent-description param)
-        last-version-number (tag->version-number tag-name)]
+(defn current-version* [{tag-name :git.tag/name
+                         distance :git.describe/distance
+                         sha      :git/sha
+                         dirty    :git.repo/dirty?}]
+  (let [last-version-number (tag->version-number tag-name)]
     (SimpleVersion. last-version-number distance sha dirty)))
 
 
 (u/spec-op current-version*
-           (s/keys :req [:git/repo :artefact/name])
+           :git/description
            :project/version)
+
 
 (defn- bump* [v]
   (let [{:keys [base-number distance sha dirty]} v]
@@ -45,12 +44,13 @@
                       {::anom/category ::anom/forbidden})))
     (SimpleVersion. (+ base-number distance) 0 sha dirty)))
 
+
 (def version-scheme
   (reify vp/VersionScheme
     (initial-version [_]
       initial-simple-version)
-    (current-version [_ state]
-      (current-version* state))
+    (current-version [_ git-description]
+      (current-version* git-description))
     (bump [_ version]
       (bump* version))
     (bump [_ version _]

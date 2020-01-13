@@ -2,6 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.git :as git]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.simple-version :as simple]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.maven :as maven]
@@ -21,11 +22,12 @@
            (s/keys :req [:version/scheme]))
 
 
-(defn current-version [{s :version/scheme :as param}]
-  (vp/current-version s param))
+(defn current-version [{s :version/scheme
+                        desc :git/description}]
+  (vp/current-version s desc))
 
 (u/spec-op current-version
-           (s/keys :req [:version/scheme :git/repo :artefact/name]))
+           (s/keys :req [:version/scheme :git/description]))
 
 
 (defn bump [{s :version/scheme

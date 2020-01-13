@@ -74,4 +74,10 @@
                 :git.tag/message
                 :git.repo/dirty?]))
 
+(def description-keys #{:git/raw-description
+                        :git/sha
+                        :git.describe/distance
+                        :git.tag/name
+                        :git.tag/message
+                        :git.repo/dirty?})
 
