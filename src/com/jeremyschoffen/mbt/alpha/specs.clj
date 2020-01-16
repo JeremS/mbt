@@ -13,11 +13,13 @@
 ;; General
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :project/working-dir (every-pred path-like? fs/absolute?))
+(s/def :project/output-dir (every-pred path-like? fs/absolute?))
 (s/def :project/name string?)
 (s/def :project/version any?)
 (s/def :project/author string?)
 (s/def :module/name string?)
 (s/def :artefact/name string?)
+(s/def :maven/group-id symbol?)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
@@ -43,6 +45,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :jar/main-ns symbol?)
 (s/def :jar.manifest/overrides map?)
+(s/def :jar/output path?)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
