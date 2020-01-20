@@ -61,9 +61,9 @@
                                ::pom/artifactId
                                ::pom/version})
 
-(defn- make-replecment-nodes [{artefact-name :artefact/name
-                               version :project/version
-                               group-id :maven/group-id}]
+(defn- make-replacement-nodes [{artefact-name :artefact/name
+                                version        :project/version
+                                group-id       :maven/group-id}]
   [(xml/sexp-as-element [::pom/groupId   group-id])
    (xml/sexp-as-element [::pom/artifactId artefact-name])
    (xml/sexp-as-element [::pom/version  (str version)])])
@@ -72,7 +72,7 @@
 (defn- update-pom [param xml-root]
   (update xml-root :content
           (fn [nodes]
-            (concat (make-replecment-nodes param)
+            (concat (make-replacement-nodes param)
                     (remove #(contains? replaced-tags (:tag %)) nodes)))))
 
 
@@ -110,7 +110,7 @@
        :artefact/name "project"
        :project/version "2.12"
        :maven/group-id "super"}
-      (u/side-effect sync-deps-pom!)
+      (u/side-effect! sync-deps-pom!)
       (u/assoc-computed :maven/pom new-pom)
-      (u/side-effect sync-pom!)))
+      (u/side-effect! sync-pom!)))
 

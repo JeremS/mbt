@@ -11,6 +11,8 @@
 
         nio               {:local/root "/Users/jeremyschoffen/Documents/dev/clojure/clj-nio"}
 
+        ;metav               {:local/root "/Users/jeremyschoffen/Documents/GitHub/metav"}
+
         badigeon/badigeon   {:git/url "https://github.com/EwenG/badigeon.git"
                              :sha "c7588e6d2c66284dcda1a339adcba8cb9c74a8b0"
                              :tag "0.0.9"}}

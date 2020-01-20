@@ -33,7 +33,7 @@
   (merge m (f m)))
 
 
-(defn side-effect [v f!]
+(defn side-effect! [v f!]
   (f! v)
   v)
 
