@@ -56,6 +56,10 @@
 (s/def :jar/output path?)
 (s/def :jar/file-system file-system?)
 
+(s/def :jar.entry/src (s/or :text string? :file path?))
+(s/def :jar.entry/dest path?)
+(s/def :jar/entry (s/keys :req [:jar.entry/src :jar.entry/dest]))
+(s/def :jar/entries (s/coll-of :jar/entry))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
