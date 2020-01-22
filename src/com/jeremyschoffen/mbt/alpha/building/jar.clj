@@ -1,6 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.building.jar
   (:require
     [clojure.data.xml :as xml]
+    [clojure.edn :as edn]
     [clojure.spec.alpha :as s]
     [clojure.string :as string]
     [com.jeremyschoffen.java.nio.file :as fs]
@@ -143,25 +144,82 @@
 (defn- str->input-stream [^String s]
   (-> s .getBytes fs/input-stream))
 
-;; TODO: add filter mechanism
+
 (defn- add-string! [src dest]
   (let [src (str->input-stream src)]
     (fs/copy! src dest)))
 
 
 (defn- add-file! [src dest]
-  (fs/copy! src dest)
-  (fs/set-last-modified-time! dest
-                              (fs/last-modified-time src)))
+  (let [res (fs/copy! src dest)]
+    (fs/set-last-modified-time! dest
+                                (fs/last-modified-time src))
+    res))
 
+;; Clashes
+;; adapted from https://github.com/seancorfield/depstar/blob/master/src/hf/depstar/uberjar.clj#L57
+(defn clash-strategy [{dest :jar.entry/dest}]
+  (cond
+    (= "data_readers.clj" (fs/file-name dest))
+    :merge-edn
+
+    (re-find #"^META-INF/services/" (str dest))
+    :concat-lines
+
+    :else
+    :noop))
+
+(defmulti handle-clash clash-strategy)
+
+(defmethod handle-clash :merge-edn
+  [{:jar.entry/keys [src dest]
+    :as param}]
+  (let [current-data-reader (-> dest slurp edn/read-string)
+        supplementary-data-reader (-> src slurp edn/read-string)
+        content (pr-str (merge current-data-reader
+                               supplementary-data-reader))]
+    (fs/delete! dest)
+    (assoc param
+      :jar.adding/result (add-string! content dest)
+      :jar.clash/strategy :merge-edn)))
+
+
+(defmethod handle-clash :concat-lines
+  [{:jar.entry/keys [src dest]
+    :as param}]
+  (let [input (fs/new-input-stream src)
+        output (fs/new-ouput-stream dest :append)]
+    (assoc param
+      :jar.adding/result (fs/copy! input output)
+      :jar.clash/strategy :concat-lines)))
+
+
+(defmethod handle-clash :noop
+  [param]
+  (assoc param :jar.clash/strategy :noop))
+
+
+
+
+;; TODO: add filter mechanism to remove stuff that shoudn't go in the jar
+
+(defn handle-copy [{src :jar.entry/src
+                    :as param}
+                   zipped-dest]
+  (ensure-parent! zipped-dest)
+  (assoc param
+    :jar.adding/result
+    (if (string? src)
+      (add-string! src zipped-dest)
+      (add-file! src zipped-dest))))
 
 (defn add-jo-jar! [{zfs :jar/file-system
-                    :jar.entry/keys [src dest]}]
+                    :jar.entry/keys [src dest]
+                    :as param}]
   (let [dest (apply fs/path zfs (map str dest))]
-    (ensure-parent! dest)
-    (if (string? src)
-      (add-string! src dest)
-      (add-file! src dest))))
+    (if (fs/exists? dest)
+      (handle-clash param)
+      (handle-copy param dest))))
 
 (u/spec-op add-jo-jar!
            (s/merge :jar/entry
@@ -170,8 +228,11 @@
 
 (defn jar! [{zfs :jar/file-system
              entries :jar/entries}]
-  (doseq [entry entries]
-    (add-jo-jar! (assoc entry :jar/file-system zfs))))
+  (into []
+        (comp
+          (map #(assoc % :jar/file-system zfs))
+          (map add-jo-jar!))
+        entries))
 
 (u/spec-op jar!
            (s/keys :req [:jar/file-system
@@ -184,6 +245,7 @@
 
 
 (comment
+  (clojure.repl/doc fs/walk)
   (fs/delete-if-exists! (u/safer-path "target/mbt.jar"))
   (require '[com.jeremyschoffen.mbt.alpha.building.manifest :as manifest])
   (require '[com.jeremyschoffen.mbt.alpha.building.pom :as pom])
@@ -206,3 +268,9 @@
 
   (with-open [zfs (make-output-jar-fs {:jar/output (u/safer-path "target/mbt.jar")})]
     (fs/realize (fs/walk (fs/path zfs "/"))))
+
+
+
+  (with-open [j (open-jar-fs (u/safer-path "/Users/jeremyschoffen/.m2/repository/meander/epsilon/0.0.378/epsilon-0.0.378.jar"))]
+    (fs/realize (fs/walk (fs/path j "/")))))
+    ;(slurp (fs/path j "data_readers.cljc"))))

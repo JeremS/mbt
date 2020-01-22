@@ -68,6 +68,8 @@
 
 (s/def :jar/entries (s/coll-of :jar/entry))
 
+(s/def :jar.adding/result any?)
+(s/def :jar.clash/strategy #{:merge :concat-lines :noop})
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
