@@ -14,7 +14,7 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes :as version]))
 
-
+;; TODO remove dependency on classic scheme
 (st/instrument)
 (set! s/*explain-out* expound/printer)
 
