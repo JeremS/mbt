@@ -50,9 +50,14 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Classpaths
 ;;----------------------------------------------------------------------------------------------------------------------
+(def classpath-index-categories #{:classpath/inexistant
+                                  :classpath/jar
+                                  :classpath/dir
+                                  :classpath/ext-dep
+                                  :classpath/file})
 (s/def :classpath/raw string?)
-(s/def :classpath/indexed (s/map-of #{:inexistant :jar :dir :ext-dep :file}
-                                    string?))
+(s/def :classpath/index (s/map-of classpath-index-categories
+                                  (s/coll-of string?)))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar

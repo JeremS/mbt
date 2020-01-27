@@ -17,19 +17,19 @@
         dirs))
 
 
-(defn project-nss [{cp :classpath/indexed}]
+(defn project-nss [{cp :classpath/index}]
   (-> cp :dir dirs->nss))
 
 (u/spec-op project-nss
-           (s/keys :req [:classpath/indexed])
+           (s/keys :req [:classpath/index])
            :clojure.compilation/namespaces)
 
 
-(defn external-nss [{cp :classpath/indexed}]
+(defn external-nss [{cp :classpath/index}]
   (-> cp :ext-dep dirs->nss))
 
 (u/spec-op external-nss
-           (s/keys :req [:classpath/indexed])
+           (s/keys :req [:classpath/index])
            :clojure.compilation/namespaces)
 
 

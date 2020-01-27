@@ -34,12 +34,12 @@
 
 (defn classify [wd path]
   (cond
-    (not (fs/exists? path)) :inexistant
-    (jar? path) :jar
+    (not (fs/exists? path)) :classpath/inexistant
+    (jar? path) :classpath/jar
     (fs/directory? path) (if (project-path? wd path)
-                           :dir
-                           :ext-dep)
-    :else :file))
+                           :classpath/dir
+                           :classpath/ext-dep)
+    :else :classpath/file))
 
 (defn index-classpath [cp wd]
   (-> cp
@@ -61,7 +61,7 @@
            (s/keys :req [:project/working-dir
                          :project/deps]
                    :opt [:project.deps/aliases])
-           :classpath/indexed)
+           :classpath/index)
 
 
 (comment
