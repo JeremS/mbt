@@ -8,9 +8,9 @@
   ([]
    (safer-path "."))
   ([& args]
-   (-> (apply fs/path args)
-       fs/absolute-path
-       fs/normalize)))
+   (->> args
+        (apply fs/path)
+        fs/canonical-path)))
 
 (defn wd []
   (safer-path))

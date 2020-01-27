@@ -12,9 +12,10 @@
   (let [dir (-> repo
                 .getRepository
                 .getDirectory)]
-    (if (-> dir fs/file-name (= (fs/path ".git")))
-      (fs/parent dir)
-      dir)))
+    (fs/canonical-path
+      (if (-> dir fs/file-name (= (fs/path ".git")))
+        (fs/parent dir)
+        dir))))
 
 (extend-protocol coercions/UnaryPathBuilder
   Git
