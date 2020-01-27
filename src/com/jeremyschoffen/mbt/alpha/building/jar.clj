@@ -214,9 +214,9 @@
       (add-file! src zipped-dest))))
 
 (defn add-jo-jar! [{zfs :jar/file-system
-                    :jar.entry/keys [src dest]
+                    dest :jar.entry/dest
                     :as param}]
-  (let [dest (apply fs/path zfs (map str dest))]
+  (let [dest (fs/path zfs dest)]
     (if (fs/exists? dest)
       (handle-clash param)
       (handle-copy param dest))))
