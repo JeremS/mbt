@@ -39,6 +39,7 @@
       (->> (str "jar:"))
       fs/uri))
 
+
 (defn jar-create-env []
   (doto (HashMap.)
     (.put "create" "true")
@@ -101,7 +102,9 @@
     :else
     :noop))
 
+
 (defmulti handle-clash clash-strategy)
+
 
 (defmethod handle-clash :merge-edn
   [{:jar.entry/keys [src dest]
@@ -142,6 +145,7 @@
       (add-string! src dest)
       (add-file! src dest))))
 
+
 (defn add-entry! [{zfs :jar/file-system
                    :as  param}]
   (let [{dest :jar.entry/dest
@@ -157,10 +161,7 @@
 
 
 (defn add-entries! [{zfs :jar/file-system
-                     entries     :jar/entries
-                     :as param}]
-  (println "got here!!!")
-  (clojure.pprint/pprint param)
+                     entries     :jar/entries}]
   (into []
         (comp
           (map #(assoc % :jar/file-system zfs))
@@ -231,13 +232,13 @@
 (defn make-staples-entries [param]
   [
    (-> param manifest/make-manifest make-manifest-entry)
-   (-> param (u/assoc-computed :jar/pom pom/new-pom) make-pom-entry)
+   (-> param make-pom-entry)
    (-> param make-deps-entry)])
 
 (u/spec-op make-staples-entries
            (s/keys :req[:project/version
                         :project/deps
-                        :maven.pom/dir
+                        :maven/pom
                         :maven/group-id
                         :artefact/name]
                    :opt [:project/author
@@ -295,9 +296,6 @@
 
 (defn- add-src! [{src :jar/src
                   :as param}]
-  (println "---------------------------------------")
-  (clojure.pprint/pprint src)
-  (println "---------------------------------------")
   (cond
     (sequential? src)   (add-entries! (c-set/rename-keys param {:jar/src :jar/entries}))
     (jar? src)          (add-jar! param)
@@ -343,7 +341,7 @@
            (s/keys :req[:classpath/index
                         :project/version
                         :project/deps
-                        :maven.pom/dir
+                        :maven/pom
                         :maven/group-id
                         :artefact/name]
                    :opt [:project/author
