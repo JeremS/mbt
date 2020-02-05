@@ -1,17 +1,19 @@
 (ns com.jeremyschoffen.mbt.alpha.building.pom
   (:require
+    [clojure.spec.alpha :as s]
+    [clojure.java.io :as jio]
     [clojure.data.xml :as xml]
     [clojure.data.xml.tree :as tree]
     [clojure.data.xml.event :as event]
-    [clojure.java.io :as io]
-    [clojure.spec.alpha :as s]
-    [clojure.tools.deps.alpha.gen.pom :as deps-pom]
+    [clojure.zip :as zip]
+    [clojure.tools.deps.alpha.util.maven :as maven]
+    [clojure.tools.deps.alpha.util.io :refer [printerrln]]
+    [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.specs]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]
-    [clojure.tools.deps.alpha.reader :as deps-reader]
-    [com.jeremyschoffen.java.nio.file :as fs])
-  (:import [java.io Reader]
-           [clojure.data.xml.node Element]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
+  (:import
+    [java.io File Reader]
+    [clojure.data.xml.node Element]))
 
 
 (defn non-maven-deps [{deps-map :project/deps}]
@@ -25,92 +27,210 @@
            (s/keys :req [:project/deps])
            (s/coll-of symbol? :kind set?))
 
-
-(defn sync-deps-pom! [{pom-dir  :maven.pom/dir
-                       deps-map :project/deps}]
-  (deps-pom/sync-pom deps-map (fs/file pom-dir)))
-
-(u/spec-op sync-deps-pom!
-           (s/keys :req [:maven.pom/dir]))
-
-
+;; Rework from tools deps
+;; https://github.com/clojure/tools.deps.alpha/blob/master/src/main/clojure/clojure/tools/deps/alpha/gen/pom.clj
 (xml/alias-uri 'pom "http://maven.apache.org/POM/4.0.0")
 
+(defn- to-dep
+  [[lib {:keys [mvn/version exclusions] :as coord}]]
+  (let [[group-id artifact-id classifier] (maven/lib->names lib)]
+    (if version
+      (cond->
+        [::pom/dependency
+         [::pom/groupId group-id]
+         [::pom/artifactId artifact-id]
+         [::pom/version version]]
 
-(defn pom-path [pom-dir]
-  (u/safer-path pom-dir "pom.xml"))
+        classifier
+        (conj [::pom/classifier classifier])
 
-;;----------------------------------------------------------------------------------------------------------------------
-;; taken from clojure.tools.deps.alpha.gen.pom
+        (seq exclusions)
+        (conj [::pom/exclusions
+               (map (fn [excl]
+                      [::pom/exclusion
+                       [::pom/groupId (or (namespace excl) (name excl))]
+                       [::pom/artifactId (name excl)]])
+                    exclusions)]))
+      (printerrln "Skipping coordinate:" coord))))
+
+(defn- gen-deps
+  [deps]
+  [::pom/dependencies
+   (map to-dep deps)])
+
+(defn- gen-source-dir
+  [path]
+  [::pom/sourceDirectory path])
+
+(defn- to-repo
+  [[name repo]]
+  [::pom/repository
+   [::pom/id name]
+   [::pom/url (:url repo)]])
+
+(defn- gen-repos
+  [repos]
+  [::pom/repositories
+   (map to-repo repos)])
+
+
+(defn filter-repos [rs]
+  (remove #(= "https://repo1.maven.org/maven2/" (-> % val :url)) rs))
+
+
+(defn new-pom [{project-name :artefact/name
+                group-id :maven/group-id
+                project-version :project/version
+                project-deps :project/deps}]
+  (let [{deps :deps
+         [path & paths] :paths
+         repos :mvn/repos} project-deps
+        repos (filter-repos repos)]
+    (xml/sexp-as-element
+      [::pom/project
+       {:xmlns "http://maven.apache.org/POM/4.0.0"
+        (keyword "xmlns:xsi") "http://www.w3.org/2001/XMLSchema-instance"
+        (keyword "xsi:schemaLocation") "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"}
+       [::pom/modelVersion "4.0.0"]
+       [::pom/groupId group-id]
+       [::pom/artifactId project-name]
+       [::pom/version project-version]
+       [::pom/name project-name]
+       (gen-deps deps)
+       (when path
+         (when (seq paths) (apply printerrln "Skipping paths:" paths))
+         [::pom/build (gen-source-dir path)])
+       (gen-repos repos)])))
+
+(u/spec-op new-pom
+           (s/keys :req [:artefact/name :maven/group-id :project/version :project/deps])
+           :maven/pom)
+
+
+(defn- make-xml-element
+  [{:keys [tag attrs] :as node} children]
+  (with-meta
+    (apply xml/element tag attrs children)
+    (meta node)))
+
+(defn- xml-update
+  [root tag-path replace-node]
+  (let [z (zip/zipper xml/element? :content make-xml-element root)]
+    (zip/root
+      (loop [[tag & more-tags :as tags] tag-path, parent z, child (zip/down z)]
+        (if child
+          (if (= tag (:tag (zip/node child)))
+            (if (seq more-tags)
+              (recur more-tags child (zip/down child))
+              (zip/edit child (constantly replace-node)))
+            (recur tags parent (zip/right child)))
+          (zip/append-child parent replace-node))))))
+
+
+(defn- replace-info [pom i v]
+  (xml-update pom [i] (xml/sexp-as-element [i v])))
+
+
+(defn- replace-name  [pom name]
+  (-> pom
+      (replace-info ::pom/artifactId name)
+      (replace-info ::pom/name name)))
+
+
+(defn- replace-group-id  [pom group]
+  (replace-info pom ::pom/groupId group))
+
+
+(defn- replace-version [pom v]
+  (replace-info pom ::pom/version (str v)))
+
+
+(defn- replace-deps
+  [pom deps]
+  (xml-update pom [::pom/dependencies] (xml/sexp-as-element (gen-deps deps))))
+
+
+(defn- replace-paths
+  [pom [path & paths]]
+  (when path
+    (when (seq paths) (apply printerrln "Skipping paths:" paths))
+    (xml-update pom [::pom/build ::pom/sourceDirectory] (xml/sexp-as-element (gen-source-dir path)))))
+
+
+(defn- replace-repos
+  [pom repos]
+  (if (seq repos)
+    (xml-update pom [::pom/repositories] (xml/sexp-as-element (gen-repos repos)))
+    pom))
+
+
+(defn update-pom [{pom :maven/pom
+                   project-name :artefact/name
+                   group-id :maven/group-id
+                   project-version :project/version
+                   project-deps :project/deps}]
+  (let [{:keys [deps paths :mvn/repos]} project-deps]
+    (-> pom
+        (replace-name project-name)
+        (replace-group-id group-id)
+        (replace-version project-version)
+        (replace-deps deps)
+        (replace-paths paths)
+        (replace-repos repos))))
+
+(u/spec-op update-pom
+           (s/keys :req [:maven/pom :artefact/name :maven/group-id :project/version :project/deps])
+           :maven/pom)
+
+
 (defn- parse-xml
   [^Reader rdr]
   (let [roots (tree/seq-tree event/event-element event/event-exit? event/event-node
                              (xml/event-seq rdr {:include-node? #{:element :characters :comment}
                                                  :skip-whitespace true}))]
     (first (filter #(instance? Element %) (first roots)))))
-;;----------------------------------------------------------------------------------------------------------------------
 
 (defn- read-xml [path]
-  (with-open [rdr (-> path fs/file io/reader)]
+  (with-open [rdr (-> path fs/file jio/reader)]
     (parse-xml rdr)))
 
 
+(defn pom-path [pom-dir]
+  (u/safer-path pom-dir "pom.xml"))
 
 
-(def ^:private replaced-tags #{::pom/groupId
-                               ::pom/artifactId
-                               ::pom/version})
-
-(defn- make-replacement-nodes [{artefact-name :artefact/name
-                                version        :project/version
-                                group-id       :maven/group-id}]
-  [(xml/sexp-as-element [::pom/groupId   group-id])
-   (xml/sexp-as-element [::pom/artifactId artefact-name])
-   (xml/sexp-as-element [::pom/version  (str version)])])
-
-
-(defn- update-pom [param xml-root]
-  (update xml-root :content
-          (fn [nodes]
-            (concat (make-replacement-nodes param)
-                    (remove #(contains? replaced-tags (:tag %)) nodes)))))
-
-
-(defn new-pom [{pom-dir  :maven.pom/dir
-                :as param}]
+(defn sync-pom [{pom-dir :maven.pom/dir
+                 :as param}]
   (let [p (pom-path pom-dir)
-        xml-root (read-xml p)]
-    (update-pom param xml-root)))
-
-(u/spec-op new-pom
-           (s/keys :req [:maven.pom/dir
-                         :artefact/name
-                         :project/version
-                         :maven/group-id])
-           :maven/pom)
+        current-pom (when (fs/exists? p)
+                      (read-xml p))]
+    (if current-pom
+      (spit p (-> (assoc param :maven/pom current-pom)
+                  update-pom
+                  xml/indent-str))
+      (spit p (-> param new-pom xml/indent-str)))))
 
 
-(defn sync-pom! [{pom-dir :maven.pom/dir
-                  pom :maven/pom}]
-  (spit (pom-path pom-dir)
-        (xml/indent-str pom)))
+(u/spec-op sync-pom
+           (s/keys :req [:maven.pom/dir :artefact/name :maven/group-id :project/version :project/deps]))
 
-(u/spec-op sync-pom!
-           (s/keys :req [:maven.pom/dir :maven/pom]))
 
+
+(require '[clojure.tools.deps.alpha.reader :as deps-reader])
 (comment
-  (require '[com.jeremyschoffen.java.nio.file :as fs])
-  (require '[clojure.tools.deps.alpha.reader :as deps-reader])
-  (fs/delete-if-exists! "./pom.xml")
-  (sync-deps-pom! {:project/deps (deps-reader/slurp-deps "deps.edn")
-                   :maven.pom/dir (u/safer-path"./target")})
 
-  (-> {:maven.pom/dir (u/safer-path "./target")
-       :project/deps (deps-reader/slurp-deps "deps.edn")
-       :artefact/name "project"
-       :project/version "2.12"
-       :maven/group-id "super"}
-      (u/side-effect! sync-deps-pom!)
-      (u/assoc-computed :maven/pom new-pom)
-      (u/side-effect! sync-pom!)))
+  (def ctxt {:maven/group-id 'group
+             :artefact/name "toto"
+             :project/version "1"
+             :project/deps (deps-reader/slurp-deps "deps.edn")
+             :maven.pom/dir (u/safer-path "target")})
 
+  (def ctxt2 (assoc ctxt :project/version "2"
+                         :artefact/name "titi"))
+
+
+  (-> ctxt
+      new-pom
+      xml/indent-str)
+
+  (sync-pom ctxt2))
