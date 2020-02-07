@@ -25,16 +25,14 @@
         state-p1 {:project/working-dir (u/safer-path temp-repo bu/project1)
                   :project/deps (deps-reader/slurp-deps (u/safer-path temp-repo bu/project1 "deps.edn"))}
 
-        state-p2 {:project/working-dir (u/safer-path temp-repo bu/project1)
+        state-p2 {:project/working-dir (u/safer-path temp-repo bu/project2)
                   :project/deps (deps-reader/slurp-deps (u/safer-path temp-repo bu/project2 "deps.edn"))}
 
         cp1 (cp/indexed-classpath state-p1)
         cp2 (cp/indexed-classpath state-p2)]
 
     (facts
-      (-> cp1 :jar clojure-jars-present?) => true
-      (-> cp2 :jar clojure-jars-present?) => true
+      (-> cp1 :classpath/jar clojure-jars-present?) => true
+      (-> cp2 :classpath/jar clojure-jars-present?) => true
 
-      (-> cp1 :ext-dep first) => (str (fs/path temp-repo bu/project2  "src")))))
-
-
+      (-> cp1 :classpath/ext-dep first) => (str (fs/path temp-repo bu/project2  "src")))))
