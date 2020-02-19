@@ -66,6 +66,7 @@
 (s/def :jar.manifest/overrides map?)
 (s/def :jar/manifest string?)
 (s/def :jar/output path?)
+(s/def :jar/temp-output path?)
 (s/def :jar/file-system file-system?)
 
 (s/def :jar.entry/src (s/or :text string? :file path?))

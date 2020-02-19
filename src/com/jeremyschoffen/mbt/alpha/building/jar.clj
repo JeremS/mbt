@@ -15,17 +15,18 @@
     (java.util HashMap)))
 
 ;; TODO: decide what to do with wayward files on a classpath.
-
+;; TODO: implement a way to filter jar entries.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn ensure-dir! [d]
-  (when (fs/not-exists? (fs/create-directories! d)))
+  (when (fs/not-exists? d)
+    (fs/create-directories! d))
   d)
 
 
 (defn ensure-parent! [f]
-  (-> f fs/parent ensure-dir!)
+  (some-> f fs/parent ensure-dir!)
   f)
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -93,7 +94,7 @@
 ;; adapted from https://github.com/seancorfield/depstar/blob/master/src/hf/depstar/uberjar.clj#L57
 (defn clash-strategy [{dest :jar.entry/dest}]
   (cond
-    (= "data_readers.clj" (fs/file-name dest))
+    (= "data_readers.cljc" (-> dest fs/file-name str))
     :merge-edn
 
     (re-find #"^META-INF/services/" (str dest))
@@ -115,7 +116,8 @@
                                supplementary-data-reader))]
     (fs/delete! dest)
     (assoc param
-      :jar.adding/result (add-string! content dest)
+      :content content
+      :jar.adding/result  (add-string! content dest)
       :jar.clash/strategy :merge-edn)))
 
 
@@ -146,31 +148,32 @@
       (add-file! src dest))))
 
 
-(defn add-entry! [{zfs :jar/file-system
+(defn add-entry! [{output :jar/temp-output
                    :as  param}]
   (let [{dest :jar.entry/dest
          :as param} (update param
-                            :jar.entry/dest #(fs/path zfs %))]
+                            :jar.entry/dest #(fs/resolve output %))]
     (if (fs/exists? dest)
       (handle-clash param)
       (handle-copy param))))
 
 (u/spec-op add-entry!
            (s/merge :jar/entry
-                    (s/keys :req [:jar/file-system])))
+                    (s/keys :req [:jar/temp-output])))
 
 
-(defn add-entries! [{zfs :jar/file-system
-                     entries     :jar/entries}]
+(defn add-entries! [{entries :jar/entries
+                     output :jar/temp-output}]
   (into []
         (comp
-          (map #(assoc % :jar/file-system zfs))
+          (map #(assoc % :jar/temp-output output))
           (map add-entry!))
         entries))
 
 (u/spec-op add-entries!
-           (s/keys :req [:jar/file-system
-                         :jar/entries]))
+           (s/keys :req [:jar/entries
+                         :jar/temp-output]))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Manifest
@@ -230,8 +233,7 @@
 ;; Pom + manifest
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn make-staples-entries [param]
-  [
-   (-> param manifest/make-manifest make-manifest-entry)
+  [(-> param manifest/make-manifest make-manifest-entry)
    (-> param make-pom-entry)
    (-> param make-deps-entry)])
 
@@ -262,10 +264,13 @@
            specs/dir-path?
            :jar/entries)
 
-(defn add-src-dir! [{zfs :jar/file-system
+(defn add-src-dir! [{out :jar/temp-output
                      src-dir :jar/src}]
-  (add-entries! {:jar/file-system zfs
+  (add-entries! {:jar/temp-output  out
                  :jar/entries (src-dir->jar-entries src-dir)}))
+
+(u/spec-op add-src-dir!
+           (s/keys :req [:jar/src :jar/temp-output]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Src jars
@@ -279,18 +284,23 @@
                  (comp (remove fs/directory?)
                        (map (fn [src-path]
                               {:jar.entry/src src-path
-                               :jar.entry/dest src-path})))))))
+                               :jar.entry/dest (->> src-path
+                                                    (map str)
+                                                    (apply fs/path))})))))))
 
 (u/spec-op jar->jar-entries
-           specs/jar-path?
+           specs/file-system?
            :jar/entries)
 
-(defn add-jar! [{zfs :jar/file-system
+
+(defn add-jar! [{out     :jar/temp-output
                  src-jar :jar/src}]
   (with-open [source-zfs (open-jar-fs src-jar)]
-    (add-entries! {:jar/file-system zfs
+    (add-entries! {:jar/temp-output out
                    :jar/entries (jar->jar-entries source-zfs)})))
 
+(u/spec-op add-jar!
+           (s/keys :req [:jar/src :jar/temp-output]))
 
 (defn- jar? [x] (-> x str (.endsWith ".jar")))
 
@@ -298,25 +308,26 @@
                   :as param}]
   (cond
     (sequential? src)   (add-entries! (c-set/rename-keys param {:jar/src :jar/entries}))
-    (jar? src)          (add-jar! param)
-    (fs/directory? src) (add-src-dir! param)))
+    (fs/directory? src) (add-src-dir! param)
+    (jar? src)          (add-jar! param)))
+
 
 (u/spec-op add-src!
-           (s/keys :req [:jar/file-system
+           (s/keys :req [:jar/temp-output
                          :jar/src])
            :jar/entries)
 
 
-(defn add-srcs! [{zfs :jar/file-system
+(defn add-srcs! [{out  :jar/temp-output
                   srcs :jar/srcs}]
   (into []
         (mapcat (fn [src]
-                  (add-src! {:jar/file-system zfs
-                             :jar/src src})))
+                  (add-src! {:jar/temp-output out
+                             :jar/src         src})))
         srcs))
 
 (u/spec-op add-srcs!
-           (s/keys :req [:jar/file-system
+           (s/keys :req [:jar/temp-output
                          :jar/srcs])
            :jar/entries)
 
@@ -338,12 +349,12 @@
 
 
 (u/spec-op simple-jar-srcs
-           (s/keys :req[:classpath/index
-                        :project/version
-                        :project/deps
-                        :maven/pom
-                        :maven/group-id
-                        :artefact/name]
+           (s/keys :req [:classpath/index
+                         :project/version
+                         :project/deps
+                         :maven/pom
+                         :maven/group-id
+                         :artefact/name]
                    :opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides])
@@ -363,7 +374,7 @@
            (s/keys :req[:classpath/index
                         :project/version
                         :project/deps
-                        :maven.pom/dir
+                        :maven/pom
                         :maven/group-id
                         :artefact/name]
                    :opt [:project/author
@@ -372,44 +383,20 @@
            :jar/srcs)
 
 
+(defn jar! [{temp :jar/temp-output
+             :as param}]
+  (with-open [zfs (make-output-jar-fs param)]
+    (doseq [src (->> temp
+                     fs/walk
+                     fs/realize
+                     (remove fs/directory?))]
+      (let [dest (->> src
+                      (fs/relativize temp)
+                      (fs/path zfs))]
+        (ensure-parent! dest)
+        (fs/copy! src dest)))))
 
 
 
-
-
-
-
-
-
-(comment
-  (clojure.repl/doc fs/walk)
-  (fs/delete-if-exists! (u/safer-path "target/mbt.jar"))
-  (require '[com.jeremyschoffen.mbt.alpha.building.manifest :as manifest])
-  (require '[com.jeremyschoffen.mbt.alpha.building.pom :as pom])
-  (require '[com.jeremyschoffen.mbt.alpha.building.deps :as deps])
-
-  (def context (-> {:project/working-dir (u/safer-path ".")
-                    :project/version "5.5.5"
-                    :artefact/name "mbt"
-                    :maven/group-id 'mbt
-                    :maven.pom/dir "."}
-                   (u/assoc-computed :maven/pom pom/new-pom)
-                   (u/assoc-computed :project/deps deps/get-deps)
-                   (u/assoc-computed :classpath/index cp/indexed-classpath)
-                   (u/assoc-computed :jar/srcs simple-jar-srcs)))
-
-  (fs/directory? (second (:jar/srcs context)))
-
-  (with-open [zfs (make-output-jar-fs {:jar/output (u/safer-path "target/mbt.jar")})]
-    (add-srcs! (assoc context :jar/file-system zfs)))
-
-
-
-  (with-open [j (open-jar-fs (u/safer-path "/Users/jeremyschoffen/.m2/repository/meander/epsilon/0.0.378/epsilon-0.0.378.jar"))]
-    ;(fs/realize (fs/walk (fs/path j "/")))
-    (slurp (fs/path j "data_readers.cljc")))
-
-  (with-open [j (open-jar-fs (u/safer-path "/Users/jeremyschoffen/.m2/repository/meander/epsilon/0.0.378/epsilon-0.0.378.jar"))]
-    (fs/uri(first (fs/realize (fs/walk (fs/path j "/" "meander"))))))
-
-  (seq (fs/path "toto")))
+(u/spec-op jar!
+           (s/keys :req [:jar/temp-output :jar/output]))
