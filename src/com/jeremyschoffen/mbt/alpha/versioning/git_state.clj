@@ -39,13 +39,13 @@
 
 
 (defn current-version [param]
-  (when-let[desc (most-recent-description param)]
+  (when-let [desc (most-recent-description param)]
     (-> param
         (assoc :git/description desc)
         (vs/current-version))))
 
 (u/spec-op current-version
-           (s/keys :req [:git/repo :artefact/name])
+           (s/keys :req [:git/repo :artefact/name :version/scheme])
            (s/nilable :project/version))
 
 
@@ -58,7 +58,7 @@
     (vs/initial-version param)))
 
 (u/spec-op next-version
-           (s/keys :req [:git/repo :artefact/name])
+           (s/keys :req [:git/repo :artefact/name :version/scheme])
            :project/version)
 
 ;;----------------------------------------------------------------------------------------------------------------------
