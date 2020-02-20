@@ -18,7 +18,8 @@
                              :tag "0.0.9"}}
 
  :aliases
- {:dev {:extra-paths ["dev"]}
+ {:build {:extra-paths ["bin"]}
+  :dev {:extra-paths ["dev"]}
 
   :test {:extra-paths ["test"]
          :extra-deps {metosin/testit {:mvn/version "0.4.0"}

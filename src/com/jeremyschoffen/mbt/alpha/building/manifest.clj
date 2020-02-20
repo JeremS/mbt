@@ -3,14 +3,14 @@
     [clojure.spec.alpha :as s]
     [clojure.string :as string]
     [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.version :as v]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;; TODO: fix the way mbt indicates its own version in the manifest
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj
-(defn  make-base-manifest [{v :project/version
-                            a :project/author}]
-  {"Created-By" (str "Mbt " v)
+(defn  make-base-manifest [{a :project/author}]
+  {"Created-By" (str "Mbt " v/version)
    "Built-By" (or a (System/getProperty "user.name"))
    "Build-Jdk" (System/getProperty "java.version")})
 

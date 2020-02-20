@@ -120,7 +120,7 @@
       :jar.adding/result  (add-string! content dest)
       :jar.clash/strategy :merge-edn)))
 
-
+;; TODO: rework that, the present impl doesn't insert a line break between the 2 file contents.
 (defmethod handle-clash :concat-lines
   [{:jar.entry/keys [src dest]
     :as param}]
