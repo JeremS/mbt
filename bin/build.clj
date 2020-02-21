@@ -17,15 +17,23 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; utils
 ;;----------------------------------------------------------------------------------------------------------------------
+
+
 (def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "version.clj"))
 
 
-(defn write-verison-file! [{v :project/version}]
-  (spit version-file-path
-        (string/join "\n" [(str    "(ns com.jeremyschoffen.mbt.alpha.version)")
-                           ""
-                           (format "(def version \"%s\")" v)
-                           ""])))
+(defn write-version-file! [ctxt]
+  (let [next-version (gs/next-version ctxt)
+        _ (println next-version)
+        next-version (if (= next-version (vs/initial-version ctxt))
+                       next-version
+                       (update next-version :distance inc))]
+    (println next-version)
+    (spit version-file-path
+          (string/join "\n" [(str    "(ns com.jeremyschoffen.mbt.alpha.version)")
+                             ""
+                             (format "(def version \"%s\")" next-version)
+                             ""]))))
 
 
 (defn git-add-version-file! [{wd :project/working-dir
@@ -44,7 +52,7 @@
 
 (defn add-version-file! [ctxt]
   (-> ctxt
-      (u/side-effect! write-verison-file!)
+      (u/side-effect! write-version-file!)
       (u/side-effect! git-add-version-file!)
       (u/side-effect! commit-version-file)))
 
@@ -58,22 +66,30 @@
 (defn build! []
   (-> conf
       (c/get-state)
-      (u/assoc-computed :project/version gs/next-version)
       (gs/check-not-dirty)
       (add-version-file!)
-      (u/side-effect! gs/bump-tag!)))
+      (u/assoc-computed :new-tag gs/bump-tag!)))
+
+
 
 
 (comment
+  (defn version-file [ctxt]
+    (let [next-version (gs/next-version ctxt)
+          next-version (if (= next-version (vs/initial-version ctxt))
+                         next-version
+                         (update next-version :distance inc))]
+      next-version))
+
+
   (build!)
 
+  (-> conf
+      (c/get-state)
+      version-file)
   (->> conf
       (c/get-state)
-      (:git/repo)
-      (jgit/git-status)
-      vals
-      (apply concat)
-      empty?)
+      gs/next-version)
 
   (-> conf
       (c/get-state)
