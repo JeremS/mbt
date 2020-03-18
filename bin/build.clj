@@ -25,14 +25,15 @@
 (defn write-version-file! [ctxt]
   (let [next-version (gs/next-version ctxt)
         _ (println next-version)
-        next-version (if (= next-version (vs/initial-version ctxt))
-                       next-version
-                       (update next-version :distance inc))]
-    (println next-version)
+        updated-next-version (if (= next-version (vs/initial-version ctxt))
+                               next-version
+                               (update next-version :distance inc))] ;; TODO: increment the version directly instead of the distance
+    (println "inc bas-number" (update next-version :base-number inc))
+    (println "current" updated-next-version)
     (spit version-file-path
-          (string/join "\n" [(str    "(ns com.jeremyschoffen.mbt.alpha.version)")
+          (string/join "\n" ["(ns com.jeremyschoffen.mbt.alpha.version)"
                              ""
-                             (format "(def version \"%s\")" next-version)
+                             (format "(def version \"%s\")" updated-next-version)
                              ""]))))
 
 
