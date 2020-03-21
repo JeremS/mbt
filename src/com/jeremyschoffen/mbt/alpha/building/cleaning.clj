@@ -6,7 +6,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
-
+;; TODO: redo since simply listing might put files in the rong order for deletion
 (defn list-files-recursivelly [dir]
   (-> dir
       fs/walk
