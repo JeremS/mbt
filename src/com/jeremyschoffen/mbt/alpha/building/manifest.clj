@@ -10,7 +10,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj
 (defn  make-base-manifest [{a :project/author}]
-  {"Created-By" (str "Mbt " v/version)
+  {"Created-By" (str "Mbt v" v/version)
    "Built-By" (or a (System/getProperty "user.name"))
    "Build-Jdk" (System/getProperty "java.version")})
 
