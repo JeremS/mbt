@@ -12,13 +12,13 @@
 
 
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/install.clj
-(defn install [{artefact-name :artefact/name
-                group-id :maven/group-id
-                version :project/version
-                jar :jar/output
-                pom-dir :maven.pom/dir
-                maven-local-repo :maven/local-repo
-                :or {maven-local-repo maven/default-local-repo}}]
+(defn install! [{artefact-name   :artefact/name
+                 group-id         :maven/group-id
+                 version          :project/version
+                 jar              :jar/output
+                 pom-dir          :maven.pom/dir
+                 maven-local-repo :maven/local-repo
+                 :or              {maven-local-repo maven/default-local-repo}}]
   (let [lib (symbol (str group-id)  artefact-name)
         maven-coords {:mvn/version (str version)}
         pom-file-path (-> pom-dir (u/safer-path "pom.xml") fs/file)
@@ -33,7 +33,7 @@
                                  (.addArtifact pom-artifact)))))
 
 
-(u/spec-op install
+(u/spec-op install!
            (s/keys :req [:artefact/name
                          :maven/group-id
                          :project/version
@@ -66,7 +66,7 @@
       (u/assoc-computed :maven/pom pom/new-pom)
       (u/assoc-computed :classpath/index cp/indexed-classpath)
       (u/assoc-computed :jar/srcs jar/simple-jar-srcs)
-      (u/side-effect! pom/sync-pom)
+      (u/side-effect! pom/sync-pom!)
       (u/side-effect! jar/add-srcs!)
       (u/side-effect! jar/jar!))
 
@@ -77,4 +77,4 @@
        :jar/output (u/safer-path "target" "mbt.jar")
        :maven/local-repo (u/safer-path "target" "local-repo")}
       c/get-state
-      install))
+      install!))

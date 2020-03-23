@@ -199,8 +199,8 @@
   (u/safer-path pom-dir "pom.xml"))
 
 
-(defn sync-pom [{pom-dir :maven.pom/dir
-                 :as param}]
+(defn sync-pom! [{pom-dir :maven.pom/dir
+                  :as      param}]
   (let [p (pom-path pom-dir)
         current-pom (when (fs/exists? p)
                       (read-xml p))]
@@ -211,7 +211,7 @@
       (spit p (-> param new-pom xml/indent-str)))))
 
 
-(u/spec-op sync-pom
+(u/spec-op sync-pom!
            (s/keys :req [:maven.pom/dir :artefact/name :maven/group-id :project/version :project/deps]))
 
 
@@ -233,4 +233,4 @@
       new-pom
       xml/indent-str)
 
-  (sync-pom ctxt2))
+  (sync-pom! ctxt2))

@@ -3,7 +3,6 @@
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as spec-test]
     [clojure.edn :as edn]
-    [clojure.tools.deps.alpha.reader :as deps-reader]
     [testit.core :refer :all]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.building.building-utils :as bu]
@@ -12,8 +11,7 @@
     [com.jeremyschoffen.mbt.alpha.building.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.specs]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.helpers_test :as h]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (spec-test/instrument)

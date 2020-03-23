@@ -1,6 +1,5 @@
 (ns com.jeremyschoffen.mbt.alpha.building.building-utils
   (:require
-    [clojure.java.io :as io]
     [clojure.tools.deps.alpha.reader :as deps-reader]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))

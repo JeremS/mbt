@@ -34,6 +34,7 @@
 (s/def :maven/group-id symbol?)
 (s/def :maven.pom/dir path?)
 (s/def :maven/pom map?)
+(s/def :maven/local-repo path?)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning

@@ -6,7 +6,6 @@
     [clojure.set :as c-set]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.building.manifest :as manifest]
-    [com.jeremyschoffen.mbt.alpha.building.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
