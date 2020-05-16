@@ -303,15 +303,14 @@
 (u/spec-op add-jar!
            :param {:req [:jar/src :jar/temp-output]})
 
-;; TODO: replace with the test function from the specs namespace
-(defn- jar? [x] (-> x str (.endsWith ".jar")))
 
 (defn- add-src! [{src :jar/src
                   :as param}]
   (cond
-    (sequential? src)   (add-entries! (c-set/rename-keys param {:jar/src :jar/entries}))
-    (fs/directory? src) (add-src-dir! param)
-    (jar? src)          (add-jar! param)))
+    (sequential? src)     (add-entries! (c-set/rename-keys param {:jar/src :jar/entries}))
+    (fs/directory? src)   (add-src-dir! param)
+    (specs/jar-path? src) (add-jar! param)))
+
 
 
 (u/spec-op add-src!
