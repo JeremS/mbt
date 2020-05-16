@@ -19,22 +19,23 @@
 
 (def tag-pattern #".*-v(\d*).*$")
 
+
 (defn- tag->version-number [tag-name]
   (let [[_ n-str] (re-matches tag-pattern tag-name)]
     (Integer/parseInt n-str)))
 
 
-(defn current-version* [{tag-name :git.tag/name
-                         distance :git.describe/distance
-                         sha      :git/sha
-                         dirty    :git.repo/dirty?}]
+(defn- current-version* [{tag-name :git.tag/name
+                          distance :git.describe/distance
+                          sha      :git/sha
+                          dirty    :git.repo/dirty?}]
   (let [last-version-number (tag->version-number tag-name)]
     (SimpleVersion. last-version-number distance sha dirty)))
 
 
-(u/spec-op current-version*
-           :git/description
-           :project/version)
+(u/simple-fdef current-version*
+               :git/description
+               :project/version)
 
 
 (defn- bump* [v]

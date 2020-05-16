@@ -1,9 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.versioning.git-state-test
   (:require
     [clojure.test :refer [deftest testing]]
-    [clojure.spec.alpha :as s]
     [clojure.spec.test.alpha :as st]
-    [expound.alpha :as expound]
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git]
@@ -16,7 +14,6 @@
 
 ;; TODO remove dependency on classic scheme
 (st/instrument)
-(set! s/*explain-out* expound/printer)
 
 (defn make-project! [repo & dirs]
   (let [proj (apply u/safer-path repo dirs)]

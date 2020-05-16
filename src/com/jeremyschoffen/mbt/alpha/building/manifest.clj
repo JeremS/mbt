@@ -15,10 +15,8 @@
    "Build-Jdk" (System/getProperty "java.version")})
 
 (u/spec-op make-base-manifest
-           (s/keys :req [:project/version]
-                   :opt [:project/author])
-           (s/map-of string? string?))
-
+           :param {:opt [:project/author]}
+           :ret (s/map-of string? string?))
 
 (defn- place-sections-last
   "Places sections at the end of the manifest seq, as specified by the
@@ -47,7 +45,8 @@
 (defn ^String make-manifest
   "Return the content of a MANIFEST.MF file as a string.
   - main: A namespace to be added to the \"Main\" entry to the manifest. Default to nil.
-  - manifest-overrides: A map of additional entries to the manifest. Values of the manifest map can be maps to represent manifest sections. By default, the manifest contains the \"Created-by\", \"Built-By\" and \"Build-Jdk\" entries."
+  - manifest-overrides: A map of additional entries to the manifest. Values of the manifest map can be maps to represent
+   manifest sections. By default, the manifest contains the \"Created-by\", \"Built-By\" and \"Build-Jdk\" entries."
   [{main :jar/main-ns
     manifest-overrides :jar.manifest/overrides
     :as param}]
@@ -63,8 +62,8 @@
          (string/join ""))))
 
 (u/spec-op make-manifest
-           (s/keys :req [:project/version]
-                   :opt [:project/author
+           :deps [make-base-manifest]
+           :param {:opt [:project/author
                          :jar/main-ns
-                         :jar.manifest/overrides])
-           string?)
+                         :jar.manifest/overrides]}
+           :ret string?)

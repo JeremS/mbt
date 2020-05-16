@@ -13,8 +13,7 @@
 
 (def dir-path? (every-pred path? fs/directory?))
 (def jar-path? (every-pred path?
-                           #(-> % str (fs/ends-with? ".jar"))))
-
+                           #(= "jar" (fs/file-extention %))))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -51,7 +50,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Classpaths
 ;;----------------------------------------------------------------------------------------------------------------------
-(def classpath-index-categories #{:classpath/inexistant
+(def classpath-index-categories #{:classpath/nonexisting
                                   :classpath/jar
                                   :classpath/dir
                                   :classpath/ext-dep
@@ -63,10 +62,11 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
 ;;----------------------------------------------------------------------------------------------------------------------
+
 (s/def :jar/main-ns symbol?)
 (s/def :jar.manifest/overrides map?)
 (s/def :jar/manifest string?)
-(s/def :jar/output path?)
+(s/def :jar/output jar-path?)
 (s/def :jar/temp-output path?)
 (s/def :jar/file-system file-system?)
 

@@ -1,22 +1,17 @@
 (ns com.jeremyschoffen.mbt.alpha.building.cleaning
   (:require
-    [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.mbt.alpha.specs]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
-;; TODO: redo since simply listing might put files in the rong order for deletion
+;; TODO: redo since simply listing might put files in the wrong order for deletion
 (defn list-files-recursivelly [dir]
   (-> dir
       fs/walk
       fs/realize))
 
-(u/spec-op list-files-recursivelly
-           any?)
-
-
-
+;; TODO: Rethink the way way allow deletions and maybe test all files before starting to delete.
 (defn delete-files! [{output-dir :project/output-dir
                       files :cleaning/files-to-delete}]
   (doseq [f files]
@@ -29,5 +24,5 @@
     (fs/delete! f)))
 
 (u/spec-op delete-files!
-           (s/keys :req [:project/output-dir
-                         :cleaning/files-to-delete]))
+           :param {:req [:project/output-dir
+                         :cleaning/files-to-delete]})

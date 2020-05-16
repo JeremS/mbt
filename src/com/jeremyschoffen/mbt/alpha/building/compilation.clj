@@ -1,6 +1,5 @@
 (ns com.jeremyschoffen.mbt.alpha.building.compilation
   (:require
-    [clojure.spec.alpha :as s]
     [clojure.tools.namespace.find :as ns-find]
     [com.jeremyschoffen.java.nio.file :as fs]
 
@@ -16,21 +15,24 @@
           (mapcat ns-find/find-namespaces-in-dir))
         dirs))
 
-
-(defn project-nss [{cp :classpath/index}]
-  (-> cp :dir dirs->nss))
+(defn project-nss
+  "Find all namespace from a classpath located inside the working directory."
+  [{cp :classpath/index}]
+  (-> cp :classpath/dir dirs->nss))
 
 (u/spec-op project-nss
-           (s/keys :req [:classpath/index])
-           :clojure.compilation/namespaces)
+           :param {:req [:classpath/index]}
+           :ret :clojure.compilation/namespaces)
 
 
-(defn external-nss [{cp :classpath/index}]
+(defn external-nss
+  "Find all namespace from a classpath located outside the working directory."
+  [{cp :classpath/index}]
   (-> cp :ext-dep dirs->nss))
 
 (u/spec-op external-nss
-           (s/keys :req [:classpath/index])
-           :clojure.compilation/namespaces)
+           :param {:req [:classpath/index]}
+           :ret :clojure.compilation/namespaces)
 
 
 ;; TODO: would be nice to have something like boot's pods to isolate
@@ -44,8 +46,8 @@
 
 
 (u/spec-op compile!
-           (s/keys :req [:clojure.compilation/output-dir
-                         :clojure.compilation/namespaces]))
+           :param {:req [:clojure.compilation/output-dir
+                         :clojure.compilation/namespaces]})
 
 
 

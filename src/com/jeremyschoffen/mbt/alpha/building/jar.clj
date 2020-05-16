@@ -2,7 +2,6 @@
   (:require
     [clojure.data.xml :as xml]
     [clojure.edn :as edn]
-    [clojure.spec.alpha :as s]
     [clojure.set :as c-set]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.building.manifest :as manifest]
@@ -55,9 +54,8 @@
       (fs/file-system (jar-create-env))))
 
 (u/spec-op make-output-jar-fs
-           (s/keys :req [:jar/output])
-           :jar/file-system)
-
+           :param {:req [:jar/output]}
+           :ret :jar/file-system)
 
 (defn jar-read-env []
   (doto (HashMap.)
@@ -71,6 +69,9 @@
       jar-path->uri
       (fs/file-system (jar-read-env))))
 
+(u/simple-fdef open-jar-fs
+               specs/jar-path?
+               :jar/file-system)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -157,8 +158,7 @@
       (handle-copy param))))
 
 (u/spec-op add-entry!
-           (s/merge :jar/entry
-                    (s/keys :req [:jar/temp-output])))
+           :param {:req [:jar/temp-output :jar.entry/src :jar.entry/dest]})
 
 
 (defn add-entries! [{entries :jar/entries
@@ -170,9 +170,7 @@
         entries))
 
 (u/spec-op add-entries!
-           (s/keys :req [:jar/entries
-                         :jar/temp-output]))
-
+           :param {:req [:jar/entries :jar/temp-output]})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Manifest
@@ -181,13 +179,14 @@
 (def manifest-name "MANIFEST.MF")
 (def manifest-path (fs/path meta-dir manifest-name))
 
-
+;;TODO: For uniformity, consider using a map parameter
 (defn make-manifest-entry [manifest]
   {:jar.entry/src manifest
    :jar.entry/dest manifest-path})
 
-(u/spec-op make-manifest-entry
-           :jar/manifest)
+(u/simple-fdef make-manifest-entry
+               :jar/manifest)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Pom
@@ -206,17 +205,19 @@
    :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
 
 (u/spec-op make-pom-entry
-           (s/keys :req [:maven/pom
+           :param {:req [:maven/pom
                          :maven/group-id
-                         :artefact/name]))
+                         :artefact/name]})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps.edn
 ;;----------------------------------------------------------------------------------------------------------------------
 (def deps-dir "deps")
 
+
 (defn- make-jar-deps-path [group-id artefact-id]
   (fs/path meta-dir deps-dir (str group-id) (str artefact-id) "deps.edn"))
+
 
 (defn make-deps-entry [{deps :project/deps
                         group-id :maven/group-id
@@ -225,9 +226,9 @@
    :jar.entry/dest (make-jar-deps-path group-id artefact-id)})
 
 (u/spec-op make-deps-entry
-           (s/keys :req [:project/deps
+           :param {:req [:project/deps
                          :maven/group-id
-                         :artefact/name]))
+                         :artefact/name]})
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Pom + manifest
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -237,14 +238,14 @@
    (-> param make-deps-entry)])
 
 (u/spec-op make-staples-entries
-           (s/keys :req[:project/version
-                        :project/deps
+           :deps [manifest/make-manifest make-manifest-entry make-pom-entry make-deps-entry]
+           :param {:req[:project/deps
                         :maven/pom
                         :maven/group-id
                         :artefact/name]
                    :opt [:project/author
                          :jar/main-ns
-                         :jar.manifest/overrides]))
+                         :jar.manifest/overrides]})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Src files
@@ -259,9 +260,10 @@
                           {:jar.entry/src src-path
                            :jar.entry/dest (fs/relativize dir src-path)}))))))
 
-(u/spec-op src-dir->jar-entries
-           specs/dir-path?
-           :jar/entries)
+(u/simple-fdef src-dir->jar-entries
+               specs/dir-path?
+               :jar/entries)
+
 
 (defn add-src-dir! [{out :jar/temp-output
                      src-dir :jar/src}]
@@ -269,7 +271,7 @@
                  :jar/entries (src-dir->jar-entries src-dir)}))
 
 (u/spec-op add-src-dir!
-           (s/keys :req [:jar/src :jar/temp-output]))
+           :param {:req [:jar/src :jar/temp-output]})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Src jars
@@ -287,9 +289,9 @@
                                                     (map str)
                                                     (apply fs/path))})))))))
 
-(u/spec-op jar->jar-entries
-           specs/file-system?
-           :jar/entries)
+(u/simple-fdef jar->jar-entries
+               specs/file-system?
+               :jar/entries)
 
 
 (defn add-jar! [{out     :jar/temp-output
@@ -299,8 +301,9 @@
                    :jar/entries (jar->jar-entries source-zfs)})))
 
 (u/spec-op add-jar!
-           (s/keys :req [:jar/src :jar/temp-output]))
+           :param {:req [:jar/src :jar/temp-output]})
 
+;; TODO: replace with the test function from the specs namespace
 (defn- jar? [x] (-> x str (.endsWith ".jar")))
 
 (defn- add-src! [{src :jar/src
@@ -312,9 +315,8 @@
 
 
 (u/spec-op add-src!
-           (s/keys :req [:jar/temp-output
-                         :jar/src])
-           :jar/entries)
+           :param {:req [:jar/temp-output :jar/src]}
+           :ret :jar/entries)
 
 
 (defn add-srcs! [{out  :jar/temp-output
@@ -326,9 +328,8 @@
         srcs))
 
 (u/spec-op add-srcs!
-           (s/keys :req [:jar/temp-output
-                         :jar/srcs])
-           :jar/entries)
+           :param {:req [:jar/temp-output :jar/srcs]}
+           :ret :jar/entries)
 
 
 (defn- classpath->sources [cp ks]
@@ -346,18 +347,16 @@
   (into [(make-staples-entries param)]
         (classpath->sources cp #{:classpath/dir})))
 
-
 (u/spec-op simple-jar-srcs
-           (s/keys :req [:classpath/index
-                         :project/version
+           :param {:req [:classpath/index
                          :project/deps
                          :maven/pom
                          :maven/group-id
                          :artefact/name]
                    :opt [:project/author
                          :jar/main-ns
-                         :jar.manifest/overrides])
-           :jar/srcs)
+                         :jar.manifest/overrides]}
+           :ret :jar/srcs)
 
 
 (defn uber-jar-srcs [{cp :classpath/index
@@ -368,18 +367,16 @@
                                  :classpath/ext-dep
                                  :classpath/jar})))
 
-
 (u/spec-op uber-jar-srcs
-           (s/keys :req[:classpath/index
-                        :project/version
+           :param {:req[:classpath/index
                         :project/deps
                         :maven/pom
                         :maven/group-id
                         :artefact/name]
                    :opt [:project/author
                          :jar/main-ns
-                         :jar.manifest/overrides])
-           :jar/srcs)
+                         :jar.manifest/overrides]}
+           :ret :jar/srcs)
 
 
 (defn jar! [{temp :jar/temp-output
@@ -395,7 +392,6 @@
         (ensure-parent! dest)
         (fs/copy! src dest)))))
 
-
-
 (u/spec-op jar!
-           (s/keys :req [:jar/temp-output :jar/output]))
+           :deps [make-output-jar-fs]
+           :param {:req [:jar/temp-output :jar/output]})

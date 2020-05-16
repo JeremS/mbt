@@ -1,6 +1,5 @@
 (ns com.jeremyschoffen.mbt.alpha.building.classpath
   (:require
-    [clojure.spec.alpha :as s]
     [clojure.string :as string]
     [clojure.tools.deps.alpha :as deps]
     [clojure.tools.deps.alpha.util.maven :as maven]
@@ -21,9 +20,9 @@
         (deps/make-classpath (:paths deps-map) args-map))))
 
 (u/spec-op raw-classpath
-           (s/keys :req [:project/deps]
-                   :opt [:project.deps/aliases])
-           :classpath/raw)
+           :param {:req [:project/deps]
+                   :opt [:project.deps/aliases]}
+           :ret :classpath/raw)
 
 
 (defn- jar? [path]
@@ -34,16 +33,26 @@
   (fs/ancestor? wd path))
 
 
-(defn- classify [wd path]
+(defn- classify
+  "Classifies the different entries of a classpath. Categories are:
+  - :classpath/jar: path to a jar
+  - :classpath/dir: path to a directory that is in the working dir
+  - :classpath/ext-dep: path to a directory outside the working dir
+  - :classpath/nonexisting: path in the classpath that leads to nothing
+  - :classpath/file: individual file on the classpath
+  "
+  [wd path]
   (cond
-    (not (fs/exists? path)) :classpath/inexistant
+    (not (fs/exists? path)) :classpath/nonexisting
     (jar? path) :classpath/jar
     (fs/directory? path) (if (project-path? wd path)
                            :classpath/dir
                            :classpath/ext-dep)
     :else :classpath/file))
 
-(defn- index-classpath [cp wd]
+
+(defn- index-classpath
+  [cp wd]
   (-> cp
       (string/split (re-pattern (System/getProperty "path.separator")))
       (->> (into [] (comp
@@ -54,19 +63,22 @@
 
 
 (defn indexed-classpath
-  "Returns a map indexing the classpath."
+  "Returns a map indexing the classpath. Return a map with the keys being
+  `com.jeremyschoffen.mbt.alpha.specs/classpath-index-categories, the values are seq of
+  classpath entries corresponding to the categoories.
+  "
   [{wd :project/working-dir
     :as param}]
   (-> param
       raw-classpath
       (index-classpath wd)))
 
-
 (u/spec-op indexed-classpath
-           (s/keys :req [:project/working-dir
+           :deps [raw-classpath]
+           :param {:req [:project/working-dir
                          :project/deps]
-                   :opt [:project.deps/aliases])
-           :classpath/index)
+                   :opt [:project.deps/aliases]}
+           :ret :classpath/index)
 
 
 (comment

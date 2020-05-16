@@ -24,8 +24,8 @@
         (:deps deps-map)))
 
 (u/spec-op non-maven-deps
-           (s/keys :req [:project/deps])
-           (s/coll-of symbol? :kind set?))
+           :param {:req [:project/deps]}
+           :ret (s/coll-of symbol? :kind set?))
 
 ;; Rework from tools deps
 ;; https://github.com/clojure/tools.deps.alpha/blob/master/src/main/clojure/clojure/tools/deps/alpha/gen/pom.clj
@@ -103,8 +103,8 @@
        (gen-repos repos)])))
 
 (u/spec-op new-pom
-           (s/keys :req [:artefact/name :maven/group-id :project/version :project/deps])
-           :maven/pom)
+           :param {:req [:artefact/name :maven/group-id :project/version :project/deps]}
+           :ret :maven/pom)
 
 
 (defn- make-xml-element
@@ -112,6 +112,7 @@
   (with-meta
     (apply xml/element tag attrs children)
     (meta node)))
+
 
 (defn- xml-update
   [root tag-path replace-node]
@@ -179,8 +180,8 @@
         (replace-repos repos))))
 
 (u/spec-op update-pom
-           (s/keys :req [:maven/pom :artefact/name :maven/group-id :project/version :project/deps])
-           :maven/pom)
+           :param {:req [:maven/pom :artefact/name :maven/group-id :project/version :project/deps]}
+           :ret :maven/pom)
 
 
 (defn- parse-xml
@@ -189,6 +190,7 @@
                              (xml/event-seq rdr {:include-node? #{:element :characters :comment}
                                                  :skip-whitespace true}))]
     (first (filter #(instance? Element %) (first roots)))))
+
 
 (defn- read-xml [path]
   (with-open [rdr (-> path fs/file jio/reader)]
@@ -210,14 +212,13 @@
                   xml/indent-str))
       (spit p (-> param new-pom xml/indent-str)))))
 
-
 (u/spec-op sync-pom!
-           (s/keys :req [:maven.pom/dir :artefact/name :maven/group-id :project/version :project/deps]))
+           :param {:req [:maven.pom/dir :artefact/name :maven/group-id :project/version :project/deps]})
 
 
 
-(require '[clojure.tools.deps.alpha.reader :as deps-reader])
 (comment
+  (require '[clojure.tools.deps.alpha.reader :as deps-reader])
 
   (def ctxt {:maven/group-id 'group
              :artefact/name "toto"

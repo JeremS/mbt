@@ -35,8 +35,8 @@
   (first (parent-repos wd)))
 
 (u/spec-op top-level
-           (s/keys :req [:project/working-dir])
-           :git/top-level)
+           :param {:req [:project/working-dir]}
+           :ret :git/top-level)
 
 
 (defn prefix [{wd :project/working-dir :as context}]
@@ -45,10 +45,9 @@
       (fs/relativize repo wd))))
 
 (u/spec-op prefix
-           (s/keys :req [:project/working-dir])
-           :git/prefix)
-
-
+           :deps [top-level]
+           :param {:req [:project/working-dir]}
+           :ret :git/prefix)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Repo cstr
@@ -58,9 +57,9 @@
   (-> param top-level str git/load-repo))
 
 (u/spec-op make-jgit-repo
-           (s/keys :req [:project/working-dir])
-           :git/repo)
-
+           :deps [top-level]
+           :param {:req [:project/working-dir]}
+           :ret :git/repo)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git status
@@ -69,24 +68,13 @@
   (git/git-status repo))
 
 (u/spec-op status
-           (s/keys :req [:git/repo])
-           map?)
+           :param {:req [:git/repo]}
+           :ret map?)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(extend-protocol cp/Datafiable
-  RevTag
-  (datafy [this] {:git.tag/name (.getTagName this)
-                  :git.tag/message (.getFullMessage this)}))
-
-
-(defn- get-tag* [repo id]
-  (datafy
-    (with-open [walk (git-i/new-rev-walk repo)]
-      (.parseTag walk (git-i/resolve-object id repo)))))
-
-
 (defn- create-tag!*
   {:tag Ref}
   [{:git/keys [repo]
@@ -109,6 +97,23 @@
                       {::anom/category ::anom/forbidden
                        :mbt/error :tag-already-exists}
                       e)))))
+;; TODO: could be (s/merge :git/tag (s/keys :req [])
+(u/spec-op create-tag!*
+           :param {:req [:git/repo :git.tag/name :git.tag/message]
+                   :opt [:git.tag/sign?]}
+           :ret #(isa? % Ref))
+
+
+(extend-protocol cp/Datafiable
+  RevTag
+  (datafy [this] {:git.tag/name (.getTagName this)
+                  :git.tag/message (.getFullMessage this)}))
+
+
+(defn- get-tag* [repo id]
+  (datafy
+    (with-open [walk (git-i/new-rev-walk repo)]
+      (.parseTag walk (git-i/resolve-object id repo)))))
 
 
 (defn create-tag! [{repo :git/repo :as param}]
@@ -116,10 +121,10 @@
     (get-tag* repo (-> tag-ref .getObjectId))))
 
 (u/spec-op create-tag!
-           (s/merge :git/tag
-                    (s/keys :req [:git/repo]
-                            :opt [:git.tag/sign?]))
-           :git/tag)
+           :deps [create-tag!*]
+           :param {:req [:git/repo :git.tag/name :git.tag/message]
+                   :opt [:git.tag/sign?]}
+           :ret :git/tag)
 
 
 (defn get-tag [{repo :git/repo
@@ -127,9 +132,9 @@
   (get-tag* repo tag-name))
 
 (u/spec-op get-tag
-           (s/keys :req [:git/repo :git.tag/name])
-           :git/tag)
-
+           :deps [get-tag*]
+           :param {:req [:git/repo :git.tag/name]}
+           :ret :git/tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git describe
@@ -137,8 +142,9 @@
 (defn dirty? [{repo :git/repo}]
   (not (.isClean ^Status (git/git-status repo :jgit? true))))
 
-(u/spec-op dirty? (s/keys :req [:git/repo]) boolean?)
-
+(u/spec-op dirty?
+           :param {:req [:git/repo]}
+           :ret boolean?)
 
 (defn describe-raw [{repo        :git/repo
                      tag-pattern :git.describe/tag-pattern}]
@@ -149,10 +155,9 @@
       .call))
 
 (u/spec-op describe-raw
-           (s/keys :req [:git/repo]
-                   :opt [:git.describe/tag-pattern])
-           (s/nilable :git/raw-description))
-
+           :param {:req [:git/repo]
+                   :opt [:git.describe/tag-pattern]}
+           :ret (s/nilable :git/raw-description))
 
 (def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
 
@@ -173,9 +178,10 @@
         (select-keys specs/description-keys))))
 
 (u/spec-op describe
-           (s/keys :req [:git/repo]
-                   :opt [:git.describe/tag-pattern])
-           (s/nilable :git/description))
+           :deps [describe-raw parse-description get-tag dirty?]
+           :param {:req [:git/repo]
+                   :opt [:git.describe/tag-pattern]}
+           :ret (s/nilable :git/description))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
@@ -187,5 +193,5 @@
       not))
 
 (u/spec-op any-commit?
-           (s/keys :req [:git/repo])
-           boolean?)
+           :param {:req [:git/repo]}
+           :ret boolean?)

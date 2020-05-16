@@ -22,8 +22,8 @@
     :git/repo git/make-jgit-repo))
 
 (u/spec-op basic-git-state
-           (s/keys :req [:project/working-dir])
-           :git/basic-state)
+           :param {:req [:project/working-dir]}
+           :ret :git/basic-state)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
@@ -34,8 +34,9 @@
                  :git.describe/tag-pattern (str artefact-name "*")}))
 
 (u/spec-op most-recent-description
-           (s/keys :req [:git/repo :artefact/name])
-           (s/nilable :git/description))
+           :deps [git/describe]
+           :param {:req [:git/repo :artefact/name]}
+           :ret (s/nilable :git/description))
 
 
 (defn current-version [param]
@@ -45,8 +46,8 @@
         (vs/current-version))))
 
 (u/spec-op current-version
-           (s/keys :req [:git/repo :artefact/name :version/scheme])
-           (s/nilable :project/version))
+           :param {:req [:git/repo :artefact/name :version/scheme]}
+           :ret (s/nilable :project/version))
 
 
 (defn next-version [param]
@@ -58,8 +59,8 @@
     (vs/initial-version param)))
 
 (u/spec-op next-version
-           (s/keys :req [:git/repo :artefact/name :version/scheme])
-           :project/version)
+           :param {:req [:git/repo :artefact/name :version/scheme]}
+           :ret :project/version)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Buidling tags
@@ -69,8 +70,8 @@
   (str artefact-name "-v" v))
 
 (u/spec-op tag-name
-           (s/keys :req [:artefact/name :project/version])
-           :git.tag/name)
+           :param {:req [:artefact/name :project/version]}
+           :ret :git.tag/name)
 
 
 (defn- iso-now []
@@ -92,10 +93,10 @@
                       ".")})
 
 (u/spec-op make-tag-data
-           (s/keys :req [:artefact/name
+           :param {:req [:artefact/name
                          :project/version
-                         :git/prefix])
-           map?)
+                         :git/prefix]}
+           :ret map?)
 
 
 (defn tag
@@ -106,10 +107,10 @@
      :git.tag/message (pr-str m)}))
 
 (u/spec-op tag
-           (s/keys :req [:artefact/name
+           :param {:req [:artefact/name
                          :project/version
-                         :git/prefix])
-           :git/tag)
+                         :git/prefix]}
+           :ret :git/tag)
 
 
 (defn next-tag [param]
@@ -117,10 +118,9 @@
       (u/assoc-computed :project/version next-version)
       tag))
 
-
 (u/spec-op next-tag
-           (s/keys :req [:artefact/name :git/repo :git/prefix])
-           :git/tag)
+           :param {:req [:artefact/name :git/repo :git/prefix]}
+           :ret :git/tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Operations!
@@ -135,8 +135,8 @@
     (fs/exists? build-file)))
 
 (u/spec-op has-build-file?
-           (s/keys :req [:project/working-dir])
-           boolean?)
+           :param {:req [:project/working-dir]}
+           :ret boolean?)
 
 
 (defn check-repo-in-order
@@ -159,7 +159,7 @@
   context)
 
 (u/spec-op check-repo-in-order
-           (s/keys :req [:project/working-dir :git/repo]))
+           :param {:req [:project/working-dir :git/repo]})
 
 
 (defn check-not-dirty [param]
@@ -179,9 +179,8 @@
       git/create-tag!))
 
 (u/spec-op tag!
-           (s/merge (s/keys :req [:git/repo])
-                    :git/tag)
-           :git/tag)
+           :param {:req [:git/repo :git.tag/name :git.tag/message]}
+           :ret :git/tag)
 
 
 (defn bump-tag!
@@ -192,7 +191,5 @@
       tag!))
 
 (u/spec-op bump-tag!
-           (s/keys :req [:artefact/name :git/repo :git/prefix])
-           :git/tag)
-
-
+           :param {:req [:artefact/name :git/repo :git/prefix]}
+           :ret :git/tag)

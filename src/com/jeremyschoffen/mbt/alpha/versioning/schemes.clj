@@ -1,8 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.versioning.schemes
   (:require
-    [clojure.spec.alpha :as s]
     [com.jeremyschoffen.mbt.alpha.specs]
-    [com.jeremyschoffen.mbt.alpha.git :as git]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.simple-version :as simple]
     [com.jeremyschoffen.mbt.alpha.versioning.schemes.metav.maven :as maven]
@@ -19,7 +17,7 @@
   (vp/initial-version h))
 
 (u/spec-op initial-version
-           (s/keys :req [:version/scheme]))
+           :param {:req [:version/scheme]})
 
 
 (defn current-version [{s :version/scheme
@@ -27,7 +25,7 @@
   (vp/current-version s desc))
 
 (u/spec-op current-version
-           (s/keys :req [:version/scheme :git/description]))
+           :param {:req [:version/scheme :git/description]})
 
 
 (defn bump [{s :version/scheme
@@ -38,5 +36,5 @@
     (vp/bump s v)))
 
 (u/spec-op bump
-           (s/keys :req [:version/scheme :project/version]
-                   :opt [:version/bump-level]))
+           :param {:req [:version/scheme :project/version]
+                   :opt [:version/bump-level]})
