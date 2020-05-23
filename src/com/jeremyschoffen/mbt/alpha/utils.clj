@@ -14,8 +14,6 @@
         (apply fs/path)
         fs/canonical-path)))
 
-(defn wd []
-  (safer-path))
 
 ;; totally riped from clojure core...
 (defn assoc-computed
