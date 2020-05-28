@@ -210,10 +210,17 @@
       (spit p (-> (assoc param :maven/pom current-pom)
                   update-pom
                   xml/indent-str))
-      (spit p (-> param new-pom xml/indent-str)))))
+      (do
+        (u/ensure-parent! p)
+        (spit p (-> param new-pom xml/indent-str))))))
 
 (u/spec-op sync-pom!
-           :param {:req [:maven.pom/dir :artefact/name :maven/group-id :project/version :project/deps]})
+           :deps [new-pom]
+           :param {:req [:maven.pom/dir
+                         :artefact/name
+                         :maven/group-id
+                         :project/version
+                         :project/deps]})
 
 
 
