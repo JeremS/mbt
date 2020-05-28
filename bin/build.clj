@@ -45,7 +45,7 @@
                  vals
                  (apply concat)
                  empty?))
-  (jgit/git-commit repo "Comitted version file."))
+  (jgit/git-commit repo "Committed version file."))
 
 
 (defn add-version-file! [ctxt]

@@ -44,7 +44,7 @@
                             :opt #{}}
 
       (u/param-suggestions baz) => {:req #{::a ::b}
-                                    :opt       #{::c ::d}})))
+                                    :opt #{::c ::d}})))
 
 (st/instrument)
 (deftest instrumenting-works
