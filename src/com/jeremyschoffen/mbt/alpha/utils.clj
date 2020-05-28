@@ -6,6 +6,16 @@
     [com.jeremyschoffen.java.nio.file :as fs]))
 
 
+(def maven-default-settings-file (fs/path (System/getProperty "user.home") ".m2" "settings.xml"))
+
+
+(System/getProperty "maven.conf")
+(System/getProperty "org.apache.maven.global-settings")
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Some fs utils
+;;----------------------------------------------------------------------------------------------------------------------
 (defn safer-path
   ([]
    (safer-path "."))
@@ -15,6 +25,19 @@
         fs/canonical-path)))
 
 
+(defn ensure-dir! [d]
+  (when (fs/not-exists? d)
+    (fs/create-directories! d))
+  d)
+
+
+(defn ensure-parent! [f]
+  (some-> f fs/parent ensure-dir!)
+  f)
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Additional map utils
+;;----------------------------------------------------------------------------------------------------------------------
 ;; totally riped from clojure core...
 (defn assoc-computed
   ([m k f]

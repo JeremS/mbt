@@ -15,19 +15,6 @@
 ;; TODO: decide what to do with wayward files on a classpath.
 ;; TODO: implement a way to filter jar entries.
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Utils
-;;----------------------------------------------------------------------------------------------------------------------
-(defn ensure-dir! [d]
-  (when (fs/not-exists? d)
-    (fs/create-directories! d))
-  d)
-
-
-(defn ensure-parent! [f]
-  (some-> f fs/parent ensure-dir!)
-  f)
-
-;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar FileSystem cstr
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- jar-path->uri
@@ -48,7 +35,7 @@
 (defn make-output-jar-fs
   {:tag FileSystem}
   [{output :jar/output}]
-  (ensure-parent! output)
+  (u/ensure-parent! output)
   (-> output
       jar-path->uri
       (fs/file-system (jar-create-env))))
@@ -140,7 +127,7 @@
 (defn handle-copy [{src :jar.entry/src
                     dest :jar.entry/dest
                     :as param}]
-  (ensure-parent! dest)
+  (u/ensure-parent! dest)
   (assoc param
     :jar.adding/result
     (if (string? src)
@@ -318,8 +305,11 @@
            :ret :jar/entries)
 
 
-(defn add-srcs! [{out  :jar/temp-output
-                  srcs :jar/srcs}]
+(defn add-srcs!
+  "Copies the files grouped under the key `:jar/srcs` into
+  the temp jar directory."
+  [{out  :jar/temp-output
+    srcs :jar/srcs}]
   (into []
         (mapcat (fn [src]
                   (add-src! {:jar/temp-output out
@@ -388,7 +378,7 @@
       (let [dest (->> src
                       (fs/relativize temp)
                       (fs/path zfs))]
-        (ensure-parent! dest)
+        (u/ensure-parent! dest)
         (fs/copy! src dest)))))
 
 (u/spec-op jar!

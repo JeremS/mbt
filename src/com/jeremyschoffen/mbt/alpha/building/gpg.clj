@@ -1,6 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.building.gpg
   (:require
-    [com.jeremyschoffen.mbt.alpha.specs]
+    [com.jeremyschoffen.mbt.alpha.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.shell :as shell]
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [com.jeremyschoffen.java.nio.file :as fs]))
@@ -34,6 +34,9 @@
       (fs/path p n)
       (fs/path n))))
 
+(u/simple-fdef make-sign-out
+               specs/path?)
+
 
 (defn ensure-sign-out [{in :gpg.sign/in
                         out :gpg.sign/out
@@ -44,18 +47,18 @@
 (u/simple-fdef ensure-sign-out
                :gpg.sign/spec)
 
-(defn sign-file! [{wd  :project/working-dir
-                   spec :gpg.sign/spec}]
+(defn sign-file! [{spec :gpg.sign/spec
+                   :as param}]
   (let [spec (ensure-sign-out spec)]
     (assoc spec
       :shell/result
-      (shell/safer-sh {:project/working-dir wd
-                       :shell/command (make-sign-cmd spec)}))))
+      (shell/safer-sh (assoc param
+                        :shell/command (make-sign-cmd spec))))))
 
 (u/spec-op sign-file!
            :deps [make-sign-cmd shell/safer-sh]
-           :param {:req [:project/working-dir
-                         :gpg.sign/spec]})
+           :param {:req [:gpg.sign/spec]
+                   :opt [:project/working-dir]})
 
 
 (defn sign-files! [{specs :gpg.sign/specs

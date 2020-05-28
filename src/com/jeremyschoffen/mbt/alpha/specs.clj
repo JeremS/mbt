@@ -31,9 +31,36 @@
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :maven/group-id symbol?)
+(s/def :maven/classifier symbol?)
 (s/def :maven.pom/dir path?)
 (s/def :maven/pom map?)
 (s/def :maven/local-repo path?)
+(s/def :maven.settings/file path?)
+
+(s/def :maven.credentials/user-name string?)
+(s/def :maven.credentials/password string?)
+(s/def :maven.credentials/private-key path?)
+(s/def :maven.credentials/passphrase string?)
+
+(s/def :maven/credentials (s/keys :opt [:maven.credentials/user-name
+                                        :maven.credentials/password
+                                        :maven.credentials/private-key
+                                        :maven.credentials/passphrase]))
+
+(s/def :maven.server/id string?)
+(s/def :maven.server/url fs/url?)
+(s/def :maven/server (s/keys :opt [:maven.server/id
+                                   :maven.server/url]))
+
+
+(s/def :maven.deploy.artefact/path path?)
+(s/def :maven.deploy.artefact/extension string?)
+
+(s/def :maven.deploy/artefact
+  (s/keys :req [:maven.deploy.artefact/path
+                :maven.deploy.artefact/extension]))
+
+(s/def :maven.deploy/artefacts (s/coll-of :maven.deploy/artefact))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning

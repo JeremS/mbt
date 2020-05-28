@@ -8,7 +8,8 @@
   (:import
     [org.eclipse.aether.installation InstallRequest]))
 
-
+;;TODO: add the notion of classifier
+;;TODO: maybe skip the use of maven/coord->artefact
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/install.clj
 (defn install! [{artefact-name   :artefact/name
                  group-id         :maven/group-id
