@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.core.building.install-test
+(ns com.jeremyschoffen.mbt.alpha.core.building.maven.install-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as stest]
@@ -7,7 +7,8 @@
     [com.jeremyschoffen.mbt.alpha.core.building.building-utils :as bu]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.building.install :as install]
+    [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
+    [com.jeremyschoffen.mbt.alpha.core.building.maven.install :as install]
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.core.building.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
@@ -65,7 +66,8 @@
                  (u/assoc-computed :project/deps deps/get-deps)
                  (u/assoc-computed :classpath/index cp/indexed-classpath)
                  (u/assoc-computed :maven/pom pom/new-pom)
-                 (u/assoc-computed :jar/srcs jar/simple-jar-srcs))]
+                 (u/assoc-computed :jar/srcs jar/simple-jar-srcs)
+                 (u/assoc-computed :maven.deploy/artefacts common/make-usual-artefacts))]
     (pom/sync-pom! ctxt)
     (make-jar! ctxt)
     (install/install! ctxt)
