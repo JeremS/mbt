@@ -4,11 +4,11 @@
     [clojure.string :as string]
     [clj-jgit.porcelain :as jgit]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.classic-scheme :as c]
-    [com.jeremyschoffen.mbt.alpha.versioning.schemes :as vs]
-    [com.jeremyschoffen.mbt.alpha.versioning.git-state :as gs]
-    [com.jeremyschoffen.mbt.alpha.git :as git]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.core.classic-scheme :as c]
+    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes :as vs]
+    [com.jeremyschoffen.mbt.alpha.core.versioning.git-state :as gs]
+    [com.jeremyschoffen.mbt.alpha.core.git :as git]
+    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
 (spec-test/instrument)
@@ -19,7 +19,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 
 
-(def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "version.clj"))
+(def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "core" "version.clj"))
 
 
 (defn write-version-file! [ctxt]
