@@ -2,7 +2,6 @@
   (:require
     [clojure.java.shell :as shell]
     [com.jeremyschoffen.mbt.alpha.specs]
-    [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;; inspired by https://github.com/EwenG/badigeon/blob/master/src/badigeon/exec.clj
