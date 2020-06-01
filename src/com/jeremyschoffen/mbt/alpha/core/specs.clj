@@ -15,21 +15,29 @@
 (def jar-path? (every-pred path?
                            #(= "jar" (fs/file-extention %))))
 
-
+;; TODO: for renaming, could use (constantly false) in the old keyword specs.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; General
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :project/working-dir (every-pred path-like? fs/absolute?))
 (s/def :project/output-dir (every-pred path-like? fs/absolute?))
 (s/def :project/name string?)
+;;TODO: make the version a string
 (s/def :project/version any?)
 (s/def :project/author string?)
 (s/def :module/name string?)
 (s/def :artefact/name string?)
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; General
+;;----------------------------------------------------------------------------------------------------------------------
+(s/def :cleaning/target path?)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
+;; Basic maven
 (s/def :maven/group-id symbol?)
 (s/def :maven/classifier symbol?)
 (s/def :maven.pom/dir path?)
@@ -37,6 +45,7 @@
 (s/def :maven/local-repo path?)
 (s/def :maven.settings/file path?)
 
+;; Maven credentials/auth conf
 (s/def :maven.credentials/user-name string?)
 (s/def :maven.credentials/password string?)
 (s/def :maven.credentials/private-key path?)
@@ -47,12 +56,13 @@
                                         :maven.credentials/private-key
                                         :maven.credentials/passphrase]))
 
+;; Maven Server conf
 (s/def :maven.server/id string?)
 (s/def :maven.server/url fs/url?)
 (s/def :maven/server (s/keys :opt [:maven.server/id
                                    :maven.server/url]))
 
-
+;; Maven deployment conf
 (s/def :maven.deploy.artefact/path path?)
 (s/def :maven.deploy.artefact/extension string?)
 
