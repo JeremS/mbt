@@ -28,6 +28,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
+;; TODO: stop using :artefact-name, it couples the description to the notion of artefacts and the way tags are named
 (defn- most-recent-description [{repo :git/repo
                                  artefact-name :artefact/name}]
   (git/describe {:git/repo repo
