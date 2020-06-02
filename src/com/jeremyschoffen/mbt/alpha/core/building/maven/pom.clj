@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.core.building.pom
+(ns com.jeremyschoffen.mbt.alpha.core.building.maven.pom
   (:require
     [clojure.spec.alpha :as s]
     [clojure.java.io :as jio]

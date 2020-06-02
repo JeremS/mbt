@@ -5,8 +5,8 @@
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]
-    [clojure.spec.test.alpha :as st]))
+    [com.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]))
+
 
 
 (stest/instrument)
