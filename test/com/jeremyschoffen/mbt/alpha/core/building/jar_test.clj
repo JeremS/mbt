@@ -8,7 +8,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.building-utils :as bu]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.building.pom :as pom]
+    [com.jeremyschoffen.mbt.alpha.core.building.maven.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
