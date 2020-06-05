@@ -41,8 +41,8 @@
 
 
 (def ctxt
-  (-> {;; Artfact infos
-       :project/working-dir (u/safer-path "test-repos" "deploy")
+  (-> {;; Artefact infos
+       :project/working-dir project-path
        :artefact/name artefact-name
        :project/version version
        :maven/group-id (symbol group-id)
@@ -70,16 +70,15 @@
   (-> ctxt
       (u/side-effect! pom/sync-pom!)
       (u/side-effect! jar/add-srcs!)
-      (u/side-effect! jar/jar!)))
+      (u/side-effect! jar/make-jar-archive!)))
 
 
-(defn list-jar-content [jar-path]
+(defn list-jar-files [jar-path]
   (with-open [zfs (jar/open-jar-fs jar-path)]
     (->> zfs
          fs/walk
          fs/realize
          (into #{} (map str)))))
-
 
 
 (deftest testing-install-deploy
@@ -88,9 +87,9 @@
       (u/side-effect! install/install!)
       (u/side-effect! deploy/deploy!))
 
-  (let [jar-content (list-jar-content jar-out)
-        installed-jar-content (list-jar-content installed-jar-path)
-        deployed-jar-content (list-jar-content deployed-jar-path)]
+  (let [jar-content (list-jar-files jar-out)
+        installed-jar-content (list-jar-files installed-jar-path)
+        deployed-jar-content (list-jar-files deployed-jar-path)]
 
     (facts
       jar-content => installed-jar-content
