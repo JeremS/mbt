@@ -35,4 +35,5 @@
       (-> cp1 :classpath/jar clojure-jars-present?) => true
       (-> cp2 :classpath/jar clojure-jars-present?) => false
 
-      (-> cp1 :classpath/ext-dep first) => (str (fs/path test-repos/monorepo-p2  "src")))))
+      (-> cp1 :classpath/ext-dep set) => #{(str (fs/path test-repos/monorepo-p2  "src"))
+                                           (str (fs/path test-repos/monorepo-p2  "resources"))})))

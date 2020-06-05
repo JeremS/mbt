@@ -81,12 +81,20 @@
 
 ;; Clashes
 ;; adapted from https://github.com/seancorfield/depstar/blob/master/src/hf/depstar/uberjar.clj#L57
-(defn- clash-strategy [{dest :jar.entry/dest}]
+(defn- meta-inf-services? [{dest :jar.entry/dest
+                            temp-out :jar/temp-output}]
+  (->> dest
+       (fs/relativize temp-out)
+       str
+       (re-find #"^META-INF/services/")))
+
+(defn- clash-strategy [{dest :jar.entry/dest
+                        :as param}]
   (cond
     (= "data_readers.cljc" (-> dest fs/file-name str))
     :merge-edn
 
-    (re-find #"^META-INF/services/" (str dest))
+    (meta-inf-services? param)
     :concat-lines
 
     :else
@@ -109,14 +117,15 @@
       :jar.adding/result  (add-string! content dest)
       :jar.clash/strategy :merge-edn)))
 
-;; TODO: rework that, the present impl doesn't insert a line break between the 2 file contents.
+
 (defmethod handle-clash :concat-lines
   [{:jar.entry/keys [src dest]
     :as param}]
-  (let [input (fs/new-input-stream src)
-        output (fs/new-ouput-stream dest :append)]
+  (let [input (->> src
+                   fs/read-all-lines
+                   (cons ""))]
     (assoc param
-      :jar.adding/result (fs/copy! input output)
+      :jar.adding/result (fs/write dest input {:open-opts [:append]})
       :jar.clash/strategy :concat-lines)))
 
 
