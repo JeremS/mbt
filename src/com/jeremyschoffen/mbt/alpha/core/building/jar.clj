@@ -368,8 +368,9 @@
            :ret :jar/srcs)
 
 
-(defn jar! [{temp :jar/temp-output
-             :as param}]
+(defn make-jar-archive! [{temp :jar/temp-output
+                          output :jar/output
+                          :as               param}]
   (with-open [zfs (make-output-jar-fs param)]
     (doseq [src (->> temp
                      fs/walk
@@ -379,8 +380,9 @@
                       (fs/relativize temp)
                       (fs/path zfs))]
         (u/ensure-parent! dest)
-        (fs/copy! src dest)))))
+        (fs/copy! src dest))))
+  output)
 
-(u/spec-op jar!
+(u/spec-op make-jar-archive!
            :deps [make-output-jar-fs]
            :param {:req [:jar/temp-output :jar/output]})

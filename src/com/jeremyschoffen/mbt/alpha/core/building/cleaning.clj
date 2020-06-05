@@ -62,11 +62,13 @@
            :param {:req [:cleaning/target]})
 
 
-(defn clean! [param]
+(defn clean! [{t :cleaning/target
+               :as param}]
   (-> param
       (u/check check-wd)
       (u/check check-proper-ancestry)
-      clean!*))
+      clean!*)
+  t)
 
 (u/spec-op clean!
            :deps [check-wd check-proper-ancestry]
