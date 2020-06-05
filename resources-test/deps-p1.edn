@@ -1,3 +1,0 @@
-{:paths ["src"]
- :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        project2 {:local/root "../project2"}}}

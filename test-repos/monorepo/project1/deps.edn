@@ -1,0 +1,2 @@
+{:paths ["src"]
+ :deps {project2 {:local/root "../project2"}}}

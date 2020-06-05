@@ -1,4 +1,4 @@
-(ns project1.core-p1
+(ns project1.core
   (:require [project2.core :as p2]))
 
 
