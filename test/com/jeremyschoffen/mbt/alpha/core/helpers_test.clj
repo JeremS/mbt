@@ -60,7 +60,7 @@
         path (apply u/safer-path temp-dir dirs)
         _ (assert (fs/ancestor? temp-dir path))
         dest-dir (fs/create-directories! path)]
-    (fs/create-temp-file! "temp-src" ".clj" :dir dest-dir)))
+    (fs/create-temp-file! "temp-src" ".clj" {:dir dest-dir})))
 
 
 (deftest create-repos
