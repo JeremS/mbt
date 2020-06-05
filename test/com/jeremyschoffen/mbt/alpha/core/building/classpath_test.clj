@@ -6,6 +6,8 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.building-utils :as bu]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
+    [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
+    [com.jeremyschoffen.mbt.alpha.core.helpers.test-repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
@@ -20,19 +22,17 @@
 
 
 (deftest classpath-test
-  (let [temp-repo (bu/make-test-project)
+  (let [state-p1 {:project/working-dir  test-repos/monorepo-p1
+                  :project/deps test-repos/monorepo-project1-deps}
 
-        state-p1 {:project/working-dir (u/safer-path temp-repo bu/project1)
-                  :project/deps (deps-reader/slurp-deps (u/safer-path temp-repo bu/project1 "deps.edn"))}
-
-        state-p2 {:project/working-dir (u/safer-path temp-repo bu/project2)
-                  :project/deps (deps-reader/slurp-deps (u/safer-path temp-repo bu/project2 "deps.edn"))}
+        state-p2 (u/assoc-computed {:project/working-dir  test-repos/monorepo-p2}
+                                   :project/deps deps/get-deps)
 
         cp1 (cp/indexed-classpath state-p1)
         cp2 (cp/indexed-classpath state-p2)]
 
     (facts
       (-> cp1 :classpath/jar clojure-jars-present?) => true
-      (-> cp2 :classpath/jar clojure-jars-present?) => true
+      (-> cp2 :classpath/jar clojure-jars-present?) => false
 
-      (-> cp1 :classpath/ext-dep first) => (str (fs/path temp-repo bu/project2  "src")))))
+      (-> cp1 :classpath/ext-dep first) => (str (fs/path test-repos/monorepo-p2  "src")))))

@@ -12,13 +12,14 @@
     [com.jeremyschoffen.mbt.alpha.core.building.maven.deploy :as deploy]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.install :as install]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.pom :as pom]
+    [com.jeremyschoffen.mbt.alpha.core.helpers.test-repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
 (stest/instrument)
 
 
-(def project-path (u/safer-path "test-repos" "deploy"))
+(def project-path test-repos/deploy-project)
 (def target-dir (u/safer-path project-path "target"))
 (def temp-jar-path (u/safer-path target-dir "temp-jar"))
 (def jar-out (u/safer-path target-dir "deploy.jar"))

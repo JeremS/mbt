@@ -8,9 +8,9 @@
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.cleaning :as clean]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
+    [com.jeremyschoffen.mbt.alpha.core.helpers.test-repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
@@ -69,7 +69,7 @@
 ;; Common values
 ;;----------------------------------------------------------------------------------------------------------------------
 
-(def mono-repo (u/safer-path "test-repos" "monorepo"))
+
 (def version "1.0")
 (def group-id "group")
 
@@ -77,7 +77,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Test skinny jar using project 2
 ;;----------------------------------------------------------------------------------------------------------------------
-(def project2-path (u/safer-path mono-repo "project2"))
+(def project2-path test-repos/monorepo-p2)
 (def project2-target-path (u/safer-path project2-path "target"))
 (def project2-jar (u/safer-path project2-target-path "project2.jar"))
 (def artefact-name2 "project-2")
@@ -122,7 +122,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Testing uber jar using project 1
 ;;----------------------------------------------------------------------------------------------------------------------
-(def project1-path (u/safer-path mono-repo "project1"))
+(def project1-path test-repos/monorepo-p1)
 (def project1-target-path (u/safer-path project1-path "target"))
 (def project1-uberjar (u/safer-path project1-target-path "project1-standalone.jar"))
 (def artefact-name1 "project-1")
