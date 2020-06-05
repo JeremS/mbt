@@ -9,10 +9,6 @@
 (def maven-default-settings-file (fs/path (System/getProperty "user.home") ".m2" "settings.xml"))
 
 
-(System/getProperty "maven.conf")
-(System/getProperty "org.apache.maven.global-settings")
-
-
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Some fs utils
 ;;----------------------------------------------------------------------------------------------------------------------
