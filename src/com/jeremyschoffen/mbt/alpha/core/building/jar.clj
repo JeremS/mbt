@@ -12,7 +12,7 @@
     (java.net URI)
     (java.util HashMap)))
 
-;; TODO: decide what to do with wayward files on a classpath.
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar FileSystem cstr
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -327,7 +327,6 @@
 (def manifest-name "MANIFEST.MF")
 (def manifest-path (fs/path meta-dir manifest-name))
 
-;;TODO: For uniformity, consider using a map parameter
 (defn make-manifest-entry [manifest]
   {:jar.entry/src manifest
    :jar.entry/dest manifest-path})
@@ -400,7 +399,7 @@
                       cat
                       (map u/safer-path))))))
 
-
+;; TODO: decide what to do with wayward files on a classpath -> key :classpath/file
 (defn simple-jar-srcs
   "Makes the jar srcs used in a skinny jar."
   [{cp :classpath/index
