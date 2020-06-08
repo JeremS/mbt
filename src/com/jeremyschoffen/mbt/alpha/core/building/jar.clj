@@ -144,34 +144,48 @@
       (add-string! src dest)
       (add-file! src dest))))
 
+(u/spec-op handle-copy
+           :deps [add-string! add-file!]
+           :param {:req [:jar.entry/src :jar.entry/dest]}
+           :ret :jar/entry)
 
-(defn- add-entry! [{output :jar/temp-output
-                    :as  param}]
-  (let [{dest :jar.entry/dest
-         :as param} (update param
-                            :jar.entry/dest #(fs/resolve output %))]
-    (if (fs/exists? dest)
-      (handle-clash param)
-      (handle-copy param))))
+;; TODO:  group :jar.entry/src :jar.entry/dest int :jar/entry
+(defn- add-entry! [{output   :jar/temp-output
+                    exclude? :jar/exclude?
+                    entry :jar/entry}]
+  (let [entry (-> entry
+                  (assoc :jar/temp-output output)
+                  (update :jar.entry/dest #(fs/resolve output %)))]
+    (cond
+      (and exclude? (exclude? entry))
+      (assoc entry :jar.adding/result :filtered-out)
+
+      (fs/exists? (:jar.entry/dest entry))
+      (handle-clash entry)
+
+      :else
+      (handle-copy entry))))
 
 (u/spec-op add-entry!
-           :param {:req [:jar/temp-output :jar.entry/src :jar.entry/dest]})
+           :param {:req [:jar/temp-output :jar/entry]
+                   :opt [:jar/exclude?]})
 
 
 (defn- add-entries! [{entries :jar/entries
-                      output :jar/temp-output}]
+                      :as param}]
   (into []
         (comp
-          (map #(assoc % :jar/temp-output output))
+          (map #(assoc param :jar/entry %))
           (map add-entry!))
         entries))
 
 (u/spec-op add-entries!
-           :param {:req [:jar/entries :jar/temp-output]})
+           :param {:req [:jar/entries :jar/temp-output]
+                   :opt [:jar/exclude?]})
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Jar srcs -> jar entries -> copy to temp jar dir
+;; Jar srcs (-> jar entries) -> copy to temp jar dir
 ;;----------------------------------------------------------------------------------------------------------------------
 
 ;; src dir -> jar entries -> ...
@@ -190,13 +204,16 @@
                :jar/entries)
 
 
-(defn- add-src-dir! [{out :jar/temp-output
-                      src-dir :jar/src}]
-  (add-entries! {:jar/temp-output  out
-                 :jar/entries (src-dir->jar-entries src-dir)}))
+(defn- add-src-dir! [{src-dir :jar/src
+                      :as param}]
+  (-> param
+      (assoc :jar/entries (src-dir->jar-entries src-dir))
+      add-entries!))
+
 
 (u/spec-op add-src-dir!
-           :param {:req [:jar/src :jar/temp-output]})
+           :param {:req [:jar/src :jar/temp-output]
+                   :opt [:jar/exclude?]})
 
 
 ;; src jar -> jar entries -> ...
@@ -218,14 +235,17 @@
                :jar/entries)
 
 
-(defn- add-jar! [{out     :jar/temp-output
-                  src-jar :jar/src}]
+(defn- add-jar! [{src-jar :jar/src
+                  :as param}]
   (with-open [source-zfs (open-jar-fs src-jar)]
-    (add-entries! {:jar/temp-output out
-                   :jar/entries (jar->jar-entries source-zfs)})))
+    (-> param
+        (assoc :jar/entries (jar->jar-entries source-zfs))
+        add-entries!)))
+
 
 (u/spec-op add-jar!
-           :param {:req [:jar/src :jar/temp-output]})
+           :param {:req [:jar/src :jar/temp-output]
+                   :opt [:jar/exclude?]})
 
 
 (defn- add-src! [{src :jar/src
@@ -235,25 +255,25 @@
     (fs/directory? src)   (add-src-dir! param)
     (specs/jar-path? src) (add-jar! param)))
 
-
 (u/spec-op add-src!
-           :param {:req [:jar/temp-output :jar/src]}
+           :param {:req [:jar/temp-output :jar/src]
+                   :opt [:jar/exclude?]}
            :ret :jar/entries)
 
 
 (defn add-srcs!
   "Copies the files grouped under the key `:jar/srcs` into
   the temp jar directory."
-  [{out  :jar/temp-output
-    srcs :jar/srcs}]
+  [{srcs :jar/srcs
+    :as param}]
   (into []
         (mapcat (fn [src]
-                  (add-src! {:jar/temp-output out
-                             :jar/src         src})))
+                  (add-src! (assoc param :jar/src src))))
         srcs))
 
 (u/spec-op add-srcs!
-           :param {:req [:jar/temp-output :jar/srcs]}
+           :param {:req [:jar/temp-output :jar/srcs]
+                   :opt [:jar/exclude?]}
            :ret :jar/entries)
 
 ;;----------------------------------------------------------------------------------------------------------------------

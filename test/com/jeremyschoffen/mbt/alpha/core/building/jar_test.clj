@@ -70,6 +70,13 @@
 (def group-id "group")
 (def services-props-rpath (fs/path "resources" "META-INF" "services" "services.properties"))
 
+(defn jar-exclude? [{src :jar.entry/src}]
+  (when-not src
+    (throw (ex-info ":jar.entry/src can't be nil" {})))
+  (->> src
+       str
+       (re-matches #".*intruder.txt")))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Test skinny jar using project 2
@@ -86,6 +93,7 @@
        :maven/group-id (symbol group-id)
        :project/author "Tester"
 
+       :jar/exclude? jar-exclude?
        :jar/output project2-jar
        :cleaning/target project2-target-path}
 
@@ -141,6 +149,7 @@
        :maven/group-id (symbol group-id)
        :project/author "Tester"
 
+       :jar/include? jar-exclude?
        :jar/output project1-uberjar
        :cleaning/target project1-target-path}
 
@@ -184,3 +193,10 @@
             (str services-2 "\n" services-1 "\n")))
      => true)
     (clean/clean! ctxt1)))
+
+
+(comment
+  (def res (jar2!))
+
+  (map #(select-keys % #{:jar.entry/src :jar.adding/result}) res)
+  (clean/clean! ctxt2))

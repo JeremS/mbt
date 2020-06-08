@@ -106,6 +106,7 @@
 (s/def :jar/output jar-path?)
 (s/def :jar/temp-output path?)
 (s/def :jar/file-system file-system?)
+(s/def :jar/exclude? fn?)
 
 (s/def :jar.entry/src (s/or :text string? :file path?))
 (s/def :jar.entry/dest path?)
