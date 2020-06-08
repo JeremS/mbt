@@ -45,11 +45,16 @@
                                  (re-find #"/org/clojure/"))))))))
 
 
-(defn add-service-prop-entry [srcs p]
-  (let [name (str (fs/file-name p))]
-    (conj srcs
-          [{:jar.entry/src p
-            :jar.entry/dest (fs/path "META-INF" "services" name)}])))
+(defn jar! [ctxt]
+  (-> ctxt
+      (u/assoc-computed :jar/srcs jar/simple-jar-srcs)
+      make-jar!))
+
+
+(defn uberjar! [ctxt]
+  (-> ctxt
+      (u/assoc-computed :jar/srcs uber-jar-srcs)
+      make-jar!))
 
 
 (defn jar-content [jar-path]
@@ -84,6 +89,7 @@
 (def project2-path test-repos/monorepo-p2)
 (def project2-target-path (u/safer-path project2-path "target"))
 (def project2-jar (u/safer-path project2-target-path "project2.jar"))
+(def project2-jar+intruder (u/safer-path project2-target-path "project2-i.jar"))
 (def artefact-name2 "project-2")
 
 (def ctxt2
@@ -103,28 +109,37 @@
         :maven/pom pom/new-pom)))
 
 
-(defn jar2! []
-  (-> ctxt2
-      (u/assoc-computed :jar/srcs jar/simple-jar-srcs)
-      make-jar!))
-
-
 (deftest simple-jar
-  (let [_ (jar2!)
-        content (jar-content project2-jar)]
+  (let [_ (jar! ctxt2)
+        content (jar-content project2-jar)
 
-    (facts
-      (get content "/project2/core.clj")
-      => (slurp (u/safer-path project2-path "src" "project2" "core.clj"))
+        ctxt2-i (-> ctxt2
+                    (dissoc :jar/exclude?)
+                    (assoc :jar/output project2-jar+intruder))
 
-      (edn/read-string (get content "/META-INF/deps/group/project-2/deps.edn"))
-      => (edn/read-string (slurp (u/safer-path project2-path "deps.edn")))
+        _ (jar! ctxt2-i)
+        content+i (jar-content project2-jar+intruder)]
 
-      (edn/read-string (get content "/data_readers.cljc"))
-      => (edn/read-string (slurp (u/safer-path project2-path "src" "data_readers.cljc")))
+    (testing "The content that should be there is."
+      (facts
+        (get content "/project2/core.clj")
+        => (slurp (u/safer-path project2-path "src" "project2" "core.clj"))
 
-      (get content "/META-INF/services/services.properties")
-      => (slurp (u/safer-path project2-path services-props-rpath)))
+        (edn/read-string (get content "/META-INF/deps/group/project-2/deps.edn"))
+        => (edn/read-string (slurp (u/safer-path project2-path "deps.edn")))
+
+        (edn/read-string (get content "/data_readers.cljc"))
+        => (edn/read-string (slurp (u/safer-path project2-path "src" "data_readers.cljc")))
+
+        (get content "/META-INF/services/services.properties")
+        => (slurp (u/safer-path project2-path services-props-rpath))))
+
+    (testing "Filtered content isn't there"
+      (contains? content "/project2/intruder.txt") => false)
+
+    (testing "When not filtered intruder is here"
+      (get content+i "/project2/intruder.txt")
+      => (slurp (u/safer-path project2-path "src" "project2" "intruder.txt")))
 
     (clean/clean! ctxt2)))
 
@@ -159,14 +174,8 @@
         :maven/pom pom/new-pom)))
 
 
-(defn uberjar1! []
-  (-> ctxt1
-      (u/assoc-computed :jar/srcs uber-jar-srcs)
-      make-jar!))
-
-
 (deftest uberjar
-  (let [_ (uberjar1!)
+  (let [_ (uberjar! ctxt1)
         content (jar-content project1-uberjar)
         services-1 (slurp (u/safer-path project1-path services-props-rpath))
         services-2 (slurp (u/safer-path project2-path services-props-rpath))]
@@ -193,10 +202,3 @@
             (str services-2 "\n" services-1 "\n")))
      => true)
     (clean/clean! ctxt1)))
-
-
-(comment
-  (def res (jar2!))
-
-  (map #(select-keys % #{:jar.entry/src :jar.adding/result}) res)
-  (clean/clean! ctxt2))

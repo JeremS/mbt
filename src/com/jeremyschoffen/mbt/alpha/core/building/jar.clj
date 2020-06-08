@@ -13,7 +13,6 @@
     (java.util HashMap)))
 
 ;; TODO: decide what to do with wayward files on a classpath.
-;; TODO: implement a way to filter jar entries.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar FileSystem cstr
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -88,6 +87,11 @@
        str
        (re-find #"^META-INF/services/")))
 
+(u/spec-op meta-inf-services?
+           :param {:req [:jar.entry/dest
+                         :jar/temp-output]})
+
+
 (defn- clash-strategy [{dest :jar.entry/dest
                         :as param}]
   (cond
@@ -100,11 +104,22 @@
     :else
     :noop))
 
+(u/spec-op clash-strategy
+           :deps [meta-inf-services?]
+           :param {:req [:jar/temp-output :jar.entry/dest]})
 
-(defmulti ^:private handle-clash clash-strategy)
+
+(defmulti ^:private handle-clash! clash-strategy)
+
+(u/spec-op handle-clash!
+           :deps [clash-strategy add-string! add-file!]
+           :param {:req [:jar.entry/src
+                         :jar.entry/dest
+                         :jar/temp-output]}
+           :ret :jar/entry)
 
 
-(defmethod handle-clash :merge-edn
+(defmethod handle-clash! :merge-edn
   [{:jar.entry/keys [src dest]
     :as param}]
   (let [current-data-reader (-> dest slurp edn/read-string)
@@ -118,7 +133,7 @@
       :jar.clash/strategy :merge-edn)))
 
 
-(defmethod handle-clash :concat-lines
+(defmethod handle-clash! :concat-lines
   [{:jar.entry/keys [src dest]
     :as param}]
   (let [input (->> src
@@ -129,14 +144,14 @@
       :jar.clash/strategy :concat-lines)))
 
 
-(defmethod handle-clash :noop
+(defmethod handle-clash! :noop
   [param]
   (assoc param :jar.clash/strategy :noop))
 
-;; TODO: add filter mechanism to remove stuff that shoudn't go in the jar
-(defn- handle-copy [{src :jar.entry/src
-                     dest :jar.entry/dest
-                     :as param}]
+
+(defn- handle-copy! [{src :jar.entry/src
+                      dest :jar.entry/dest
+                      :as  param}]
   (u/ensure-parent! dest)
   (assoc param
     :jar.adding/result
@@ -144,12 +159,12 @@
       (add-string! src dest)
       (add-file! src dest))))
 
-(u/spec-op handle-copy
+(u/spec-op handle-copy!
            :deps [add-string! add-file!]
            :param {:req [:jar.entry/src :jar.entry/dest]}
            :ret :jar/entry)
 
-;; TODO:  group :jar.entry/src :jar.entry/dest int :jar/entry
+
 (defn- add-entry! [{output   :jar/temp-output
                     exclude? :jar/exclude?
                     entry :jar/entry}]
@@ -161,13 +176,15 @@
       (assoc entry :jar.adding/result :filtered-out)
 
       (fs/exists? (:jar.entry/dest entry))
-      (handle-clash entry)
+      (handle-clash! entry)
 
       :else
-      (handle-copy entry))))
+      (handle-copy! entry))))
 
 (u/spec-op add-entry!
-           :param {:req [:jar/temp-output :jar/entry]
+           :deps [handle-copy! handle-clash!]
+           :param {:req [:jar/entry
+                         :jar/temp-output]
                    :opt [:jar/exclude?]})
 
 
@@ -180,7 +197,8 @@
         entries))
 
 (u/spec-op add-entries!
-           :param {:req [:jar/entries :jar/temp-output]
+           :param {:req [:jar/entries
+                         :jar/temp-output]
                    :opt [:jar/exclude?]})
 
 
@@ -423,6 +441,3 @@
                          :jar/main-ns
                          :jar.manifest/overrides]}
            :ret :jar/srcs)
-
-
-
