@@ -3,7 +3,6 @@
     [clojure.test :refer [deftest]]
     [testit.core :refer :all]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.building.building-utils :as bu]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.core.helpers.test-repos :as test-repos]

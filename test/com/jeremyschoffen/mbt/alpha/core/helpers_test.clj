@@ -27,6 +27,7 @@
     (doseq [path (:untracked status)]
       (git-p/git-add repo path))))
 
+
 (defn copy-dummy-deps [dest-dir]
   (let [src-dummy-deps (u/safer-path "resources-test" "dummy-deps.edn")
         dest (u/safer-path dest-dir "deps.edn")]
