@@ -1,7 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.classpath-test
   (:require
     [clojure.test :refer [deftest]]
-    [clojure.tools.deps.alpha.reader :as deps-reader]
     [testit.core :refer :all]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.building-utils :as bu]
