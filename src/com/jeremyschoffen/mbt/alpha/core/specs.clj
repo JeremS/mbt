@@ -175,11 +175,25 @@
                                  :git.commit/only
                                  :git.commit/reflog-comment]))
 
+
+
+
+
+
 (s/def :git.tag/name string?)
 (s/def :git.tag/message string?)
-(s/def :git/tag (s/keys :req [:git.tag/name :git.tag/message]))
+(s/def :git.tag/annotated? boolean?)
+(s/def :git.tag/force? boolean?)
+(s/def :git.tag/signed? boolean?)
+(s/def :git.tag/tagger :git/identity)
 
-(s/def :git.tag/sign? boolean?)
+(s/def :git/tag (s/keys :req [:git.tag/name
+                              :git.tag/message]
+                        :opt [:git.tag/annotated?
+                              :git.tag/force?
+                              :git.tag/signed?
+                              :git.tag/tagger]))
+
 
 (s/def :git.describe/tag-pattern string?)
 (s/def :git.describe/distance int?)

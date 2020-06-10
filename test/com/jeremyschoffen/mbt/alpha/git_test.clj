@@ -163,6 +163,25 @@
         (:name committer)  => committer-name
         (:email committer) => committer-email))))
 
+(deftest tag
+  (let [{:keys [repo
+                project-name
+                ctxt ]} (make-temp-repo!)
+
+        tag-name "tag"
+        tag-msg "A message!"
+        tagger-name "tester"
+        tagger-email "tester@test.com"
+
+        tag {:git.tag/name tag-name
+             :git.tag/message tag-msg
+             :git.tag/tagger {:git.identity/name tagger-name
+                              :git.identity/email tagger-email}}]
+    (git/create-tag! (assoc ctxt :git/tag tag))
+
+    (fact
+      (git/get-tag (assoc ctxt :git.tag/name tag-name)) => tag)))
+
 
 (comment
   (do
@@ -172,32 +191,24 @@
     (def ctxt {:project/working-dir project-path
                :git/repo            repo}))
 
-  (git/status ctxt)
 
-  (def added-file1 (h/add-src repo project-name "src"))
-  (git/status ctxt)
+  (do
+    (h/add-src repo project-name "src")
+    (git/add-all! ctxt)
+    (git/commit! (assoc ctxt
+                   :git/commit {:git.commit/message "commit 1"})))
 
+  (git/create-tag! (assoc ctxt
+                     :git/tag {:git.tag/name "tag2"
+                               :git.tag/message "yoyo"
+                               :git.tag/tagger {:git.identity/name "tester"
+                                                :git.identity/email "tester@test.com"}}))
 
-  (git/add-all! ctxt)
-  (git/status ctxt)
+  (clj-jgit.porcelain/git-tag-list repo)
+  (git/get-tag {:git/repo repo
+                :git.tag/name "tag3"})
 
-
-  (git/commit! (assoc ctxt
-                 :git/commit {:git.commit/message "commit 1"}))
-
-  (git/status ctxt)
-
-  (def added-file2 (h/add-src repo project-name "src"))
-  (spit added-file1 "some content")
-
-  (git/status ctxt)
-
-
-  (git/status ctxt)
-  (def add-all-res (git/add-all! ctxt))
-
-  (git/status ctxt)
-
-  (git/add! (assoc ctxt
-              :git/addition {:git.addition/file-patterns (git/list-all-changed-patterns ctxt)
-                             :git.addition/update? true})))
+  (git/create-tag! (assoc ctxt
+                     :git/tag {:git.tag/name "tag3"
+                               :git.tag/message "yaya"
+                               :git.tag/sign? true})))

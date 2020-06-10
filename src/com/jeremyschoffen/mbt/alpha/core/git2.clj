@@ -12,7 +12,7 @@
     [com.jeremyschoffen.mbt.alpha.core.utils :as u])
   (:import
     (org.eclipse.jgit.revwalk RevTag RevCommit)
-    (org.eclipse.jgit.lib Ref)
+    (org.eclipse.jgit.lib Ref PersonIdent)
     (org.eclipse.jgit.api Status Git)
     (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
 
@@ -157,6 +157,7 @@
 
       (format-opts #{:git.commit/message})))
 
+
 (defn commit!
   "Commit to a git repo using `clj-jgit.porcelain/git-commit`.
   The options to the porcelain function are passed in the git/commit map,
@@ -176,9 +177,13 @@
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
 (extend-protocol cp/Datafiable
+  PersonIdent
+  (datafy [this] {:git.identity/name (.getName this)
+                  :git.identity/email (.getEmailAddress this)})
   RevTag
   (datafy [this] {:git.tag/name (.getTagName this)
-                  :git.tag/message (.getFullMessage this)}))
+                  :git.tag/message (.getFullMessage this)
+                  :git.tag/tagger (datafy (.getTaggerIdent this))}))
 
 
 (defn- get-tag* [repo id]
@@ -197,17 +202,21 @@
            :ret :git/tag)
 
 
+(defn- tag->tag-opts [tag]
+  (-> tag
+      (cond-> (contains? tag :git.tag/tagger)
+              (update :git.tag/tagger u/strip-keys-nss))
+
+      (format-opts #{:git.tag/name})))
+
 (defn- create-tag!*
   {:tag Ref}
   [{repo :git/repo
     tag :git/tag}]
-  (let [{:git.tag/keys [name message sign?]} tag]
+  (let [{name :git.tag/name} tag
+        opts (tag->tag-opts tag)]
     (try
-      (git/git-tag-create repo
-                          name
-                          :message message
-                          :annotated? true
-                          :signed? (boolean sign?))
+      (apply git/git-tag-create repo name opts)
 
       (catch RefAlreadyExistsException e
         (throw (ex-info (format "The tag %s already exists." name)
@@ -224,3 +233,13 @@
 (u/spec-op create-tag!*
            :param {:req [:git/repo :git/tag]}
            :ret #(instance? Ref %))
+
+
+(defn create-tag! [{repo :git/repo :as param}]
+  (let [tag-ref (create-tag!* param)]
+    (get-tag* repo (-> tag-ref .getObjectId))))
+
+(u/spec-op create-tag!
+           :deps [create-tag!*]
+           :param {:req [:git/repo :git/tag]}
+           :ret :git/tag)
