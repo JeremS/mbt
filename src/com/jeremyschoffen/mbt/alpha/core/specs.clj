@@ -152,7 +152,7 @@
 (s/def :git.identity/email string?)
 (s/def :git/identity (s/keys :req [:git.identity/name :git.identity/email]))
 
-
+(s/def :git.commit/name string?)
 (s/def :git.commit/message string?)
 (s/def :git.commit/all? boolean?)
 (s/def :git.commit/allow-empty? boolean?)
@@ -164,7 +164,8 @@
 (s/def :git.commit/only string?)
 (s/def :git.commit/reflog-comment string?)
 
-(s/def :git/commit (s/keys :req [:git.commit/message]
+(s/def :git/commit (s/keys :req [:git.commit/name
+                                 :git.commit/message]
                            :opt [:git.commit/author
                                  :git.commit/committer
                                  :git.commit/reflog-comment]))
@@ -211,24 +212,21 @@
 (s/def :git/raw-description string?)
 (s/def :git/description
   (s/keys :req [:git/raw-description
+                :git/tag
                 :git/sha
                 :git.describe/distance
-                :git.tag/name
-                :git.tag/message
                 :git.repo/dirty?]))
 
 (def description-keys #{:git/raw-description
+                        :git/tag
                         :git/sha
                         :git.describe/distance
-                        :git.tag/name
-                        :git.tag/message
                         :git.repo/dirty?})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Shell
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :shell/command (s/* string?))
-
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG

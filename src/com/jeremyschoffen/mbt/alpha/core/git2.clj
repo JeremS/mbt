@@ -47,7 +47,8 @@
                   :git.tag/tagger (datafy-git-obj (.getTaggerIdent this))})
 
   RevCommit
-  (datafy [this] {:git.commit/message (.getFullMessage this)
+  (datafy [this] {:git.commit/name (.getName this)
+                  :git.commit/message (.getFullMessage this)
                   :git.commit/committer (datafy-git-obj (.getCommitterIdent this))
                   :git.commit/author (datafy-git-obj (.getAuthorIdent this))}))
 
@@ -277,3 +278,32 @@
            :param {:req [:git/repo]
                    :opt [:git.describe/tag-pattern]}
            :ret (s/nilable :git/raw-description))
+
+
+(def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
+
+
+(defn parse-description [desc]
+  (let [[_ tag distance sha] (re-matches raw-description-regex desc)]
+    {:git.tag/name tag
+     :git.describe/distance (Integer/parseInt distance)
+     :git/sha sha}))
+
+
+(defn describe [{repo :git/repo
+                 :as param}]
+  (when-let [raw-desc (describe-raw param)]
+    (let [{tag-name :git.tag/name
+           :as desc} (parse-description raw-desc)]
+      (-> param
+          (merge desc)
+          (assoc :git/raw-description raw-desc
+                 :git/tag (get-tag* repo tag-name))
+          (u/assoc-computed :git.repo/dirty? dirty?)
+          (select-keys specs/description-keys)))))
+
+(u/spec-op describe
+           :deps [describe-raw parse-description get-tag dirty?]
+           :param {:req [:git/repo]
+                   :opt [:git.describe/tag-pattern]}
+           :ret (s/nilable :git/description))

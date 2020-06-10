@@ -200,21 +200,49 @@
       (fact (git/dirty? ctxt) => false))))
 
 
-(comment
-  (do
-    (def repo (h/make-temp-repo!))
-    (def project-name "project")
-    (def project-path (fs/path repo project-name))
-    (def ctxt {:project/working-dir project-path
-               :git/repo            repo}))
+(deftest describe
+  (let [{:keys [ctxt]} (make-temp-repo!)
+        wd (:project/working-dir ctxt)]
 
+    (git/create-tag! (assoc ctxt
+                       :git/tag! {:git.tag/name "tag0"
+                                  :git.tag/message "tag0"}))
+    (fact
+      (git/describe ctxt) =in=> {:git.describe/distance 0
+                                 :git/tag {:git.tag/name "tag0"}
+                                 :git.repo/dirty? false})
 
-  (do
-    (h/add-src! repo project-name "src")
+    (h/add-src! wd "src")
     (git/add-all! ctxt)
-    (def commit-res (git/commit! (assoc ctxt
-                                   :git/commit! {:git.commit/message "commit 1"})))
+    (git/commit! (assoc ctxt
+                   :git/commit! {:git.commit/message "commit 1"}))
 
-    (type commit-res)
+    (git/create-tag! (assoc ctxt
+                       :git/tag! {:git.tag/name "tag1"
+                                  :git.tag/message "tag1"}))
 
-    (clj-jgit.porcelain/git-log repo)))
+    (facts
+      (git/describe ctxt) =in=> {:git.describe/distance 0
+                                 :git/tag {:git.tag/name "tag1"}
+                                 :git.repo/dirty? false}
+
+      (git/describe (assoc ctxt :git.describe/tag-pattern "tag0"))
+      =in=> {:git.describe/distance 1
+             :git/tag {:git.tag/name "tag0"}
+             :git.repo/dirty? false})
+
+    (h/add-src! wd "src")
+    (git/add-all! ctxt)
+    (git/commit! (assoc ctxt
+                   :git/commit! {:git.commit/message "commit 2"}))
+
+    (h/add-src! wd "src")
+    (facts
+      (git/describe ctxt) =in=> {:git.describe/distance 1
+                                 :git/tag {:git.tag/name "tag1"}
+                                 :git.repo/dirty? true}
+
+      (git/describe (assoc ctxt :git.describe/tag-pattern "tag0"))
+      =in=> {:git.describe/distance 2
+             :git/tag {:git.tag/name "tag0"}
+             :git.repo/dirty? true})))
