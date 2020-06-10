@@ -190,10 +190,16 @@
 
 (s/def :git/tag (s/keys :req [:git.tag/name
                               :git.tag/message]
-                        :opt [:git.tag/annotated?
-                              :git.tag/force?
-                              :git.tag/signed?
-                              :git.tag/tagger]))
+                        :opt [:git.tag/tagger]))
+
+(s/def :git/tag! (s/keys :req [:git.tag/name
+                               :git.tag/message]
+                         :opt [:git.tag/annotated?
+                               :git.tag/force?
+                               :git.tag/signed?
+                               :git.tag/tagger]))
+
+
 
 
 (s/def :git.describe/tag-pattern string?)

@@ -190,9 +190,6 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
-
-
-
 (defn- get-tag* [repo id]
   (datafy
     (with-open [walk (git-i/new-rev-walk repo)]
@@ -219,7 +216,7 @@
 (defn- create-tag!*
   {:tag Ref}
   [{repo :git/repo
-    tag :git/tag}]
+    tag :git/tag!}]
   (let [{name :git.tag/name} tag
         opts (tag->tag-opts tag)]
     (try
@@ -238,7 +235,7 @@
                         e))))))
 
 (u/spec-op create-tag!*
-           :param {:req [:git/repo :git/tag]}
+           :param {:req [:git/repo :git/tag!]}
            :ret #(instance? Ref %))
 
 
@@ -248,7 +245,7 @@
 
 (u/spec-op create-tag!
            :deps [create-tag!*]
-           :param {:req [:git/repo :git/tag]}
+           :param {:req [:git/repo :git/tag!]}
            :ret :git/tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------

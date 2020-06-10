@@ -172,7 +172,7 @@
              :git.tag/message tag-msg
              :git.tag/tagger {:git.identity/name tagger-name
                               :git.identity/email tagger-email}}]
-    (git/create-tag! (assoc ctxt :git/tag tag))
+    (git/create-tag! (assoc ctxt :git/tag! tag))
 
     (fact
       (git/get-tag (assoc ctxt :git.tag/name tag-name)) => tag)))
