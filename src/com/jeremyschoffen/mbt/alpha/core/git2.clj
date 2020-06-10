@@ -31,6 +31,10 @@
   (-to-u-path [this] (get-dir this)))
 
 
+(defn- datafy-git-obj [o]
+  (with-meta (datafy o) {:jgit/object o}))
+
+
 (extend-protocol cp/Datafiable
   PersonIdent
   (datafy [this] {:git.identity/name (.getName this)
@@ -40,12 +44,12 @@
   RevTag
   (datafy [this] {:git.tag/name (.getTagName this)
                   :git.tag/message (.getFullMessage this)
-                  :git.tag/tagger (datafy (.getTaggerIdent this))})
+                  :git.tag/tagger (datafy-git-obj (.getTaggerIdent this))})
 
   RevCommit
   (datafy [this] {:git.commit/message (.getFullMessage this)
-                  :git.commit/committer (datafy (.getCommitterIdent this))
-                  :git.commit/author (datafy (.getAuthorIdent this))}))
+                  :git.commit/committer (datafy-git-obj (.getCommitterIdent this))
+                  :git.commit/author (datafy-git-obj (.getAuthorIdent this))}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
@@ -183,7 +187,7 @@
     commit :git/commit!}]
   (let [{message :git.commit/message} commit
         opts (commit->commit-opts commit)]
-    (datafy (apply git/git-commit repo message opts))))
+    (datafy-git-obj (apply git/git-commit repo message opts))))
 
 (u/spec-op commit!
            :param {:req [:git/repo :git/commit!]})
@@ -193,7 +197,7 @@
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- get-tag* [repo id]
-  (datafy
+  (datafy-git-obj
     (with-open [walk (git-i/new-rev-walk repo)]
       (.parseTag walk (git-i/resolve-object id repo)))))
 
@@ -259,3 +263,17 @@
 (u/spec-op dirty?
            :param {:req [:git/repo]}
            :ret boolean?)
+
+
+(defn describe-raw [{repo        :git/repo
+                     tag-pattern :git.describe/tag-pattern}]
+  (-> ^Git repo
+      .describe
+      (.setLong true)
+      (cond-> tag-pattern (.setMatch (into-array String [tag-pattern])))
+      .call))
+
+(u/spec-op describe-raw
+           :param {:req [:git/repo]
+                   :opt [:git.describe/tag-pattern]}
+           :ret (s/nilable :git/raw-description))
