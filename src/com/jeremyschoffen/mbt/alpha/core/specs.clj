@@ -131,11 +131,45 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
+;; TODO: should disappear from core
+(s/def :git/basic-state (s/keys :req [:git/top-level :git/prefix :git/repo]))
+
 (s/def :git/repo #(isa? (type %) Git))
 (s/def :git/top-level fs/path?)
 (s/def :git/prefix (s/nilable (every-pred fs/path? (complement fs/absolute?))))
 
-(s/def :git/basic-state (s/keys :req [:git/top-level :git/prefix :git/repo]))
+
+
+(s/def :git.addition/file-patterns (s/coll-of string?))
+(s/def :git.addition/update? boolean?)
+(s/def :git.addition/working-tree-iterator any?) ;; TODO: find the right type
+
+(s/def :git/addition (s/keys :req [:git.addition/file-patterns]
+                             :opt [:git.addition/update?
+                                   :git.addition/working-tree-iterator]))
+
+
+(s/def :git.commit/message string?)
+(s/def :git.commit/all? boolean?)
+(s/def :git.commit/allow-empty? boolean?)
+(s/def :git.commit/amend? boolean?)
+(s/def :git.commit/author string?)
+(s/def :git.commit/committer string?)
+(s/def :git.commit/insert-change-id? boolean?)
+(s/def :git.commit/no-verify? boolean?)
+(s/def :git.commit/only string?)
+(s/def :git.commit/reflog-comment string?)
+
+(s/def :git/commit (s/keys :req [:git.commit/message]
+                           :opt [:git.commit/all?
+                                 :git.commit/allow-empty?
+                                 :git.commit/amend?
+                                 :git.commit/author
+                                 :git.commit/committer
+                                 :git.commit/insert-change-id?
+                                 :git.commit/no-verify?
+                                 :git.commit/only
+                                 :git.commit/reflog-comment]))
 
 (s/def :git.tag/name string?)
 (s/def :git.tag/message string?)

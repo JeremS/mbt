@@ -3,29 +3,14 @@
     [clojure.test :refer [deftest testing]]
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git-p]
-    [com.jeremyschoffen.java.nio.internal.coercions :as coercions]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
-  (:import (org.eclipse.jgit.api Git)))
-
-(defn get-dir [^Git repo]
-  (let [dir (-> repo
-                .getRepository
-                .getDirectory)]
-    (fs/canonical-path
-      (if (-> dir fs/file-name (= (fs/path ".git")))
-        (fs/parent dir)
-        dir))))
-
-(extend-protocol coercions/UnaryPathBuilder
-  Git
-  (-to-u-path [this] (get-dir this)))
+    [com.jeremyschoffen.mbt.alpha.core.git2]
+    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
 (defn add-all! [repo]
   (let [status (git-p/git-status repo)]
-    (doseq [path (:untracked status)]
-      (git-p/git-add repo path))))
+    (git-p/git-add repo (seq (:untracked status)))))
 
 
 (defn copy-dummy-deps [dest-dir]
@@ -57,7 +42,7 @@
 
 
 (defn add-src [repo & dirs]
-  (let [temp-dir (get-dir repo)
+  (let [temp-dir (fs/path repo)
         path (apply u/safer-path temp-dir dirs)
         _ (assert (fs/ancestor? temp-dir path))
         dest-dir (fs/create-directories! path)]

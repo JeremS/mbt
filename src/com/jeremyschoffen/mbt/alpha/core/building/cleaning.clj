@@ -61,7 +61,7 @@
 (u/spec-op clean!*
            :param {:req [:cleaning/target]})
 
-
+;; TODO: what to do when the target doesn't exist?
 (defn clean! [{t :cleaning/target
                :as param}]
   (-> param
