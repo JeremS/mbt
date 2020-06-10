@@ -93,13 +93,17 @@
 ;; git add
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- format-opts [m keys]
-  (flatten (seq (apply dissoc m keys))))
+  (-> (apply dissoc m keys)
+      u/strip-keys-nss
+      seq
+      flatten))
 
 
 (defn add! [{repo     :git/repo
              addition :git/addition}]
   (let [{patterns :git.addition/file-patterns} addition
         opts (format-opts addition #{:git.addition/file-patterns})]
+    (clojure.pprint/pprint opts)
     (apply git/git-add repo patterns opts)))
 
 (u/spec-op add!
@@ -107,12 +111,20 @@
                          :git/addition]})
 
 
+(defn list-all-changed-patterns [param]
+  (-> param
+      status
+      (select-keys #{:modified :untracked})
+      vals
+      (->> (apply concat))))
+
+(u/spec-op list-all-changed-patterns
+           :deps [status]
+           :param {:req [:git/repo]})
+
+
 (defn add-all! [param]
-  (let [patterns (-> param
-                     status
-                     (select-keys #{:modified :untracked})
-                     vals
-                     (->> (apply concat)))]
+  (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
             :git/addition {:git.addition/file-patterns patterns}))))
 
@@ -121,9 +133,30 @@
            :param {:req [:git/repo]})
 
 
+(defn update-all! [param]
+  (let [patterns (list-all-changed-patterns param)]
+    (add! (assoc param
+            :git/addition {:git.addition/file-patterns patterns
+                           :git.addition/update? true}))))
+
+(u/spec-op update-all!
+           :deps [status]
+           :param {:req [:git/repo]})
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git commit
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn- commit->commit-opts [commit]
+  (-> commit
+      (cond-> (contains? commit :git.commit/author)
+              (update :git.commit/author u/strip-keys-nss)
+
+              (contains? commit :git.commit/committer)
+              (update :git.commit/committer u/strip-keys-nss))
+
+      (format-opts #{:git.commit/message})))
+
 (defn commit!
   "Commit to a git repo using `clj-jgit.porcelain/git-commit`.
   The options to the porcelain function are passed in the git/commit map,
@@ -132,7 +165,7 @@
   [{repo :git/repo
     commit :git/commit}]
   (let [{message :git.commit/message} commit
-        opts (format-opts commit #{:git.commit/message})]
+        opts (commit->commit-opts commit)]
     (apply git/git-commit repo message opts)))
 
 (u/spec-op commit!

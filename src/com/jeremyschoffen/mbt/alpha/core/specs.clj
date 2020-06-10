@@ -148,13 +148,17 @@
                              :opt [:git.addition/update?
                                    :git.addition/working-tree-iterator]))
 
+(s/def :git.identity/name string?)
+(s/def :git.identity/email string?)
+(s/def :git/identity (s/keys :req [:git.identity/name :git.identity/email]))
+
 
 (s/def :git.commit/message string?)
 (s/def :git.commit/all? boolean?)
 (s/def :git.commit/allow-empty? boolean?)
 (s/def :git.commit/amend? boolean?)
-(s/def :git.commit/author string?)
-(s/def :git.commit/committer string?)
+(s/def :git.commit/author :git/identity)
+(s/def :git.commit/committer :git/identity)
 (s/def :git.commit/insert-change-id? boolean?)
 (s/def :git.commit/no-verify? boolean?)
 (s/def :git.commit/only string?)

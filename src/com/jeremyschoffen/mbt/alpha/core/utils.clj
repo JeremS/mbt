@@ -61,6 +61,24 @@
   (f! v)
   v)
 
+(defn map-kv [m kfn vfn]
+  (persistent!
+    (reduce-kv (fn [m k v]
+                 (assoc! m (kfn k) (vfn v)))
+               (transient {})
+               m)))
+
+
+(defn map-keys [m f]
+  (map-kv m f identity))
+
+
+(defn map-vals [m f]
+  (map-kv m identity f))
+
+(defn strip-keys-nss [m]
+  (map-keys m #(-> % name keyword)))
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
 ;;----------------------------------------------------------------------------------------------------------------------

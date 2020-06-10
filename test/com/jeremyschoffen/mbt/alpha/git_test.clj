@@ -11,10 +11,22 @@
 
 (st/instrument)
 
-(deftest rev-parse-like
+(defn make-temp-repo! []
   (let [repo (h/make-temp-repo!)
         project-name "project"
-        project-path (fs/path repo project-name)]
+        project-path (fs/path repo project-name)
+        ctxt {:project/working-dir project-path
+              :git/repo            repo}]
+    {:repo repo
+     :project-name project-name
+     :project-path project-path
+     :ctxt ctxt}))
+
+
+(deftest rev-parse-like
+  (let [{:keys [repo
+                project-name
+                project-path ]} (make-temp-repo!)]
     (testing "Top level works"
       (facts
         (git/top-level {:project/working-dir (fs/path repo)}) => (fs/path repo)
@@ -27,9 +39,8 @@
 
 
 (deftest make-jgit-repo
-  (let [repo (h/make-temp-repo!)
-        project-name "project"
-        project-path (fs/path repo project-name)]
+  (let [{:keys [repo
+                project-path]} (make-temp-repo!)]
     (fact (fs/path repo)
           =>(fs/path (git/make-jgit-repo {:project/working-dir project-path})))))
 
@@ -49,11 +60,9 @@
 
 
 (deftest basic-git-usage
-  (let [repo (h/make-temp-repo!)
-        project-name "project"
-        project-path (fs/path repo project-name)
-        ctxt {:project/working-dir project-path
-              :git/repo            repo}
+  (let [{:keys [repo
+                project-name
+                ctxt]} (make-temp-repo!)
 
         status-at-creation (git/status ctxt)
 
@@ -73,7 +82,7 @@
         status-after-create+modified (git/status ctxt)
 
         _ (git/add-all! ctxt)
-        status-after-seconde-git-add (git/status ctxt)]
+        status-after-second-git-add (git/status ctxt)]
 
     (facts
       status-at-creation => empty-status
@@ -92,9 +101,68 @@
                                         :untracked #{(file-pattern repo file2)}
                                         :modified #{(file-pattern repo file1)})
 
-      status-after-seconde-git-add => (assoc empty-status
+      status-after-second-git-add => (assoc empty-status
                                         :added #{(file-pattern repo file2)}
                                         :changed #{(file-pattern repo file1)}))))
+
+(deftest add
+  (let [{:keys [repo
+                project-name
+                ctxt ]} (make-temp-repo!)
+
+        file1 (h/add-src repo project-name "src")
+        _ (git/add-all! ctxt)
+        _ (git/commit! (assoc ctxt :git/commit {:git.commit/message "commit 1"}))
+        file2 (h/add-src repo project-name "src")
+        _ (spit file1 "some content")
+
+        status-after-create+modified (git/status ctxt)
+        _ (git/update-all! ctxt)
+        status-after-git-add-update (git/status ctxt)]
+    (facts
+      status-after-create+modified => (assoc empty-status
+                                        :untracked #{(file-pattern repo file2)}
+                                        :modified #{(file-pattern repo file1)})
+
+      status-after-git-add-update => (assoc empty-status
+                                       :untracked #{(file-pattern repo file2)}
+                                       :changed #{(file-pattern repo file1)}))))
+
+
+
+
+
+
+(deftest commit
+  (let [{:keys [repo
+                project-name
+                ctxt ]} (make-temp-repo!)
+
+        author-name "tester"
+        author-email "tester@test.com"
+
+        committer-name "admin"
+        committer-email "admin@admin.com"]
+    (h/add-src repo project-name "src")
+    (h/add-src repo project-name "src")
+    (git/add-all! ctxt)
+    (git/commit! (assoc ctxt
+                   :git/commit {:git.commit/message "A super duper commit."
+                                :git.commit/author {:git.identity/name author-name
+                                                    :git.identity/email author-email}
+                                :git.commit/committer {:git.identity/name committer-name
+                                                       :git.identity/email committer-email}}))
+
+    (let [last-commit (first (clj-jgit.porcelain/git-log repo))
+          {:keys [author committer]} last-commit]
+
+      (facts
+        (:name author)  => author-name
+        (:email author) => author-email
+
+        (:name committer)  => committer-name
+        (:email committer) => committer-email))))
+
 
 (comment
   (do
@@ -106,18 +174,30 @@
 
   (git/status ctxt)
 
-  (do
-    (def added-file1 (h/add-src repo project-name "src"))
-    (def added-file2 (h/add-src repo project-name "src")))
+  (def added-file1 (h/add-src repo project-name "src"))
+  (git/status ctxt)
 
+
+  (git/add-all! ctxt)
+  (git/status ctxt)
+
+
+  (git/commit! (assoc ctxt
+                 :git/commit {:git.commit/message "commit 1"}))
 
   (git/status ctxt)
 
-  (def add-res (git/add! (assoc ctxt
-                           :git/addition {:git.addition/file-patterns [(file-pattern repo added-file1)
-                                                                       (file-pattern repo added-file2)]})))
+  (def added-file2 (h/add-src repo project-name "src"))
+  (spit added-file1 "some content")
 
+  (git/status ctxt)
+
+
+  (git/status ctxt)
   (def add-all-res (git/add-all! ctxt))
-  (bean add-all-res)
 
-  (git/status ctxt))
+  (git/status ctxt)
+
+  (git/add! (assoc ctxt
+              :git/addition {:git.addition/file-patterns (git/list-all-changed-patterns ctxt)
+                             :git.addition/update? true})))
