@@ -73,7 +73,7 @@
         status-after-git-add (git/status ctxt)
 
         _ (git/commit! (assoc ctxt
-                         :git/commit {:git.commit/message "Committed 1 file."}))
+                         :git/commit! {:git.commit/message "Committed 1 file."}))
         status-after-commit1 (git/status ctxt)
 
         _ (spit file1 "some text")
@@ -112,7 +112,7 @@
 
         file1 (h/add-src! repo project-name "src")
         _ (git/add-all! ctxt)
-        _ (git/commit! (assoc ctxt :git/commit {:git.commit/message "commit 1"}))
+        _ (git/commit! (assoc ctxt :git/commit! {:git.commit/message "commit 1"}))
         file2 (h/add-src! repo project-name "src")
         _ (spit file1 "some content")
 
@@ -129,10 +129,6 @@
                                        :changed #{(file-pattern repo file1)}))))
 
 
-
-
-
-
 (deftest commit
   (let [{:keys [repo
                 project-name
@@ -147,11 +143,11 @@
     (h/add-src! repo project-name "src")
     (git/add-all! ctxt)
     (git/commit! (assoc ctxt
-                   :git/commit {:git.commit/message "A super duper commit."
-                                :git.commit/author {:git.identity/name author-name
-                                                    :git.identity/email author-email}
-                                :git.commit/committer {:git.identity/name committer-name
-                                                       :git.identity/email committer-email}}))
+                   :git/commit! {:git.commit/message "A super duper commit."
+                                 :git.commit/author {:git.identity/name author-name
+                                                     :git.identity/email author-email}
+                                 :git.commit/committer {:git.identity/name committer-name
+                                                        :git.identity/email committer-email}}))
 
     (let [last-commit (first (clj-jgit.porcelain/git-log repo))
           {:keys [author committer]} last-commit]
@@ -200,7 +196,7 @@
 
     (testing "After committing repo is clean again."
       (git/commit! (assoc ctxt
-                     :git/commit {:git.commit/message "Added 1 file."}))
+                     :git/commit! {:git.commit/message "Added 1 file."}))
       (fact (git/dirty? ctxt) => false))))
 
 
@@ -216,20 +212,7 @@
   (do
     (h/add-src! repo project-name "src")
     (git/add-all! ctxt)
-    (git/commit! (assoc ctxt
-                   :git/commit {:git.commit/message "commit 1"})))
+    (def commit-res (git/commit! (assoc ctxt
+                                   :git/commit! {:git.commit/message "commit 1"})))
 
-  (git/create-tag! (assoc ctxt
-                     :git/tag {:git.tag/name "tag2"
-                               :git.tag/message "yoyo"
-                               :git.tag/tagger {:git.identity/name "tester"
-                                                :git.identity/email "tester@test.com"}}))
-
-  (clj-jgit.porcelain/git-tag-list repo)
-  (git/get-tag {:git/repo repo
-                :git.tag/name "tag3"})
-
-  (git/create-tag! (assoc ctxt
-                     :git/tag {:git.tag/name "tag3"
-                               :git.tag/message "yaya"
-                               :git.tag/sign? true})))
+    (type commit-res)))

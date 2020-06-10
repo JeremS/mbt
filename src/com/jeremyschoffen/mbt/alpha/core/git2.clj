@@ -30,6 +30,21 @@
   Git
   (-to-u-path [this] (get-dir this)))
 
+
+(extend-protocol cp/Datafiable
+  PersonIdent
+  (datafy [this] {:git.identity/name (.getName this)
+                  :git.identity/email (.getEmailAddress this)})
+  RevTag
+  (datafy [this] {:git.tag/name (.getTagName this)
+                  :git.tag/message (.getFullMessage this)
+                  :git.tag/tagger (datafy (.getTaggerIdent this))})
+
+  RevCommit
+  (datafy [this] {:git.commit/message (.getFullMessage this)
+                  :git.commit/committer (datafy (.getCommitterIdent this))
+                  :git.commit/author (datafy (.getAuthorIdent this))}))
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -163,26 +178,19 @@
   se the :git/commit spec."
   {:tag RevCommit}
   [{repo :git/repo
-    commit :git/commit}]
+    commit :git/commit!}]
   (let [{message :git.commit/message} commit
         opts (commit->commit-opts commit)]
-    (apply git/git-commit repo message opts)))
+    (datafy (apply git/git-commit repo message opts))))
 
 (u/spec-op commit!
-           :param {:req [:git/repo :git/commit]})
+           :param {:req [:git/repo :git/commit!]})
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(extend-protocol cp/Datafiable
-  PersonIdent
-  (datafy [this] {:git.identity/name (.getName this)
-                  :git.identity/email (.getEmailAddress this)})
-  RevTag
-  (datafy [this] {:git.tag/name (.getTagName this)
-                  :git.tag/message (.getFullMessage this)
-                  :git.tag/tagger (datafy (.getTaggerIdent this))}))
+
 
 
 (defn- get-tag* [repo id]

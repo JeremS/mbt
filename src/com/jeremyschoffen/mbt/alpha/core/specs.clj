@@ -165,15 +165,20 @@
 (s/def :git.commit/reflog-comment string?)
 
 (s/def :git/commit (s/keys :req [:git.commit/message]
-                           :opt [:git.commit/all?
-                                 :git.commit/allow-empty?
-                                 :git.commit/amend?
-                                 :git.commit/author
+                           :opt [:git.commit/author
                                  :git.commit/committer
-                                 :git.commit/insert-change-id?
-                                 :git.commit/no-verify?
-                                 :git.commit/only
                                  :git.commit/reflog-comment]))
+
+(s/def :git/commit! (s/keys :req [:git.commit/message]
+                            :opt [:git.commit/all?
+                                  :git.commit/allow-empty?
+                                  :git.commit/amend?
+                                  :git.commit/author
+                                  :git.commit/committer
+                                  :git.commit/insert-change-id?
+                                  :git.commit/no-verify?
+                                  :git.commit/only
+                                  :git.commit/reflog-comment]))
 
 
 (s/def :git.tag/name string?)
