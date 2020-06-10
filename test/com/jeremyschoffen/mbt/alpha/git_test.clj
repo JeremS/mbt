@@ -175,7 +175,7 @@
     (git/create-tag! (assoc ctxt :git/tag! tag))
 
     (fact
-      (git/get-tag (assoc ctxt :git.tag/name tag-name)) => tag)))
+      (git/get-tag (assoc ctxt :git.tag/name tag-name)) =in=> tag)))
 
 
 (deftest dirty?
@@ -215,4 +215,6 @@
     (def commit-res (git/commit! (assoc ctxt
                                    :git/commit! {:git.commit/message "commit 1"})))
 
-    (type commit-res)))
+    (type commit-res)
+
+    (clj-jgit.porcelain/git-log repo)))

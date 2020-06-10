@@ -34,7 +34,9 @@
 (extend-protocol cp/Datafiable
   PersonIdent
   (datafy [this] {:git.identity/name (.getName this)
-                  :git.identity/email (.getEmailAddress this)})
+                  :git.identity/email (.getEmailAddress this)
+                  :date (.getWhen this)
+                  :time (.getTimeZone this)})
   RevTag
   (datafy [this] {:git.tag/name (.getTagName this)
                   :git.tag/message (.getFullMessage this)
