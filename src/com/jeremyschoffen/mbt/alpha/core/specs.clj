@@ -139,7 +139,6 @@
 (s/def :git/prefix (s/nilable (every-pred fs/path? (complement fs/absolute?))))
 
 
-
 (s/def :git.addition/file-patterns (s/coll-of string?))
 (s/def :git.addition/update? boolean?)
 (s/def :git.addition/working-tree-iterator any?) ;; TODO: find the right type
@@ -147,6 +146,7 @@
 (s/def :git/addition (s/keys :req [:git.addition/file-patterns]
                              :opt [:git.addition/update?
                                    :git.addition/working-tree-iterator]))
+
 
 (s/def :git.identity/name string?)
 (s/def :git.identity/email string?)
@@ -174,10 +174,6 @@
                                  :git.commit/no-verify?
                                  :git.commit/only
                                  :git.commit/reflog-comment]))
-
-
-
-
 
 
 (s/def :git.tag/name string?)
