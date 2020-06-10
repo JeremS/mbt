@@ -66,7 +66,7 @@
 
         status-at-creation (git/status ctxt)
 
-        file1 (h/add-src repo project-name "src")
+        file1 (h/add-src! repo project-name "src")
         status-after-creating-a-file (git/status ctxt)
 
         _ (git/add-all! ctxt)
@@ -77,7 +77,7 @@
         status-after-commit1 (git/status ctxt)
 
         _ (spit file1 "some text")
-        file2 (h/add-src repo project-name "src")
+        file2 (h/add-src! repo project-name "src")
 
         status-after-create+modified (git/status ctxt)
 
@@ -110,10 +110,10 @@
                 project-name
                 ctxt ]} (make-temp-repo!)
 
-        file1 (h/add-src repo project-name "src")
+        file1 (h/add-src! repo project-name "src")
         _ (git/add-all! ctxt)
         _ (git/commit! (assoc ctxt :git/commit {:git.commit/message "commit 1"}))
-        file2 (h/add-src repo project-name "src")
+        file2 (h/add-src! repo project-name "src")
         _ (spit file1 "some content")
 
         status-after-create+modified (git/status ctxt)
@@ -143,8 +143,8 @@
 
         committer-name "admin"
         committer-email "admin@admin.com"]
-    (h/add-src repo project-name "src")
-    (h/add-src repo project-name "src")
+    (h/add-src! repo project-name "src")
+    (h/add-src! repo project-name "src")
     (git/add-all! ctxt)
     (git/commit! (assoc ctxt
                    :git/commit {:git.commit/message "A super duper commit."
@@ -163,10 +163,9 @@
         (:name committer)  => committer-name
         (:email committer) => committer-email))))
 
+
 (deftest tag
-  (let [{:keys [repo
-                project-name
-                ctxt ]} (make-temp-repo!)
+  (let [{:keys [ctxt]} (make-temp-repo!)
 
         tag-name "tag"
         tag-msg "A message!"
@@ -193,7 +192,7 @@
 
 
   (do
-    (h/add-src repo project-name "src")
+    (h/add-src! repo project-name "src")
     (git/add-all! ctxt)
     (git/commit! (assoc ctxt
                    :git/commit {:git.commit/message "commit 1"})))

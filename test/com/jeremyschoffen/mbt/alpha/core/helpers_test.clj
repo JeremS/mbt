@@ -41,7 +41,7 @@
         (git-p/git-clone :dir temp-dir))))
 
 
-(defn add-src [repo & dirs]
+(defn add-src! [repo & dirs]
   (let [temp-dir (fs/path repo)
         path (apply u/safer-path temp-dir dirs)
         _ (assert (fs/ancestor? temp-dir path))
@@ -59,14 +59,14 @@
       (count (git-p/git-log wc)) => 1
       (count (git-p/git-log origin)) => 1)
 
-    (add-src wc "src")
+    (add-src! wc "src")
     (fact (-> wc
               git-p/git-status
               :untracked
               count)
           => 1)
 
-    (add-src wc "src")
+    (add-src! wc "src")
     (add-all! wc)
     (let [{:keys [untracked added]} (git-p/git-status wc)]
       (facts (count untracked) => 0

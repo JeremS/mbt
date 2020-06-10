@@ -97,11 +97,11 @@
       (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category  ::anom/forbidden
                                                          :mbt/error :tag-already-exists}))
 
-    (h/add-src repo project-path)
+    (h/add-src! repo project-path)
     (h/add-all! repo)
     (git/git-commit repo "commit 2")
 
-    (h/add-src repo project-path)
+    (h/add-src! repo project-path)
     (h/add-all! repo)
     (git/git-commit repo "commit 3")
 
@@ -134,11 +134,11 @@
 
 
     (testing "Creating first patch after 2 commits."
-      (h/add-src repo project-path)
+      (h/add-src! repo project-path)
       (h/add-all! repo)
       (git/git-commit repo "commit 2")
 
-      (h/add-src repo project-path)
+      (h/add-src! repo project-path)
       (h/add-all! repo)
       (git/git-commit repo "commit 3")
 
@@ -195,7 +195,7 @@
         (str (gs/current-version state-p-simple)) => "0"))
 
     (testing "Added a src to p-maven, comitted and bumped."
-      (h/add-src repo "c1" p-maven-name "src")
+      (h/add-src! repo "c1" p-maven-name "src")
       (h/add-all! repo)
       (git/git-commit repo "added a src to p1")
       (gs/bump-tag! state-p-maven)
@@ -207,7 +207,7 @@
 
 
     (testing "Added and comitted a src to p-simple"
-      (h/add-src repo "c1" p-simple-name "src")
+      (h/add-src! repo "c1" p-simple-name "src")
       (h/add-all! repo)
       (git/git-commit repo "added a src to p-simple")
 
@@ -225,7 +225,7 @@
         (str (gs/current-version state-p-simple)) =in=> "2"))
 
     (testing "Just added a src to semver"
-      (h/add-src repo "c1" p-semver-name "src")
+      (h/add-src! repo "c1" p-semver-name "src")
 
       (facts
         (str (gs/current-version state-p-maven)) =in=> #"0.1.1-1-0x.*-DIRTY$"
