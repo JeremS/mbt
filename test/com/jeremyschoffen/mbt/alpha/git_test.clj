@@ -182,6 +182,28 @@
       (git/get-tag (assoc ctxt :git.tag/name tag-name)) => tag)))
 
 
+(deftest dirty?
+  (let [{:keys [ctxt]} (make-temp-repo!)
+        wd (:project/working-dir ctxt)]
+
+    (testing "At cration the repo is clean"
+      (fact (git/dirty? ctxt) => false))
+
+
+    (testing "After creating file the repo is dirty"
+      (h/add-src! wd "src")
+      (fact (git/dirty? ctxt) => true))
+
+    (testing "After git add, repos is still dirty."
+      (git/add-all! ctxt)
+      (fact (git/dirty? ctxt) => true))
+
+    (testing "After committing repo is clean again."
+      (git/commit! (assoc ctxt
+                     :git/commit {:git.commit/message "Added 1 file."}))
+      (fact (git/dirty? ctxt) => false))))
+
+
 (comment
   (do
     (def repo (h/make-temp-repo!))

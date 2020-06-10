@@ -103,7 +103,6 @@
              addition :git/addition}]
   (let [{patterns :git.addition/file-patterns} addition
         opts (format-opts addition #{:git.addition/file-patterns})]
-    (clojure.pprint/pprint opts)
     (apply git/git-add repo patterns opts)))
 
 (u/spec-op add!
@@ -243,3 +242,13 @@
            :deps [create-tag!*]
            :param {:req [:git/repo :git/tag]}
            :ret :git/tag)
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; git describe
+;;----------------------------------------------------------------------------------------------------------------------
+(defn dirty? [{repo :git/repo}]
+  (not (.isClean ^Status (git/git-status repo :jgit? true))))
+
+(u/spec-op dirty?
+           :param {:req [:git/repo]}
+           :ret boolean?)
