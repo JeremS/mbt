@@ -72,7 +72,7 @@
 
 
 (def version "1.0")
-(def group-id "group")
+(def group-id 'group)
 (def services-props-rpath (fs/path "resources" "META-INF" "services" "services.properties"))
 
 (defn jar-exclude? [{src :jar.entry/src}]
@@ -90,13 +90,13 @@
 (def project2-target-path (u/safer-path project2-path "target"))
 (def project2-jar (u/safer-path project2-target-path "project2.jar"))
 (def project2-jar+intruder (u/safer-path project2-target-path "project2-i.jar"))
-(def artefact-name2 "project-2")
+(def artefact-name2 'project-2)
 
 (def ctxt2
   (-> {:project/working-dir project2-path
-       :artefact/name artefact-name2
+       :maven/artefact-name artefact-name2
        :project/version version
-       :maven/group-id (symbol group-id)
+       :maven/group-id group-id
        :project/author "Tester"
 
        :jar/exclude? jar-exclude?
@@ -149,7 +149,7 @@
 (def project1-path test-repos/monorepo-p1)
 (def project1-target-path (u/safer-path project1-path "target"))
 (def project1-uberjar (u/safer-path project1-target-path "project1-standalone.jar"))
-(def artefact-name1 "project-1")
+(def artefact-name1 'project-1)
 
 (defn get-project1-deps [ctxt]
   (-> ctxt
@@ -159,9 +159,9 @@
 
 (def ctxt1
   (-> {:project/working-dir project1-path
-       :artefact/name artefact-name1
+       :maven/artefact-name artefact-name1
        :project/version version
-       :maven/group-id (symbol group-id)
+       :maven/group-id group-id
        :project/author "Tester"
 
        :jar/include? jar-exclude?

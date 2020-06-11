@@ -27,14 +27,16 @@
 (def deploy-dir (u/safer-path target-dir "remote"))
 
 
-(def artefact-name "deploy")
+(def artefact-name 'deploy)
 (def version "1.0")
-(def group-id "group")
+(def group-id 'group)
 
 (def maven-jar-name (str artefact-name "-" version ".jar"))
 
 (defn make-dest-path [root]
-  (u/safer-path root group-id artefact-name version maven-jar-name))
+  (apply u/safer-path
+         root
+         (map str [group-id artefact-name version maven-jar-name])))
 
 
 (def installed-jar-path (make-dest-path install-dir))
@@ -44,7 +46,7 @@
 (def ctxt
   (-> {;; Artefact infos
        :project/working-dir project-path
-       :artefact/name artefact-name
+       :maven/artefact-name artefact-name
        :project/version version
        :maven/group-id (symbol group-id)
        :project/author "Tester"

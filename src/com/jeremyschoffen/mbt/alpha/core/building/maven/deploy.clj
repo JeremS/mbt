@@ -99,7 +99,7 @@
 
 (u/spec-op make-deploy-request
            :deps [make-remote-repo common/make-maven-artefacts]
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven/server
@@ -118,7 +118,7 @@
 
 (u/spec-op deploy!
            :deps [make-deploy-request]
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven/server

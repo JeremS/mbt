@@ -18,7 +18,7 @@
 
 (u/spec-op make-install-request
            :deps [common/make-maven-artefacts]
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven.deploy/artefacts]
@@ -35,7 +35,7 @@
 
 (u/spec-op install!
            :deps [make-install-request]
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven.deploy/artefacts]

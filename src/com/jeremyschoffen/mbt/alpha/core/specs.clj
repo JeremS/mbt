@@ -26,7 +26,7 @@
 (s/def :project/version any?)
 (s/def :project/author string?)
 (s/def :module/name string?)
-(s/def :artefact/name string?)
+
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -38,6 +38,7 @@
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Basic maven
+(s/def :maven/artefact-name symbol?)
 (s/def :maven/group-id symbol?)
 (s/def :maven/classifier symbol?)
 (s/def :maven.pom/dir path?)

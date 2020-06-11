@@ -345,14 +345,14 @@
 
 (defn make-pom-entry [{pom :maven/pom
                        group-id :maven/group-id
-                       artefact-id :artefact/name}]
+                       artefact-id :maven/artefact-name}]
   {:jar.entry/src (xml/indent-str pom)
    :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
 
 (u/spec-op make-pom-entry
            :param {:req [:maven/pom
                          :maven/group-id
-                         :artefact/name]})
+                         :maven/artefact-name]})
 
 ;; Deps.edn
 (def deps-dir "deps")
@@ -364,14 +364,14 @@
 
 (defn make-deps-entry [{deps :project/deps
                         group-id :maven/group-id
-                        artefact-id :artefact/name}]
+                        artefact-id :maven/artefact-name}]
   {:jar.entry/src (pr-str deps)
    :jar.entry/dest (make-jar-deps-path group-id artefact-id)})
 
 (u/spec-op make-deps-entry
            :param {:req [:project/deps
                          :maven/group-id
-                         :artefact/name]})
+                         :maven/artefact-name]})
 
 
 ;; Pom + manifest + deps
@@ -385,7 +385,7 @@
            :param {:req[:project/deps
                         :maven/pom
                         :maven/group-id
-                        :artefact/name]
+                        :maven/artefact-name]
                    :opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides]})
@@ -409,11 +409,12 @@
         (classpath->sources cp #{:classpath/dir})))
 
 (u/spec-op simple-jar-srcs
+           :deps [make-staples-entries]
            :param {:req [:classpath/index
                          :project/deps
                          :maven/pom
                          :maven/group-id
-                         :artefact/name]
+                         :maven/artefact-name]
                    :opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides]}
@@ -431,11 +432,12 @@
                                  :classpath/jar})))
 
 (u/spec-op uber-jar-srcs
+           :deps [make-staples-entries]
            :param {:req [:classpath/index
                          :project/deps
                          :maven/pom
                          :maven/group-id
-                         :artefact/name]
+                         :maven/artefact-name]
                    :opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides]}

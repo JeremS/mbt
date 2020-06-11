@@ -9,7 +9,7 @@
 
 (defn make-maven-artefact
   "Constructor org.eclipse.aether.artifact.DefaultArtifact."
-  [{artefact-name :artefact/name
+  [{artefact-name :maven/artefact-name
     group-id :maven/group-id
     classifier :maven/classifier
     version :project/version
@@ -23,7 +23,7 @@
               (fs/file path))))
 
 (u/spec-op make-maven-artefact
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven.deploy/artefact]
@@ -41,7 +41,7 @@
         deploy-artefacts))
 
 (u/spec-op make-maven-artefacts
-           :param {:req [:artefact/name
+           :param {:req [:maven/artefact-name
                          :maven/group-id
                          :project/version
                          :maven.deploy/artefacts]

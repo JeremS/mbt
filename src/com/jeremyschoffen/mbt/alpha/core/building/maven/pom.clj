@@ -78,7 +78,7 @@
   (remove #(= "https://repo1.maven.org/maven2/" (-> % val :url)) rs))
 
 
-(defn new-pom [{project-name :artefact/name
+(defn new-pom [{project-name :maven/artefact-name
                 group-id :maven/group-id
                 project-version :project/version
                 project-deps :project/deps}]
@@ -103,7 +103,7 @@
        (gen-repos repos)])))
 
 (u/spec-op new-pom
-           :param {:req [:artefact/name :maven/group-id :project/version :project/deps]}
+           :param {:req [:maven/artefact-name :maven/group-id :project/version :project/deps]}
            :ret :maven/pom)
 
 
@@ -166,7 +166,7 @@
 
 
 (defn update-pom [{pom :maven/pom
-                   project-name :artefact/name
+                   project-name :maven/artefact-name
                    group-id :maven/group-id
                    project-version :project/version
                    project-deps :project/deps}]
@@ -180,7 +180,7 @@
         (replace-repos repos))))
 
 (u/spec-op update-pom
-           :param {:req [:maven/pom :artefact/name :maven/group-id :project/version :project/deps]}
+           :param {:req [:maven/pom :maven/artefact-name :maven/group-id :project/version :project/deps]}
            :ret :maven/pom)
 
 
@@ -217,7 +217,7 @@
 (u/spec-op sync-pom!
            :deps [new-pom]
            :param {:req [:maven.pom/dir
-                         :artefact/name
+                         :maven/artefact-name
                          :maven/group-id
                          :project/version
                          :project/deps]})
@@ -226,15 +226,15 @@
 
 (comment
   (require '[clojure.tools.deps.alpha.reader :as deps-reader])
-
+  
   (def ctxt {:maven/group-id 'group
-             :artefact/name "toto"
+             :maven/artefact-name 'toto
              :project/version "1"
              :project/deps (deps-reader/slurp-deps "deps.edn")
              :maven.pom/dir (u/safer-path "target")})
 
   (def ctxt2 (assoc ctxt :project/version "2"
-                         :artefact/name "titi"))
+                         :maven/artefact-name "titi"))
 
 
   (-> ctxt
