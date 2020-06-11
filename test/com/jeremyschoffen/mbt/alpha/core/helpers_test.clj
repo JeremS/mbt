@@ -4,7 +4,7 @@
     [testit.core :refer :all]
     [clj-jgit.porcelain :as git-p]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.git2]
+    [com.jeremyschoffen.mbt.alpha.core.git]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 

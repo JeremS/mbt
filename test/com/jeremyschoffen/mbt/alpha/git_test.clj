@@ -6,8 +6,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.helpers_test :as h]
 
-    [com.jeremyschoffen.mbt.alpha.core.git2 :as git]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.core.git :as git]))
 
 (st/instrument)
 

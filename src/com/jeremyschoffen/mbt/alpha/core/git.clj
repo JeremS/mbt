@@ -2,7 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [clojure.core.protocols :as cp]
-    [clojure.datafy :refer [datafy]]
+    [clojure.datafy :as datafy]
     [cognitect.anomalies :as anom]
     [clj-jgit.porcelain :as git]
     [clj-jgit.internal :as git-i]
@@ -11,8 +11,8 @@
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u])
   (:import
-    (org.eclipse.jgit.revwalk RevTag)
-    (org.eclipse.jgit.lib Ref)
+    (org.eclipse.jgit.revwalk RevTag RevCommit)
+    (org.eclipse.jgit.lib Ref PersonIdent)
     (org.eclipse.jgit.api Status Git)
     (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
 
@@ -29,6 +29,29 @@
 (extend-protocol coercions/UnaryPathBuilder
   Git
   (-to-u-path [this] (get-dir this)))
+
+
+(defn datafy-jgit-obj [o]
+  (vary-meta (datafy/datafy o) assoc :jgit/object o))
+
+
+(extend-protocol cp/Datafiable
+  PersonIdent
+  (datafy [this] {:git.identity/name (.getName this)
+                  :git.identity/email (.getEmailAddress this)
+                  :date (.getWhen this)
+                  :time (.getTimeZone this)})
+  RevTag
+  (datafy [this]
+    {:git.tag/name (.getTagName this)
+     :git.tag/message (.getFullMessage this)
+     :git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
+
+  RevCommit
+  (datafy [this] {:git.commit/name (.getName this)
+                  :git.commit/message (.getFullMessage this)
+                  :git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
+                  :git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
@@ -56,7 +79,8 @@
 
 (defn prefix [{wd :project/working-dir :as context}]
   (let [repo (top-level context)]
-    (when-not (= wd repo)
+    (if (= wd repo)
+      (fs/path "")
       (fs/relativize repo wd))))
 
 (u/spec-op prefix
@@ -64,10 +88,10 @@
            :param {:req [:project/working-dir]}
            :ret :git/prefix)
 
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Repo cstr
 ;;----------------------------------------------------------------------------------------------------------------------
-
 (defn make-jgit-repo [param]
   (-> param top-level str git/load-repo))
 
@@ -75,6 +99,7 @@
            :deps [top-level]
            :param {:req [:project/working-dir]}
            :ret :git/repo)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git status
@@ -88,58 +113,95 @@
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
+;; git add
+;;----------------------------------------------------------------------------------------------------------------------
+(defn- format-opts [m keys]
+  (-> (apply dissoc m keys)
+      u/strip-keys-nss
+      seq
+      flatten))
+
+
+(defn add! [{repo     :git/repo
+             addition :git/addition}]
+  (let [{patterns :git.addition/file-patterns} addition
+        opts (format-opts addition #{:git.addition/file-patterns})]
+    (apply git/git-add repo patterns opts)))
+
+(u/spec-op add!
+           :param {:req [:git/repo
+                         :git/addition]})
+
+
+(defn list-all-changed-patterns [param]
+  (-> param
+      status
+      (select-keys #{:modified :untracked})
+      vals
+      (->> (apply concat))))
+
+(u/spec-op list-all-changed-patterns
+           :deps [status]
+           :param {:req [:git/repo]})
+
+
+(defn add-all! [param]
+  (let [patterns (list-all-changed-patterns param)]
+    (add! (assoc param
+            :git/addition {:git.addition/file-patterns patterns}))))
+
+(u/spec-op add-all!
+           :deps [status]
+           :param {:req [:git/repo]})
+
+
+(defn update-all! [param]
+  (let [patterns (list-all-changed-patterns param)]
+    (add! (assoc param
+            :git/addition {:git.addition/file-patterns patterns
+                           :git.addition/update? true}))))
+
+(u/spec-op update-all!
+           :deps [status]
+           :param {:req [:git/repo]})
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; git commit
+;;----------------------------------------------------------------------------------------------------------------------
+(defn- commit->commit-opts [commit]
+  (-> commit
+      (cond-> (contains? commit :git.commit/author)
+              (update :git.commit/author u/strip-keys-nss)
+
+              (contains? commit :git.commit/committer)
+              (update :git.commit/committer u/strip-keys-nss))
+
+      (format-opts #{:git.commit/message})))
+
+
+(defn commit!
+  "Commit to a git repo using `clj-jgit.porcelain/git-commit`.
+  The options to the porcelain function are passed in the git/commit map,
+  se the :git/commit spec."
+  {:tag RevCommit}
+  [{repo :git/repo
+    commit :git/commit!}]
+  (let [{message :git.commit/message} commit
+        opts (commit->commit-opts commit)]
+    (datafy-jgit-obj (apply git/git-commit repo message opts))))
+
+(u/spec-op commit!
+           :param {:req [:git/repo :git/commit!]})
+
+
+;;----------------------------------------------------------------------------------------------------------------------
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- create-tag!*
-  {:tag Ref}
-  [{:git/keys [repo]
-    :git.tag/keys [name message sign?]}]
-  (try
-    (git/git-tag-create repo
-                        name
-                        :message message
-                        :annotated? true
-                        :signed? (boolean sign?))
-
-    (catch RefAlreadyExistsException e
-      (throw (ex-info (format "The tag %s already exists." name)
-                      {::anom/category ::anom/forbidden
-                       :mbt/error :tag-already-exists}
-                      e)))
-
-    (catch JGitInternalException e
-      (throw (ex-info (format "The tag %s already exists." name)
-                      {::anom/category ::anom/forbidden
-                       :mbt/error :tag-already-exists}
-                      e)))))
-;; TODO: could be (s/merge :git/tag (s/keys :req [])
-(u/spec-op create-tag!*
-           :param {:req [:git/repo :git.tag/name :git.tag/message]
-                   :opt [:git.tag/sign?]}
-           :ret #(isa? % Ref))
-
-
-(extend-protocol cp/Datafiable
-  RevTag
-  (datafy [this] {:git.tag/name (.getTagName this)
-                  :git.tag/message (.getFullMessage this)}))
-
-
 (defn- get-tag* [repo id]
-  (datafy
+  (datafy-jgit-obj
     (with-open [walk (git-i/new-rev-walk repo)]
       (.parseTag walk (git-i/resolve-object id repo)))))
-
-
-(defn create-tag! [{repo :git/repo :as param}]
-  (let [tag-ref (create-tag!* param)]
-    (get-tag* repo (-> tag-ref .getObjectId))))
-
-(u/spec-op create-tag!
-           :deps [create-tag!*]
-           :param {:req [:git/repo :git.tag/name :git.tag/message]
-                   :opt [:git.tag/sign?]}
-           :ret :git/tag)
 
 
 (defn get-tag [{repo :git/repo
@@ -151,6 +213,49 @@
            :param {:req [:git/repo :git.tag/name]}
            :ret :git/tag)
 
+
+(defn- tag->tag-opts [tag]
+  (-> tag
+      (cond-> (contains? tag :git.tag/tagger)
+              (update :git.tag/tagger u/strip-keys-nss))
+
+      (format-opts #{:git.tag/name})))
+
+(defn- create-tag!*
+  {:tag Ref}
+  [{repo :git/repo
+    tag :git/tag!}]
+  (let [{name :git.tag/name} tag
+        opts (tag->tag-opts tag)]
+    (try
+      (apply git/git-tag-create repo name opts)
+
+      (catch RefAlreadyExistsException e
+        (throw (ex-info (format "The tag %s already exists." name)
+                        {::anom/category ::anom/forbidden
+                         :mbt/error :tag-already-exists}
+                        e)))
+
+      (catch JGitInternalException e
+        (throw (ex-info (format "The tag %s already exists." name)
+                        {::anom/category ::anom/forbidden
+                         :mbt/error :tag-already-exists}
+                        e))))))
+
+(u/spec-op create-tag!*
+           :param {:req [:git/repo :git/tag!]}
+           :ret #(instance? Ref %))
+
+
+(defn create-tag! [{repo :git/repo :as param}]
+  (let [tag-ref (create-tag!* param)]
+    (get-tag* repo (-> tag-ref .getObjectId))))
+
+(u/spec-op create-tag!
+           :deps [create-tag!*]
+           :param {:req [:git/repo :git/tag!]}
+           :ret :git/tag)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git describe
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -160,6 +265,7 @@
 (u/spec-op dirty?
            :param {:req [:git/repo]}
            :ret boolean?)
+
 
 (defn describe-raw [{repo        :git/repo
                      tag-pattern :git.describe/tag-pattern}]
@@ -174,7 +280,9 @@
                    :opt [:git.describe/tag-pattern]}
            :ret (s/nilable :git/raw-description))
 
+
 (def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
+
 
 (defn- parse-description [desc]
   (let [[_ tag distance sha] (re-matches raw-description-regex desc)]
@@ -183,20 +291,24 @@
      :git/sha sha}))
 
 
-(defn describe [param]
-  (when-let [desc (describe-raw param)]
-    (-> param
-        (assoc :git/raw-description desc)
-        (merge (parse-description desc))
-        (u/merge-computed get-tag)
-        (u/assoc-computed :git.repo/dirty? dirty?)
-        (select-keys specs/description-keys))))
+(defn describe [{repo :git/repo
+                 :as param}]
+  (when-let [raw-desc (describe-raw param)]
+    (let [{tag-name :git.tag/name
+           :as desc} (parse-description raw-desc)]
+      (-> param
+          (merge desc)
+          (assoc :git/raw-description raw-desc
+                 :git/tag (get-tag* repo tag-name))
+          (u/assoc-computed :git.repo/dirty? dirty?)
+          (select-keys specs/description-keys)))))
 
 (u/spec-op describe
            :deps [describe-raw parse-description get-tag dirty?]
            :param {:req [:git/repo]
                    :opt [:git.describe/tag-pattern]}
            :ret (s/nilable :git/description))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
