@@ -308,3 +308,17 @@
            :param {:req [:git/repo]
                    :opt [:git.describe/tag-pattern]}
            :ret (s/nilable :git/description))
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Utils
+;;----------------------------------------------------------------------------------------------------------------------
+(defn any-commit? [{repo :git/repo}]
+  (-> repo
+      git/git-log
+      empty?
+      not))
+
+(u/spec-op any-commit?
+           :param {:req [:git/repo]}
+           :ret boolean?)
