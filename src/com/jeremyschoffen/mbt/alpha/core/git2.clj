@@ -2,7 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [clojure.core.protocols :as cp]
-    [clojure.datafy :refer [datafy]]
+    [clojure.datafy :as datafy]
     [cognitect.anomalies :as anom]
     [clj-jgit.porcelain :as git]
     [clj-jgit.internal :as git-i]
@@ -31,8 +31,8 @@
   (-to-u-path [this] (get-dir this)))
 
 
-(defn- datafy-git-obj [o]
-  (with-meta (datafy o) {:jgit/object o}))
+(defn datafy-jgit-obj [o]
+  (vary-meta (datafy/datafy o) assoc :jgit/object o))
 
 
 (extend-protocol cp/Datafiable
@@ -42,15 +42,16 @@
                   :date (.getWhen this)
                   :time (.getTimeZone this)})
   RevTag
-  (datafy [this] {:git.tag/name (.getTagName this)
-                  :git.tag/message (.getFullMessage this)
-                  :git.tag/tagger (datafy-git-obj (.getTaggerIdent this))})
+  (datafy [this]
+    {:git.tag/name (.getTagName this)
+     :git.tag/message (.getFullMessage this)
+     :git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
 
   RevCommit
   (datafy [this] {:git.commit/name (.getName this)
                   :git.commit/message (.getFullMessage this)
-                  :git.commit/committer (datafy-git-obj (.getCommitterIdent this))
-                  :git.commit/author (datafy-git-obj (.getAuthorIdent this))}))
+                  :git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
+                  :git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
@@ -188,7 +189,7 @@
     commit :git/commit!}]
   (let [{message :git.commit/message} commit
         opts (commit->commit-opts commit)]
-    (datafy-git-obj (apply git/git-commit repo message opts))))
+    (datafy-jgit-obj (apply git/git-commit repo message opts))))
 
 (u/spec-op commit!
            :param {:req [:git/repo :git/commit!]})
@@ -198,7 +199,7 @@
 ;; git tags
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- get-tag* [repo id]
-  (datafy-git-obj
+  (datafy-jgit-obj
     (with-open [walk (git-i/new-rev-walk repo)]
       (.parseTag walk (git-i/resolve-object id repo)))))
 
@@ -283,7 +284,7 @@
 (def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
 
 
-(defn parse-description [desc]
+(defn- parse-description [desc]
   (let [[_ tag distance sha] (re-matches raw-description-regex desc)]
     {:git.tag/name tag
      :git.describe/distance (Integer/parseInt distance)

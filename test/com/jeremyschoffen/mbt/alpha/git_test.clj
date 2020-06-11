@@ -159,7 +159,7 @@
         (:name committer)  => committer-name
         (:email committer) => committer-email))))
 
-
+;; TODO: what happens when tagging with an already used tag?
 (deftest tag
   (let [{:keys [ctxt]} (make-temp-repo!)
 
@@ -168,14 +168,16 @@
         tagger-name "tester"
         tagger-email "tester@test.com"
 
-        tag {:git.tag/name tag-name
-             :git.tag/message tag-msg
-             :git.tag/tagger {:git.identity/name tagger-name
-                              :git.identity/email tagger-email}}]
-    (git/create-tag! (assoc ctxt :git/tag! tag))
+        tag! {:git.tag/name    tag-name
+              :git.tag/message tag-msg
+              :git.tag/tagger  {:git.identity/name  tagger-name
+                                :git.identity/email tagger-email}}
+
+        _    (git/create-tag! (assoc ctxt :git/tag! tag!))
+        tag' (git/get-tag (assoc ctxt :git.tag/name tag-name))]
 
     (fact
-      (git/get-tag (assoc ctxt :git.tag/name tag-name)) =in=> tag)))
+      (update tag' :git.tag/tagger dissoc :date :time) => tag!)))
 
 
 (deftest dirty?

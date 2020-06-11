@@ -3,78 +3,72 @@
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
     [cognitect.anomalies :as anom]
-    [testit.core :refer :all]
-    [clj-jgit.porcelain :as git]
-    [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.helpers_test :as h]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.git-state :as gs]
-    [com.jeremyschoffen.mbt.alpha.core.classic-scheme :as cs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes :as version]))
+    [testit.core :refer :all]))
 
 ;; TODO remove dependency on classic scheme
-(st/instrument)
+(comment
+  (st/instrument)
 
-(defn make-project! [repo & dirs]
-  (let [proj (apply u/safer-path repo dirs)]
-    (fs/create-directories! proj)
-    (h/copy-dummy-deps proj)
-    (fs/relativize repo proj)))
-
-
-(defn make-test-repo! [version-scheme & dirs]
-  (let [repo (h/make-temp-repo!)
-        project (apply  make-project! repo dirs)]
-    (cs/get-state {:project/working-dir (u/safer-path repo project)
-                   :version/scheme      version-scheme})))
-
-(defn test-name [& dirs]
-  (let [{repo :git/repo
-         n :artefact/name} (apply make-test-repo! version/simple-scheme dirs)
-        suffix (->> dirs
-                    (interleave (repeat "-"))
-                    (apply str))]
-    (fact
-      (-> repo
-          u/safer-path
-          fs/file-name
-          (str suffix))
-      => n)))
-
-(deftest testing-names
-  (test-name)
-  (test-name "c1" "p2"))
+  (defn make-project! [repo & dirs]
+    (let [proj (apply u/safer-path repo dirs)]
+      (fs/create-directories! proj)
+      (h/copy-dummy-deps proj)
+      (fs/relativize repo proj)))
 
 
-(defn basics [state]
-  (let [{repo :git/repo
-         wd :project/working-dir} state
-        untracked-path (->> repo
-                            git/git-status
-                            :untracked
-                            first
-                            (u/safer-path repo)
-                            str)
-        expected-deps-path (str (u/safer-path wd "deps.edn"))]
-    (fact
-      untracked-path => expected-deps-path)
+  (defn make-test-repo! [version-scheme & dirs]
+    (let [repo (h/make-temp-repo!)
+          project (apply  make-project! repo dirs)]
+      (cs/get-state {:project/working-dir (u/safer-path repo project)
+                     :version/scheme      version-scheme})))
 
-    (testing "No tag yet."
+  (defn test-name [& dirs]
+    (let [{repo :git/repo
+           n :artefact/name} (apply make-test-repo! version/simple-scheme dirs)
+          suffix (->> dirs
+                      (interleave (repeat "-"))
+                      (apply str))]
       (fact
-        (gs/current-version state) => nil))
+        (-> repo
+            u/safer-path
+            fs/file-name
+            (str suffix))
+        => n)))
 
-    (testing "Repo is dirty"
-      (facts (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category ::anom/forbidden
-                                                                :mbt/error :dirty-repo})))
+  (deftest testing-names
+    (test-name)
+    (test-name "c1" "p2"))
 
-    (h/add-all! repo)
-    (git/git-commit repo "initial commit")
 
-    (testing "Still no tag."
-      (facts
-        (gs/current-version state) => nil))))
+  (defn basics [state]
+    (let [{repo :git/repo
+           wd :project/working-dir} state
+          untracked-path (->> repo
+                              git/git-status
+                              :untracked
+                              first
+                              (u/safer-path repo)
+                              str)
+          expected-deps-path (str (u/safer-path wd "deps.edn"))]
+      (fact
+        untracked-path => expected-deps-path)
 
-#_(deftest testing-basics
+      (testing "No tag yet."
+        (fact
+          (gs/current-version state) => nil))
+
+      (testing "Repo is dirty"
+        (facts (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category ::anom/forbidden
+                                                                  :mbt/error :dirty-repo})))
+
+      (h/add-all! repo)
+      (git/git-commit repo "initial commit")
+
+      (testing "Still no tag."
+        (facts
+          (gs/current-version state) => nil))))
+
+  (deftest testing-basics
     (let [simple-repo (make-test-repo! version/simple-scheme)
           monorepo-simple (make-test-repo! version/simple-scheme "container1" "project1")
           monorepo-semver (make-test-repo! version/semver-scheme "container1" "project2")
@@ -84,40 +78,40 @@
       (basics monorepo-semver)
       (basics monorepo-maven)))
 
-(defn simple-versioning [state]
-  (let [{repo :git/repo
-         wd :project/working-dir} state
-        project-path (fs/relativize repo wd)]
-    (h/add-all! repo)
-    (git/git-commit repo "initial commit")
-    (gs/bump-tag! state)
+  (defn simple-versioning [state]
+    (let [{repo :git/repo
+           wd :project/working-dir} state
+          project-path (fs/relativize repo wd)]
+      (h/add-all! repo)
+      (git/git-commit repo "initial commit")
+      (gs/bump-tag! state)
 
-    (facts
-      (str (gs/current-version state)) => "0"
-      (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category  ::anom/forbidden
-                                                         :mbt/error :tag-already-exists}))
+      (facts
+        (str (gs/current-version state)) => "0"
+        (gs/bump-tag! state) =throws=> (ex-info? identity {::anom/category  ::anom/forbidden
+                                                           :mbt/error :tag-already-exists}))
 
-    (h/add-src! repo project-path)
-    (h/add-all! repo)
-    (git/git-commit repo "commit 2")
+      (h/add-src! repo project-path)
+      (h/add-all! repo)
+      (git/git-commit repo "commit 2")
 
-    (h/add-src! repo project-path)
-    (h/add-all! repo)
-    (git/git-commit repo "commit 3")
+      (h/add-src! repo project-path)
+      (h/add-all! repo)
+      (git/git-commit repo "commit 3")
 
-    (gs/bump-tag! state)
-    (testing "after 2 commits, version is 2"
-      (fact (str (gs/current-version state)) => "2"))))
+      (gs/bump-tag! state)
+      (testing "after 2 commits, version is 2"
+        (fact (str (gs/current-version state)) => "2"))))
 
 
-#_(deftest testing-simple-versioning
+  (deftest testing-simple-versioning
     (let [simple-repo (make-test-repo! version/simple-scheme)
           monorepo-simple (make-test-repo! version/simple-scheme "container1" "project1")]
       (simple-versioning simple-repo)
       (simple-versioning monorepo-simple)))
 
 
-#_(defn maven-style-versioning2 [state]
+  (defn maven-style-versioning2 [state]
     (let [{repo :git/repo
            wd :project/working-dir} state
           project-path (fs/relativize repo wd)]
@@ -158,14 +152,14 @@
 
 
 
-#_(deftest testing-maven-style-versioning
+  (deftest testing-maven-style-versioning
     (let [monorepo-semver (make-test-repo! version/semver-scheme "container1" "project-semver")
           monorepo-maven (make-test-repo! version/maven-scheme "container1" "project-maven")]
       (maven-style-versioning2 monorepo-semver)
       (maven-style-versioning2 monorepo-maven)))
 
 
-#_(deftest mono-repo-versioning
+  (deftest mono-repo-versioning
     (let [repo (h/make-temp-repo!)
           p-maven-name "p-maven"
           p-semver-name "p-semver"
@@ -240,4 +234,4 @@
         (facts
           (str (gs/current-version state-p-maven)) =in=> #"0.1.1-2-0x.*$"
           (str (gs/current-version state-p-semver)) =in=> #"0.1.1"
-          (str (gs/current-version state-p-simple)) =in=> #"2.1-0x.*$"))))
+          (str (gs/current-version state-p-simple)) =in=> #"2.1-0x.*$")))))
