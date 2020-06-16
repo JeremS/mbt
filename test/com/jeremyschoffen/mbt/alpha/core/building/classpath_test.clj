@@ -5,7 +5,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.helpers.test-repos :as test-repos]
+    [com.jeremyschoffen.mbt.alpha.helpers.test-repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 

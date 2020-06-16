@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.core.helpers.test-repos
+(ns com.jeremyschoffen.mbt.alpha.helpers.test-repos
   (:require
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
