@@ -226,7 +226,7 @@
 
 (comment
   (require '[clojure.tools.deps.alpha.reader :as deps-reader])
-  
+
   (def ctxt {:maven/group-id 'group
              :maven/artefact-name 'toto
              :project/version "1"

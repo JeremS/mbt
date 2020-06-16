@@ -3,7 +3,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
-
+;; TODO: move outside the core ns
 (def test-repos (u/safer-path "test-repos"))
 
 (def deploy-project (u/safer-path test-repos "deploy"))

@@ -1,11 +1,10 @@
-(ns com.jeremyschoffen.mbt.alpha.git-test
+(ns com.jeremyschoffen.mbt.alpha.core.git-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.helpers_test :as h]
-
     [com.jeremyschoffen.mbt.alpha.core.git :as git]))
 
 (st/instrument)

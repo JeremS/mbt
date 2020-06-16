@@ -3,14 +3,12 @@
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.simple-version :as simple]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.metav.maven :as maven]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.metav.semver :as semver]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
 (def simple-scheme simple/version-scheme)
-(def maven-scheme maven/version-scheme)
-(def semver-scheme semver/version-scheme)
+;;(def maven-scheme maven/version-scheme)
+;;(def semver-scheme semver/version-scheme)
 
 
 (defn initial-version [{h :version/scheme}]
