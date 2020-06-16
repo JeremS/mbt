@@ -10,7 +10,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.pom :as pom]
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
-    [com.jeremyschoffen.mbt.alpha.helpers.test-repos :as test-repos]
+    [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 

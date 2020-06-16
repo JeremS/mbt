@@ -12,7 +12,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.maven.deploy :as deploy]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.install :as install]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.pom :as pom]
-    [com.jeremyschoffen.mbt.alpha.helpers.test-repos :as test-repos]
+    [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
