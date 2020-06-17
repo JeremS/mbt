@@ -314,10 +314,10 @@
 ;; Utils
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn any-commit? [{repo :git/repo}]
-  (-> repo
-      git/git-log
-      empty?
-      not))
+  (try
+    (-> repo git/git-log seq)
+    (catch Exception _
+      false)))
 
 (u/spec-op any-commit?
            :param {:req [:git/repo]}
