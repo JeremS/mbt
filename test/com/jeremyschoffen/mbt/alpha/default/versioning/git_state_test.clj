@@ -116,17 +116,13 @@
         (git-state/next-version ctxt) => "4"))))
 
 
-(deftest tag-simple-repo
+(deftest next-tag-simple-repo
   (let [repo (h/make-temp-repo!)
         ctxt {:git/repo repo
               :project/working-dir (fs/path repo)
               :versioning/scheme test-scheme}
         tag (-> ctxt
-                (u/assoc-computed
-                  :git/prefix git/prefix
-                  :versioning/tag-base-name names/tag-base-name
-                  :versioning/version git-state/next-version)
-                git-state/tag
+                git-state/next-tag
                 (update :git.tag/message clojure.edn/read-string))
         base-name (-> repo fs/file-name str)
         tag-name (str base-name
@@ -139,4 +135,23 @@
                                    :tag-name tag-name}})))
 
 
+(deftest next-tag-mono-repo
+  (let [repo (h/make-temp-repo!)
+        project-dir (fs/path "module1" "project1")
+        ctxt {:git/repo repo
+              :project/working-dir (fs/path repo project-dir)
+              :versioning/scheme test-scheme}
+        tag (-> ctxt
+                git-state/next-tag
+                (update :git.tag/message clojure.edn/read-string))
 
+        base-name (->> project-dir seq (clojure.string/join "-"))
+
+        tag-name (str base-name
+                      "-v"
+                      initial-v)]
+    (fact
+      tag =in=> {:git.tag/name tag-name
+                 :git.tag/message {:name base-name
+                                   :version initial-v
+                                   :tag-name tag-name}})))

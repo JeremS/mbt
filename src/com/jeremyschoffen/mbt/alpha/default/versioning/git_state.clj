@@ -5,6 +5,7 @@
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.specs]
+    [com.jeremyschoffen.mbt.alpha.default.names :as names]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs])
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -107,4 +108,21 @@
            :param {:req [:versioning/tag-base-name
                          :versioning/version
                          :git/prefix]}
+           :ret :git/tag)
+
+
+(defn next-tag [param]
+  (-> param
+      (u/assoc-computed
+        :git/prefix git/prefix
+        :versioning/tag-base-name names/tag-base-name
+        :versioning/version next-version)
+      tag))
+
+(u/spec-op next-tag
+           :deps [git/prefix names/tag-base-name tag next-version]
+           :param {:req #{:git/repo
+                          :project/working-dir
+                          :versioning/scheme}
+                   :opt #{:versioning/bump-level}}
            :ret :git/tag)
