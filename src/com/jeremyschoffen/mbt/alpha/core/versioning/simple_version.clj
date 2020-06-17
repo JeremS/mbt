@@ -1,7 +1,6 @@
-(ns com.jeremyschoffen.mbt.alpha.core.versioning.schemes.simple-version
+(ns com.jeremyschoffen.mbt.alpha.core.versioning.simple-version
   (:require
     [cognitect.anomalies :as anom]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 
@@ -44,14 +43,3 @@
                       {::anom/category ::anom/forbidden})))
     (SimpleVersion. (+ base-number distance) 0 sha dirty)))
 
-
-(def version-scheme
-  (reify vp/VersionScheme
-    (initial-version [_]
-      initial-simple-version)
-    (current-version [_ git-description]
-      (current-version* git-description))
-    (bump [_ version]
-      (bump* version))
-    (bump [_ version _]
-      (bump* version))))

@@ -227,3 +227,12 @@
   `(get-param-specs '~(ns-qualify sym)))
 
 
+(defn requirer [kw]
+  (into #{}
+        (keep (fn [[f spec]]
+                (let [param-spec (:param spec)
+                      {:keys [req opt]} param-spec]
+                  (when (or (contains? req kw)
+                            (contains? opt kw))
+                    f))))
+        @param-specs-store))

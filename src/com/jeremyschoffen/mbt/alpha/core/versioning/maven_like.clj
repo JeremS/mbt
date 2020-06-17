@@ -1,8 +1,7 @@
-(ns com.jeremyschoffen.mbt.alpha.core.versioning.schemes.maven-like
+(ns com.jeremyschoffen.mbt.alpha.core.versioning.maven-like
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [cognitect.anomalies :as anom]
-            [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.protocols :as vp])
+            [cognitect.anomalies :as anom])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 

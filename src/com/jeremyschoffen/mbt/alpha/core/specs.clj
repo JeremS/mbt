@@ -2,8 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [clojure.tools.deps.alpha.specs :as deps-specs]
-    [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.protocols :as vp])
+    [com.jeremyschoffen.java.nio.file :as fs])
   (:import (org.eclipse.jgit.api Git)))
 
 (def path? fs/path?)
@@ -20,17 +19,12 @@
 ;; General
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :project/working-dir (every-pred path-like? fs/absolute?))
-(s/def :project/output-dir (every-pred path-like? fs/absolute?))
-(s/def :project/name string?)
-;;TODO: make the version a string
-(s/def :project/version any?)
+(s/def :project/version string?)
 (s/def :project/author string?)
-(s/def :module/name string?)
-
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; General
+;; Cleaning
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :cleaning/target path?)
 
@@ -73,11 +67,6 @@
 
 (s/def :maven.deploy/artefacts (s/coll-of :maven.deploy/artefact))
 
-;;----------------------------------------------------------------------------------------------------------------------
-;; Versioning
-;;----------------------------------------------------------------------------------------------------------------------
-(s/def :version/bump-level keyword?)
-(s/def :version/scheme #(satisfies? vp/VersionScheme %))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps
@@ -97,10 +86,10 @@
 (s/def :classpath/index (s/map-of classpath-index-categories
                                   (s/coll-of string?)))
 
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
 ;;----------------------------------------------------------------------------------------------------------------------
-
 (s/def :jar/main-ns symbol?)
 (s/def :jar.manifest/overrides map?)
 (s/def :jar/manifest string?)
@@ -123,18 +112,17 @@
                       :entries (s/coll-of :jar/entry)))
 (s/def :jar/srcs (s/coll-of :jar/src))
 
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :clojure.compilation/namespaces (s/coll-of symbol?))
 (s/def :clojure.compilation/output-dir path?)
 
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
-;; TODO: should disappear from core
-(s/def :git/basic-state (s/keys :req [:git/top-level :git/prefix :git/repo]))
-
 (s/def :git/repo #(isa? (type %) Git))
 (s/def :git/top-level fs/path?)
 (s/def :git/prefix (s/nilable (every-pred fs/path? (complement fs/absolute?))))
@@ -228,6 +216,7 @@
 ;; Shell
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :shell/command (s/* string?))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG

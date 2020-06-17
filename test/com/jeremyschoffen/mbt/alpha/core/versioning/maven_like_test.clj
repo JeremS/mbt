@@ -1,10 +1,10 @@
-(ns com.jeremyschoffen.mbt.alpha.core.versioning.schemes.maven-like-test
+(ns com.jeremyschoffen.mbt.alpha.core.versioning.maven-like-test
   (:require
     [clojure.test :refer [deftest testing]]
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
 
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes.maven-like :as version]))
+    [com.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as version]))
 
 
 
