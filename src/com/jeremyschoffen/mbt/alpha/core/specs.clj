@@ -125,7 +125,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :git/repo #(isa? (type %) Git))
 (s/def :git/top-level fs/path?)
-(s/def :git/prefix (s/nilable (every-pred fs/path? (complement fs/absolute?))))
+(s/def :git/prefix (every-pred fs/path? (complement fs/absolute?)))
 
 
 (s/def :git.addition/file-patterns (s/coll-of string?))

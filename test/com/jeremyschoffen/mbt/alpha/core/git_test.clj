@@ -246,3 +246,10 @@
       =in=> {:git.describe/distance 2
              :git/tag {:git.tag/name "tag0"}
              :git.repo/dirty? true})))
+
+
+(deftest any-commit?
+  (let [temp-dir (fs/create-temp-directory! "temp_repo")
+        repo (clj-jgit.porcelain/git-init :dir temp-dir)]
+    (fact
+      (git/any-commit? {:git/repo repo}) => false)))

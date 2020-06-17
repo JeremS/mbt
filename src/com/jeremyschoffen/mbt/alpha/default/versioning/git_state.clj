@@ -1,6 +1,9 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.git-state
   (:require
     [clojure.spec.alpha :as s]
+    [cognitect.anomalies :as anom]
+    [com.jeremyschoffen.java.nio.file :as fs]
+
     [com.jeremyschoffen.mbt.alpha.core.git :as git]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
@@ -9,7 +12,6 @@
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs])
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
-
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -80,12 +82,15 @@
                       v :versioning/version
                       git-prefix :git/prefix
                       :as param}]
-  {:name base
-   :version (str v)
-   :tag-name (tag-name param)
-   :generated-at (iso-now)
-   :path (or (and git-prefix (str git-prefix))
-             ".")})
+  (let [prefix (str git-prefix)
+        path (if (empty? prefix)
+               "."
+               prefix)]
+    {:name base
+     :version (str v)
+     :tag-name (tag-name param)
+     :generated-at (iso-now)
+     :path path}))
 
 (u/spec-op make-tag-data
            :deps [tag-name]
@@ -115,7 +120,6 @@
   (-> param
       (u/assoc-computed
         :git/prefix git/prefix
-        :versioning/tag-base-name names/tag-base-name
         :versioning/version next-version)
       tag))
 
@@ -123,6 +127,88 @@
            :deps [git/prefix names/tag-base-name tag next-version]
            :param {:req #{:git/repo
                           :project/working-dir
+                          :versioning/tag-base-name
                           :versioning/scheme}
                    :opt #{:versioning/bump-level}}
            :ret :git/tag)
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Operations!
+;;----------------------------------------------------------------------------------------------------------------------
+(defn check-some-commit [param]
+  (when-not (git/any-commit? param)
+    (throw (ex-info "No commits  found."
+                    (merge param {::anom/category ::anom/forbidden
+                                  :mbt/error      :no-commit})))))
+
+(u/spec-op check-some-commit
+           :deps [git/any-commit?]
+           :param {:req [:git/repo]})
+
+
+(def module-build-file "deps.edn")
+
+
+(defn has-build-file?
+  "Checking that the working dir contains a `deps.edn` file."
+  [{wd :project/working-dir}]
+  (let [build-file (u/safer-path wd module-build-file)]
+    (fs/exists? build-file)))
+
+(u/spec-op has-build-file?
+           :param {:req [:project/working-dir]}
+           :ret boolean?)
+
+
+(defn check-build-file [param]
+  (when-not (has-build-file? param)
+    (throw (ex-info "No build file detected."
+                    (merge param {::anom/category ::anom/not-found
+                                  :mbt/error      :no-build-file})))))
+
+(u/spec-op check-build-file
+           :deps [has-build-file?]
+           :param {:req [:project/working-dir]})
+
+
+(defn check-not-dirty [param]
+  (when (git/dirty? param)
+    (throw (ex-info "Can't do this operation on a dirty repo."
+                    (merge param {::anom/category ::anom/forbidden
+                                  :mbt/error :dirty-repo})))))
+
+(u/spec-op check-not-dirty
+           :deps [git/dirty?]
+           :param {:req [:git/repo]})
+
+
+(defn check-repo-in-order
+  "Checks that the working dir has a build file and is in a repo
+  which already has at least one commit."
+  [ctxt]
+  (-> ctxt
+      (u/check check-some-commit)
+      (u/check check-build-file)
+      (u/check check-not-dirty)))
+
+(u/spec-op check-repo-in-order
+           :deps [check-build-file check-some-commit check-not-dirty]
+           :param {:req [:project/working-dir :git/repo]})
+
+
+(defn bump-tag!
+  "Creates a new tag for the current commit bumping the version number."
+  [param]
+  (-> param
+      (u/check check-repo-in-order)
+      (u/assoc-computed :git/tag! next-tag)
+      git/create-tag!))
+
+(u/spec-op bump-tag!
+           :deps [next-tag git/create-tag!]
+           :param {:req [:project/working-dir
+                         :git/repo
+                         :versioning/tag-base-name
+                         :versioning/scheme]
+                   :opt [:versioning/bump-level]})

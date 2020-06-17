@@ -14,13 +14,17 @@
 (defn copy-dummy-deps [dest-dir]
   (let [src-dummy-deps (u/safer-path "resources-test" "dummy-deps.edn")
         dest (u/safer-path dest-dir "deps.edn")]
+    (u/ensure-parent! dest)
     (fs/copy! src-dummy-deps dest)))
 
 
+(defn make-uncommited-temp-repo! []
+  (let [temp-dir (fs/create-temp-directory! "temp_repo")]
+    (git-p/git-init :dir temp-dir)))
+
 
 (defn make-temp-repo! []
-  (let [temp-dir (fs/create-temp-directory! "temp_repo")
-        repo (git-p/git-init :dir temp-dir)]
+  (let [repo (make-uncommited-temp-repo!)]
     (git-p/git-commit repo "Initial commit")
     repo))
 

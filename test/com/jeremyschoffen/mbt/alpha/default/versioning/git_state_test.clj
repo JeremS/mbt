@@ -2,6 +2,7 @@
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
+    [cognitect.anomalies :as anom]
     [testit.core :refer :all]
 
     [com.jeremyschoffen.mbt.alpha.core.git :as git]
@@ -122,6 +123,7 @@
               :project/working-dir (fs/path repo)
               :versioning/scheme test-scheme}
         tag (-> ctxt
+                (u/assoc-computed :versioning/tag-base-name names/tag-base-name)
                 git-state/next-tag
                 (update :git.tag/message clojure.edn/read-string))
         base-name (-> repo fs/file-name str)
@@ -132,26 +134,124 @@
       tag =in=> {:git.tag/name tag-name
                  :git.tag/message {:name base-name
                                    :version initial-v
-                                   :tag-name tag-name}})))
+                                   :tag-name tag-name
+                                   :path "."}})))
 
 
 (deftest next-tag-mono-repo
   (let [repo (h/make-temp-repo!)
-        project-dir (fs/path "module1" "project1")
-        ctxt {:git/repo repo
-              :project/working-dir (fs/path repo project-dir)
-              :versioning/scheme test-scheme}
-        tag (-> ctxt
-                git-state/next-tag
-                (update :git.tag/message clojure.edn/read-string))
+        project-dir1 (fs/path "module1" "project1")
 
-        base-name (->> project-dir seq (clojure.string/join "-"))
+        ctxt1 (u/assoc-computed {:git/repo repo
+                                 :project/working-dir (fs/path repo project-dir1)
+                                 :versioning/scheme test-scheme}
+                :versioning/tag-base-name names/tag-base-name)
+        base-name1 (:versioning/tag-base-name ctxt1)
 
-        tag-name (str base-name
-                      "-v"
-                      initial-v)]
-    (fact
-      tag =in=> {:git.tag/name tag-name
-                 :git.tag/message {:name base-name
-                                   :version initial-v
-                                   :tag-name tag-name}})))
+
+        project-dir2 (fs/path "module1" "project2")
+        ctxt2 (u/assoc-computed {:git/repo repo
+                                 :project/working-dir (fs/path repo project-dir2)
+                                 :versioning/scheme test-scheme}
+                :versioning/tag-base-name names/tag-base-name)
+        base-name2 (:versioning/tag-base-name ctxt2)
+
+        next-tag #(-> %
+                      git-state/next-tag
+                      (update :git.tag/message clojure.edn/read-string))]
+
+    (facts
+      (next-tag ctxt1)
+      =in=> {:git.tag/name (str base-name1 "-v" initial-v)
+             :git.tag/message {:name base-name1
+                               :version initial-v
+                               :path (str project-dir1)}}
+
+      (next-tag ctxt2)
+      =in=> {:git.tag/name (str base-name2 "-v" initial-v)
+             :git.tag/message {:name base-name2
+                               :version initial-v
+                               :path (str project-dir2)}})))
+
+
+(deftest bump!
+  (let [repo (h/make-uncommited-temp-repo!)
+        project-dir1 (fs/path "module1" "project1")
+
+        ctxt1 (u/assoc-computed {:git/repo repo
+                                 :project/working-dir (fs/path repo project-dir1)
+                                 :versioning/scheme test-scheme}
+                                :versioning/tag-base-name names/tag-base-name)
+        base-name1 (:versioning/tag-base-name ctxt1)
+
+
+        project-dir2 (fs/path "module1" "project2")
+        ctxt2 (u/assoc-computed {:git/repo repo
+                                 :project/working-dir (fs/path repo project-dir2)
+                                 :versioning/scheme test-scheme}
+                                :versioning/tag-base-name names/tag-base-name)
+        base-name2 (:versioning/tag-base-name ctxt2)]
+
+    (facts
+      (git-state/bump-tag! ctxt1)
+      =throws=> (ex-info? "No commits  found."
+                          {::anom/category ::anom/forbidden
+                           :mbt/error :no-commit})
+
+      (git-state/bump-tag! ctxt2)
+      =throws=> (ex-info? "No commits  found."
+                          {::anom/category ::anom/forbidden
+                           :mbt/error :no-commit}))
+
+    (git/commit! (assoc ctxt1
+                   :git/commit! {:git.commit/message "initial commit"}))
+
+    (facts
+      (git-state/bump-tag! ctxt1)
+      =throws=> (ex-info? "No build file detected."
+                          {::anom/category ::anom/not-found
+                           :mbt/error :no-build-file})
+
+      (git-state/bump-tag! ctxt2)
+      =throws=> (ex-info? "No build file detected."
+                          {::anom/category ::anom/not-found
+                           :mbt/error :no-build-file}))
+
+    (h/copy-dummy-deps (fs/path repo project-dir1))
+    (h/copy-dummy-deps (fs/path repo project-dir2))
+
+    (facts
+      (git-state/bump-tag! ctxt1)
+      =throws=> (ex-info? "Can't do this operation on a dirty repo."
+                          {::anom/category ::anom/forbidden
+                           :mbt/error :dirty-repo})
+
+      (git-state/bump-tag! ctxt2)
+      =throws=> (ex-info? "Can't do this operation on a dirty repo."
+                          {::anom/category ::anom/forbidden
+                           :mbt/error :dirty-repo}))
+
+    (git/add-all! ctxt1)
+    (git/commit! (assoc ctxt1
+                   :git/commit! {:git.commit/message "initial commit"}))
+
+    (git-state/bump-tag! ctxt1)
+    (git-state/bump-tag! ctxt2)
+    (facts
+      (git-state/most-recent-description {:git/repo repo
+                                          :versioning/tag-base-name base-name1})
+      =in=> {:git/tag {:git.tag/name (str base-name1 "-v" initial-v)}}
+
+      (git-state/most-recent-description {:git/repo repo
+                                          :versioning/tag-base-name base-name2})
+      =in=> {:git/tag {:git.tag/name (str base-name2 "-v" initial-v)}})
+
+
+    (facts
+      (git-state/next-tag ctxt1)
+      =in=> {:git.tag/name (str base-name1 "-v" (bump* initial-v))}
+
+      (git-state/next-tag ctxt2)
+      =in=> {:git.tag/name (str base-name2 "-v" (bump* initial-v))})))
+
+
