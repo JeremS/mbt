@@ -27,6 +27,13 @@
                     (spit file-1-1 "1-1")
                     (spit file-2-1 "2-1"))]
 
+    (testing "Throws when the target doesn't exist."
+      (fact
+        (cleaning/clean! {:project/working-dir wd
+                          :cleaning/target target-dir})
+        =throws=> (ex-info? "File to clean doesn't exist."
+                            {::anom/category ::anom/not-found
+                             :cleaning/target target-dir})))
 
     (testing "All the files are created."
       (make-all)

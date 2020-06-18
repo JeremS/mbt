@@ -61,9 +61,13 @@
 (u/spec-op clean!*
            :param {:req [:cleaning/target]})
 
-;; TODO: what to do when the target doesn't exist?
+
 (defn clean! [{t :cleaning/target
                :as param}]
+  (when-not (fs/exists? t)
+    (throw (ex-info "File to clean doesn't exist."
+                    (merge param
+                           {::anom/category ::anom/not-found}))))
   (-> param
       (u/check check-wd)
       (u/check check-proper-ancestry)
