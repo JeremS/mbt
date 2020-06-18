@@ -1,12 +1,15 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.schemes
   (:require
     [com.jeremyschoffen.mbt.alpha.core.specs]
+    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like :as maven-like]
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version :as simple]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.default.specs]))
 
-
-
-
+;;----------------------------------------------------------------------------------------------------------------------
+;; Smoothing the polymorphic interface
+;;----------------------------------------------------------------------------------------------------------------------
 (defn initial-version [{h :versioning/scheme}]
   (vp/initial-version h))
 
@@ -32,3 +35,11 @@
 (u/spec-op bump
            :param {:req [:versioning/scheme :versioning/version]
                    :opt [:versioning/bump-level]})
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Default version schemes
+;;----------------------------------------------------------------------------------------------------------------------
+(def maven-scheme maven-like/maven-scheme)
+(def semver-scheme maven-like/semver-scheme)
+(def simple-scheme simple/simple-scheme)

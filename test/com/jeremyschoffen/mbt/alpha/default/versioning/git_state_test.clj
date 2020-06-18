@@ -195,12 +195,12 @@
     (facts
       (git-state/bump-tag! ctxt1)
       =throws=> (ex-info? "No commits  found."
-                          {::anom/category ::anom/forbidden
+                          {::anom/category ::anom/not-found
                            :mbt/error :no-commit})
 
       (git-state/bump-tag! ctxt2)
       =throws=> (ex-info? "No commits  found."
-                          {::anom/category ::anom/forbidden
+                          {::anom/category ::anom/not-found
                            :mbt/error :no-commit}))
 
     (git/commit! (assoc ctxt1

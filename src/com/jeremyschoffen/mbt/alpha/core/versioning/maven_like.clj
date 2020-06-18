@@ -52,24 +52,20 @@
 
 
 (defn- bases-str [{:keys [subversions qualifier]}]
-  (str (string/join "." subversions)
-       (when qualifier
-         (str "-" (qualifier->str qualifier)))))
+  (cond-> (string/join "." subversions)
+          qualifier (str "-" (qualifier->str qualifier))))
 
 
-(defn- git-str [{:keys [distance sha dirty?]}]
-  (->> [distance
-        (str "g" sha)
-        (when dirty? "DIRTY")]
-       (remove nil?)
-       (string/join "-")))
+(defn- distance-str [{:keys [distance sha]}]
+  (str distance "-g" sha))
 
 
-(defn- to-string [{:keys [distance] :as v}]
-  (let [suffix (git-str v)]
-    (str (bases-str v)
-         (when (and distance (pos? distance))
-           (str "-" suffix)))))
+(defn- to-string [{:keys [distance dirty?] :as v}]
+  (let [distance-part (distance-str v)
+        add-distance? (and distance (pos? distance))]
+    (cond-> (bases-str v)
+            add-distance? (str "-" distance-part)
+            dirty?        (str "-DIRTY"))))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -155,8 +151,8 @@
       (bump-maven* level)
       reset-distance))
 
-;; TODO: take qualifiers into account ex beta -> beta2 but no changes
-(defn duplicating-version? [{:keys [subversions distance qualifier]} level]
+
+(defn duplicating-version? [{:keys [subversions distance]} level]
   (when (zero? distance)
     (let [[_ minor patch] subversions
           same-patch? (contains? (conj allowed-qualifiers :patch) level)

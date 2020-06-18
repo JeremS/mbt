@@ -17,8 +17,21 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn check-some-commit [param]
+  (when-not (git/any-commit? param)
+    (throw (ex-info "No commits  found."
+                    (merge param {::anom/category ::anom/not-found
+                                  :mbt/error      :no-commit})))))
+
+(u/spec-op check-some-commit
+           :deps [git/any-commit?]
+           :param {:req [:git/repo]})
+
+
 (defn most-recent-description [{repo :git/repo
-                                tag-base :versioning/tag-base-name}]
+                                tag-base :versioning/tag-base-name
+                                :as param}]
+  (check-some-commit param)
   (git/describe {:git/repo                 repo
                  :git.describe/tag-pattern (str tag-base "*")}))
 
@@ -136,17 +149,6 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Operations!
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn check-some-commit [param]
-  (when-not (git/any-commit? param)
-    (throw (ex-info "No commits  found."
-                    (merge param {::anom/category ::anom/forbidden
-                                  :mbt/error      :no-commit})))))
-
-(u/spec-op check-some-commit
-           :deps [git/any-commit?]
-           :param {:req [:git/repo]})
-
-
 (def module-build-file "deps.edn")
 
 
@@ -197,6 +199,18 @@
            :param {:req [:project/working-dir :git/repo]})
 
 
+(defn tag! [param]
+  (-> param
+      (u/check check-repo-in-order)
+      git/create-tag!))
+
+(u/spec-op tag!
+           :deps [ git/create-tag!]
+           :param {:req [:git/repo :git/tag!]})
+
+
+
+;; TODO: potentially move this since it's not very general, can't control the options of the tag.
 (defn bump-tag!
   "Creates a new tag for the current commit bumping the version number."
   [param]
