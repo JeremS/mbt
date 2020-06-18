@@ -2,6 +2,7 @@
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
+    [cognitect.anomalies :as anom]
     [testit.core :refer :all]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.test.helpers :as h]
@@ -157,7 +158,7 @@
         (:name committer)  => committer-name
         (:email committer) => committer-email))))
 
-;; TODO: what happens when tagging with an already used tag?
+
 (deftest tag
   (let [{:keys [ctxt]} (make-temp-repo!)
 
@@ -174,8 +175,14 @@
         _    (git/create-tag! (assoc ctxt :git/tag! tag!))
         tag' (git/get-tag (assoc ctxt :git.tag/name tag-name))]
 
-    (fact
-      (update tag' :git.tag/tagger dissoc :date :time) => tag!)))
+    (facts
+      tag' =in=> tag!
+
+      (git/create-tag! (assoc ctxt :git/tag! tag!))
+      =throws=> (ex-info? "The tag tag already exists."
+                          {::anom/category ::anom/forbidden,
+                           :mbt/error :tag-already-exists}))))
+
 
 
 (deftest dirty?
