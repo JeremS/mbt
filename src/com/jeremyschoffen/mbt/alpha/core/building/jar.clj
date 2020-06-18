@@ -399,12 +399,20 @@
                       cat
                       (map u/safer-path))))))
 
-;; TODO: decide what to do with wayward files on a classpath -> key :classpath/file
+
+(defn warn-wayward-files [{cp :classpath/index}]
+  (let [wayward-files (:classpath/file cp)]
+    (when-let [files (seq wayward-files)]
+      (binding [*out* *err*]
+        (println "Wayward files on classpath")
+        (doseq [f files]
+          (println f))))))
+
 (defn simple-jar-srcs
   "Makes the jar srcs used in a skinny jar."
   [{cp :classpath/index
     :as param}]
-
+  (warn-wayward-files param)
   (into [(make-staples-entries param)]
         (classpath->sources cp #{:classpath/dir})))
 
@@ -425,7 +433,7 @@
   "Makes the jar srcs that will go into an uberjar."
   [{cp :classpath/index
     :as param}]
-
+  (warn-wayward-files param)
   (into [(make-staples-entries param)]
         (classpath->sources cp #{:classpath/dir
                                  :classpath/ext-dep
