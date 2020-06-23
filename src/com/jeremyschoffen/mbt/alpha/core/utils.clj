@@ -2,7 +2,7 @@
   (:require
     [clojure.set :as set]
     [clojure.spec.alpha :as s]
-    [cognitect.anomalies :as anom]
+    [medley.core :as medley]
     [com.jeremyschoffen.java.nio.file :as fs]))
 
 
@@ -61,23 +61,9 @@
   (f! v)
   v)
 
-(defn map-kv [m kfn vfn]
-  (persistent!
-    (reduce-kv (fn [m k v]
-                 (assoc! m (kfn k) (vfn v)))
-               (transient {})
-               m)))
-
-
-(defn map-keys [m f]
-  (map-kv m f identity))
-
-
-(defn map-vals [m f]
-  (map-kv m identity f))
 
 (defn strip-keys-nss [m]
-  (map-keys m #(-> % name keyword)))
+  (medley/map-keys #(-> % name keyword) m))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils

@@ -2,20 +2,12 @@
 
  :deps {org.clojure/clojure               {:mvn/version "1.10.1"}
         org.clojure/tools.deps.alpha      {:mvn/version "0.8.584"}
-        org.clojure/tools.logging         {:mvn/version "0.4.1"}
         org.clojure/tools.namespace       {:mvn/version "0.3.1"}
         clj-jgit                          {:mvn/version "1.0.0-beta3"}
-        meander/epsilon                   {:mvn/version "LATEST"}
-        metosin/sieppari                  {:mvn/version "0.0.0-alpha7"}
         com.cognitect/anomalies           {:mvn/version "0.1.12"}
+        medley                            {:mvn/version "1.3.0"}
 
-        nio               {:local/root "/Users/jeremyschoffen/Documents/dev/clojure/clj-nio"}
-
-        ;metav               {:local/root "/Users/jeremyschoffen/Documents/GitHub/metav"}
-
-        badigeon/badigeon   {:git/url "https://github.com/EwenG/badigeon.git"
-                             :sha "c7588e6d2c66284dcda1a339adcba8cb9c74a8b0"
-                             :tag "0.0.9"}}
+        nio               {:local/root "/Users/jeremyschoffen/Documents/dev/clojure/clj-nio"}}
 
  :aliases
  {:build {:extra-paths ["bin"]}
