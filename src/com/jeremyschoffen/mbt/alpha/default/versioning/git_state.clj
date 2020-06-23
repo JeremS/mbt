@@ -207,22 +207,3 @@
 (u/spec-op tag!
            :deps [ git/create-tag!]
            :param {:req [:git/repo :git/tag!]})
-
-
-
-;; TODO: potentially move this since it's not very general, can't control the options of the tag.
-(defn bump-tag!
-  "Creates a new tag for the current commit bumping the version number."
-  [param]
-  (-> param
-      (u/check check-repo-in-order)
-      (u/assoc-computed :git/tag! next-tag)
-      git/create-tag!))
-
-(u/spec-op bump-tag!
-           :deps [next-tag git/create-tag!]
-           :param {:req [:project/working-dir
-                         :git/repo
-                         :versioning/tag-base-name
-                         :versioning/scheme]
-                   :opt [:versioning/bump-level]})

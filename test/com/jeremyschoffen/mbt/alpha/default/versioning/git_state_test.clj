@@ -173,6 +173,12 @@
                                :version initial-v
                                :path (str project-dir2)}})))
 
+(defn bump-tag!
+  [param]
+  (-> param
+      (u/assoc-computed :git/tag! git-state/next-tag)
+      git-state/tag!))
+
 
 (deftest bump!
   (let [repo (h/make-uncommited-temp-repo!)
@@ -193,12 +199,12 @@
         base-name2 (:versioning/tag-base-name ctxt2)]
 
     (facts
-      (git-state/bump-tag! ctxt1)
+      (bump-tag! ctxt1)
       =throws=> (ex-info? "No commits  found."
                           {::anom/category ::anom/not-found
                            :mbt/error :no-commit})
 
-      (git-state/bump-tag! ctxt2)
+      (bump-tag! ctxt2)
       =throws=> (ex-info? "No commits  found."
                           {::anom/category ::anom/not-found
                            :mbt/error :no-commit}))
@@ -207,12 +213,12 @@
                    :git/commit! {:git.commit/message "initial commit"}))
 
     (facts
-      (git-state/bump-tag! ctxt1)
+      (bump-tag! ctxt1)
       =throws=> (ex-info? "No build file detected."
                           {::anom/category ::anom/not-found
                            :mbt/error :no-build-file})
 
-      (git-state/bump-tag! ctxt2)
+      (bump-tag! ctxt2)
       =throws=> (ex-info? "No build file detected."
                           {::anom/category ::anom/not-found
                            :mbt/error :no-build-file}))
@@ -221,12 +227,12 @@
     (h/copy-dummy-deps (fs/path repo project-dir2))
 
     (facts
-      (git-state/bump-tag! ctxt1)
+      (bump-tag! ctxt1)
       =throws=> (ex-info? "Can't do this operation on a dirty repo."
                           {::anom/category ::anom/forbidden
                            :mbt/error :dirty-repo})
 
-      (git-state/bump-tag! ctxt2)
+      (bump-tag! ctxt2)
       =throws=> (ex-info? "Can't do this operation on a dirty repo."
                           {::anom/category ::anom/forbidden
                            :mbt/error :dirty-repo}))
@@ -235,8 +241,8 @@
     (git/commit! (assoc ctxt1
                    :git/commit! {:git.commit/message "initial commit"}))
 
-    (git-state/bump-tag! ctxt1)
-    (git-state/bump-tag! ctxt2)
+    (bump-tag! ctxt1)
+    (bump-tag! ctxt2)
     (facts
       (git-state/most-recent-description {:git/repo repo
                                           :versioning/tag-base-name base-name1})
