@@ -27,8 +27,8 @@
     (initial-version [_]
       (m/maven-version))
 
-    (bump [this desc]
-      (p/bump this desc :patch))
+    (bump [this version]
+      (p/bump this version :patch))
 
     (bump [_ version level]
       (m/safer-bump version level))))
@@ -42,8 +42,8 @@
     (initial-version [_]
       (m/semver-version))
 
-    (bump [this desc]
-      (p/bump this desc :patch))
+    (bump [this version]
+      (p/bump this version :patch))
 
     (bump [_ version level]
       (m/safer-bump version level))))

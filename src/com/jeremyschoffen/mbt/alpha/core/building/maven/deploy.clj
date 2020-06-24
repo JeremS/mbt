@@ -17,8 +17,8 @@
 
 ;; remake of org.apache.maven.settings.DefaultMavenSettingsBuilder method buildSettings
 ;; TODO: Find a way to get the global maven settings.
-(defn ^Settings get-maven-settings [{maven-settings-file :maven.settings/file
-                                     :or {maven-settings-file u/maven-default-settings-file}}]
+(defn- ^Settings get-maven-settings [{maven-settings-file :maven.settings/file
+                                      :or {maven-settings-file u/maven-default-settings-file}}]
   (let [settings-builder (.newInstance (DefaultSettingsBuilderFactory.))
         settings-building-request (-> (DefaultSettingsBuildingRequest.)
                                       (.setUserSettingsFile (fs/file maven-settings-file))

@@ -134,7 +134,7 @@
                    :version/bump-level level})))
 
 
-(defn bump-maven* [v level]
+(defn- bump-maven* [v level]
   (condp contains? level
     #{:major :minor :patch} (bump-subversions v level)
     #{:alpha :beta :rc} (bump-qualifier v level)
@@ -142,17 +142,17 @@
     (not-supported level)))
 
 
-(defn reset-distance [v]
+(defn- reset-distance [v]
   (assoc v :distance 0))
 
 
-(defn bump-maven [v level]
+(defn- bump-maven [v level]
   (-> v
       (bump-maven* level)
       reset-distance))
 
 
-(defn duplicating-version? [{:keys [subversions distance]} level]
+(defn- duplicating-version? [{:keys [subversions distance]} level]
   (when (zero? distance)
     (let [[_ minor patch] subversions
           same-patch? (contains? (conj allowed-qualifiers :patch) level)
@@ -166,11 +166,11 @@
           same-major?))))
 
 
-(defn going-backwards? [old-version new-version]
+(defn- going-backwards? [old-version new-version]
  (pos? (compare old-version new-version)))
 
 
-(defn assert-bump? [old-version level new-version]
+(defn- assert-bump? [old-version level new-version]
   (when (duplicating-version? old-version level)
     (throw (ex-info (str "Aborted released, bumping with level: " level
                          " would create version: " new-version " pointing to the same commit as version: " old-version ".")

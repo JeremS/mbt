@@ -74,7 +74,7 @@
    (map to-repo repos)])
 
 
-(defn filter-repos [rs]
+(defn- filter-repos [rs]
   (remove #(= "https://repo1.maven.org/maven2/" (-> % val :url)) rs))
 
 
@@ -165,11 +165,11 @@
     pom))
 
 
-(defn update-pom [{pom :maven/pom
-                   project-name :maven/artefact-name
-                   group-id :maven/group-id
-                   project-version :project/version
-                   project-deps :project/deps}]
+(defn- update-pom [{pom :maven/pom
+                    project-name :maven/artefact-name
+                    group-id :maven/group-id
+                    project-version :project/version
+                    project-deps :project/deps}]
   (let [{:keys [deps paths :mvn/repos]} project-deps]
     (-> pom
         (replace-name project-name)
@@ -197,7 +197,7 @@
     (parse-xml rdr)))
 
 
-(defn pom-path [pom-dir]
+(defn- pom-path [pom-dir]
   (u/safer-path pom-dir "pom.xml"))
 
 
