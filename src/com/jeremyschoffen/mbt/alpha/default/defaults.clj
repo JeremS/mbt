@@ -45,3 +45,6 @@
            :deps [artefact-name]
            :param {:req [:project/working-dir]}
            :ret :versioning/tag-base-name)
+
+
+;; TODO: make functions that name jars

@@ -19,7 +19,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 
 
-(def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "core" "version.clj"))
+(def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "version.clj"))
 
 
 (defn write-version-file! [ctxt]
