@@ -3,7 +3,7 @@
     [clojure.spec.alpha :as s]
     [clojure.string :as string]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.version :as v]
+    [com.jeremyschoffen.mbt.alpha.version :as v]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
