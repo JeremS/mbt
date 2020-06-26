@@ -50,8 +50,6 @@
 (u/alias-fn new-pom pom/new-pom)
 (u/alias-fn sync-pom! pom/sync-pom!)
 
-
-;; TODO: rework the version api
 (u/alias-fn parse-maven-version maven-like/parse-version)
 (u/alias-fn parse-semver-version maven-like/parse-version)
 
