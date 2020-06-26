@@ -3,9 +3,22 @@
     [clojure.set :as set]
     [clojure.spec.alpha :as s]
     [medley.core :as medley]
+    [potemkin :as p]
     [com.jeremyschoffen.java.nio.file :as fs]))
 
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Potemkin stuff
+;;----------------------------------------------------------------------------------------------------------------------
+(defmacro alias-fn [alias aliased-name]
+  (let [aliased-name (-> aliased-name resolve symbol)]
+    `(do
+       (p/import-fn ~aliased-name ~alias)
+       (s/def ~alias ~aliased-name))))
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Maven stuff
+;;----------------------------------------------------------------------------------------------------------------------
 (def maven-default-settings-file (fs/path (System/getProperty "user.home") ".m2" "settings.xml"))
 
 
@@ -112,9 +125,11 @@
   (swap! param-specs-store assoc fn-name spec))
 
 
-(defn- make-spec-form [{:keys [req opt]}]
+(defn- make-spec-form [{:keys [req opt req-un opt-un]}]
   (list `s/keys :req (vec req)
-                :opt (vec opt)))
+                :opt (vec opt)
+                :req-un (vec req-un)
+                :opt-un (vec opt-un)))
 
 
 (defn- make-defn-spec-form [n param-spec ret-spec]
@@ -179,7 +194,9 @@
 
 (defn- merge-param-specs [param-specs]
   {:req (merge-param-specs* param-specs :req)
-   :opt (merge-param-specs* param-specs :opt)})
+   :opt (merge-param-specs* param-specs :opt)
+   :req-un (merge-param-specs* param-specs :req-un)
+   :opt-un (merge-param-specs* param-specs :opt-un)})
 
 
 (defn get-param-specs-suggestions* [spec-map sym]

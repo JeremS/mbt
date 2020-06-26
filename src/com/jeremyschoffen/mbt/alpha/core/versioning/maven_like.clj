@@ -1,7 +1,9 @@
 (ns com.jeremyschoffen.mbt.alpha.core.versioning.maven-like
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
-            [cognitect.anomalies :as anom])
+            [cognitect.anomalies :as anom]
+            [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
+            [com.jeremyschoffen.mbt.alpha.core.utils :as u])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 
@@ -19,9 +21,6 @@
     :n n}))
 
 
-(def allowed-qualifiers #{:alpha :beta :rc})
-
-
 (defn- parse-qualifier [s]
   (let [[_ q n] (re-matches qualifer-regex s)]
     (when q
@@ -35,11 +34,18 @@
 
 
 (defn parse-version [s]
-  (let [parsed (DefaultArtifactVersion. s)]
-    {:subversions [(.getMajorVersion parsed)
-                   (.getMinorVersion parsed)
-                   (.getIncrementalVersion parsed)]
-     :qualifier (some-> parsed .getQualifier parse-qualifier)}))
+  (let [parsed (DefaultArtifactVersion. s)
+        qualifier (some-> parsed .getQualifier parse-qualifier)]
+    (cond-> {:subversions [(.getMajorVersion parsed)
+                           (.getMinorVersion parsed)
+                           (.getIncrementalVersion parsed)]}
+            qualifier (assoc :qualifier qualifier))))
+
+
+(u/simple-fdef parse-version
+               string?
+               (s/keys :req-un [:maven-like/subversions]
+                       :opt-un [:maven-like/qualifier]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -155,7 +161,7 @@
 (defn- duplicating-version? [{:keys [subversions distance]} level]
   (when (zero? distance)
     (let [[_ minor patch] subversions
-          same-patch? (contains? (conj allowed-qualifiers :patch) level)
+          same-patch? (contains? (conj specs/allowed-qualifiers :patch) level)
           same-minor? (and (= level :minor)
                            (= patch 0))
           same-major? (and (= level :major)
@@ -202,24 +208,30 @@
   (bump [this level] (bump-maven this level)))
 
 
-(def initial-version "0.1.0")
+(def ^:private initial-version "0.1.0")
 
 
-(defn maven-version
-  ([]
-   (-> initial-version parse-version maven-version))
-  ([x]
-   (let [v (map->MavenVersion x)
-         label (get-in v [:qualifier :label])]
-     (if (and label
-              (not (contains? allowed-qualifiers label)))
-       (throw (ex-info (str "Unsupported qualifier: " label)
-                       {::anom/category ::anom/unsupported
-                        :qualifier label}))
-       v))))
+(defn maven-version [x]
+  (let [v (map->MavenVersion x)
+        label (get-in v [:qualifier :label])]
+    (if (and label (not (contains? specs/allowed-qualifiers label)))
+      (throw (ex-info (str "Unsupported qualifier: " label)
+                      {::anom/category ::anom/unsupported
+                       :qualifier label}))
+      v)))
 
 
-(defrecord SemverVersion [subversions qualifier distance sha dirty?]
+(u/spec-op maven-version
+           :param {:req-un [:maven-like/subversions]
+                   :opt-un [:maven-like/qualifier
+                            :git.describe/distance
+                            :git/sha
+                            :git.repo/dirty?]})
+
+(def initial-maven-version (-> initial-version parse-version maven-version))
+
+
+(defrecord SemverVersion [subversions distance sha dirty?]
   Object
   (toString [this] (to-string this))
 
@@ -233,10 +245,16 @@
       (not-supported level))))
 
 
-(defn semver-version
-  ([]
-   (-> initial-version parse-version semver-version))
-  ([x]
-   (-> x
-       (dissoc :qualifier)
-       map->SemverVersion)))
+(defn semver-version [x]
+  (-> x
+      (dissoc :qualifier)
+      map->SemverVersion))
+
+(u/spec-op semver-version
+           :param {:req-un [:maven-like/subversions]
+                   :opt-un [:git.describe/distance
+                            :git/sha
+                            :git.repo/dirty?]})
+
+
+(def initial-semver-version (-> initial-version parse-version semver-version))

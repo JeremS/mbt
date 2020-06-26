@@ -1,12 +1,14 @@
 (ns com.jeremyschoffen.mbt.alpha.core.versioning.maven-like-test
   (:require
     [clojure.test :refer [deftest testing]]
+    [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
 
     [com.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as version]))
 
 
+(st/instrument)
 
 (deftest parse-version
   (facts
@@ -26,6 +28,7 @@
         git-part {:distance distance
                   :sha sha
                   :dirty? true}]
+    (st/unstrument `version/maven-version)
     (facts
       (-> base-version
           version/parse-version
@@ -48,7 +51,8 @@
           version/maven-version
           str)
       =throws=> (ex-info? identity
-                          {::anom/category ::anom/unsupported}))))
+                          {::anom/category ::anom/unsupported})))
+  (st/instrument `version/maven-version))
 
 
 (deftest map->semver-version
@@ -147,12 +151,12 @@
 
 
 (deftest semver-like-bumps
-  (semver-like-progression (version/semver-version))
-  (semver-like-progression (version/maven-version)))
+  (semver-like-progression version/initial-semver-version)
+  (semver-like-progression version/initial-maven-version))
 
 
 (deftest maven-like-bumps
-  (let [v* (atom (version/maven-version))
+  (let [v* (atom version/initial-maven-version)
         bump! (fn [& bumps]
                 (swap! v* #(apply unsafe-bump % bumps)))]
 

@@ -230,3 +230,19 @@
                                     :gpg/key-id]))
 
 (s/def :gpg.sign/specs (s/* :gpg.sign/spec))
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Versions
+;;----------------------------------------------------------------------------------------------------------------------
+(s/def :maven-like/subversions (s/coll-of integer? :kind vector? :count 3))
+
+(def allowed-qualifiers #{:alpha :beta :rc})
+(s/def :maven-like.qualifier/label allowed-qualifiers)
+(s/def :maven-like.qualifier/n (s/and integer? pos?))
+
+
+(s/def :maven-like/qualifier (s/keys :req-un [:maven-like.qualifier/label
+                                              :maven-like.qualifier/n]))
+
+(s/def :simple-version/number integer?)
