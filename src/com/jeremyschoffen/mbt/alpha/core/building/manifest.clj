@@ -8,10 +8,10 @@
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj
-(defn  make-base-manifest [{a :project/author}]
+(defn  make-base-manifest [{author :project/author}]
   {"Created-By" (str "Mbt v" v/version)
-   "Built-By" (or a (System/getProperty "user.name"))
-   "Build-Jdk" (System/getProperty "java.version")})
+   "Built-By"   (or author (System/getProperty "user.name"))
+   "Build-Jdk"  (System/getProperty "java.version")})
 
 (u/spec-op make-base-manifest
            :param {:opt [:project/author]}
