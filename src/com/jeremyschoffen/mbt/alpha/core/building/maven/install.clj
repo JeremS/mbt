@@ -25,11 +25,11 @@
                    :opt [:maven/classifier]})
 
 
-(defn install! [{maven-local-repo :maven/local-repo
-                 :or              {maven-local-repo maven/default-local-repo}
-                 :as param}]
+(defn install! [{install-dir :maven.install/dir
+                 :or         {install-dir maven/default-local-repo}
+                 :as         param}]
   (let [system (maven/make-system)
-        session (maven/make-session system (str maven-local-repo))
+        session (maven/make-session system (str install-dir))
         install-request (make-install-request param)]
     (.install system session install-request)))
 
@@ -40,4 +40,4 @@
                          :project/version
                          :maven.deploy/artefacts]
                    :opt [:maven/classifier
-                         :maven/local-repo]})
+                         :maven.install/dir]})

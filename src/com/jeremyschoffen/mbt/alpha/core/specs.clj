@@ -40,6 +40,10 @@
 (s/def :maven/local-repo path?)
 (s/def :maven.settings/file path?)
 
+;; Maven install conf
+(s/def :maven.install/dir path?)
+
+
 ;; Maven credentials/auth conf
 (s/def :maven.credentials/user-name string?)
 (s/def :maven.credentials/password string?)

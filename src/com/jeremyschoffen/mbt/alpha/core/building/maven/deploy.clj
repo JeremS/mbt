@@ -109,10 +109,12 @@
                          :maven.settings/file]})
 
 
-(defn deploy! [param]
+(defn deploy! [{local-repo :maven/local-repo
+                :as param
+                :or {local-repo maven/default-local-repo}}]
   (System/setProperty "aether.checksums.forSignature" "true")
   (let [system (maven/make-system)
-        session (maven/make-session system maven/default-local-repo)
+        session (maven/make-session system local-repo)
         deploy-request (make-deploy-request param)]
     (.deploy system session deploy-request)))
 
@@ -125,4 +127,5 @@
                          :maven.deploy/artefacts]
                    :opt [:maven/classifier
                          :maven/credentials
-                         :maven.settings/file]})
+                         :maven.settings/file
+                         :maven/local-repo]})

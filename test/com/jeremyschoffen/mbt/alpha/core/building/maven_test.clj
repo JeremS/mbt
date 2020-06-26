@@ -58,7 +58,7 @@
        :jar/output jar-out
 
        ;; Deployment outputs
-       :maven/local-repo install-dir
+       :maven.install/dir install-dir
        :maven/server {:maven.server/url (fs/url deploy-dir)}}
       ;; Computed env
       (u/assoc-computed
@@ -85,17 +85,20 @@
 
 
 (deftest testing-install-deploy
-  (-> ctxt
-      (u/side-effect! build!)
-      (u/side-effect! install/install!)
-      (u/side-effect! deploy/deploy!))
+  (try
+    (-> ctxt
+        (u/side-effect! build!)
+        (u/side-effect! install/install!)
+        (u/side-effect! deploy/deploy!))
 
-  (let [jar-content (list-jar-files jar-out)
-        installed-jar-content (list-jar-files installed-jar-path)
-        deployed-jar-content (list-jar-files deployed-jar-path)]
+    (let [jar-content (list-jar-files jar-out)
+          installed-jar-content (list-jar-files installed-jar-path)
+          deployed-jar-content (list-jar-files deployed-jar-path)]
 
-    (facts
-      jar-content => installed-jar-content
-      jar-content => deployed-jar-content))
-
-  (cleaning/clean! ctxt))
+      (facts
+        jar-content => installed-jar-content
+        jar-content => deployed-jar-content))
+    (catch Exception e
+      (throw e))
+    (finally
+      (cleaning/clean! ctxt))))
