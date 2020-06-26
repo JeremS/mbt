@@ -6,7 +6,6 @@
     [testit.core :refer :all]
 
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]))
 
 (st/instrument)
@@ -58,7 +57,7 @@
           str)
       => (str maven-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY")))
 
-  (testing "Maven"
+  (testing "Semver"
     (facts
       (-> semver-ctxt
           (assoc :git/description (make-dumy-desc semver-init-str 0 false))
@@ -72,7 +71,7 @@
           str)
       => (str semver-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY")))
 
-  (testing "Maven"
+  (testing "Simple"
     (facts
       (-> simple-ctxt
           (assoc :git/description (make-dumy-desc simple-init-str 0 true))

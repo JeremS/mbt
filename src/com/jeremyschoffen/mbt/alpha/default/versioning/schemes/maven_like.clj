@@ -1,6 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like
   (:require
-    [com.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as m]
+    [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]))
 
@@ -15,35 +15,35 @@
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
     (-> current-str
-        m/parse-version
+        mbt-core/parse-version
         (merge relevant-part))))
 
 
 (def maven-scheme
   (reify p/VersionScheme
     (current-version [_ desc]
-      (-> desc parse-git-descripton m/maven-version))
+      (-> desc parse-git-descripton mbt-core/maven-version))
 
     (initial-version [_]
-      (m/maven-version))
+      mbt-core/initial-maven-version)
 
     (bump [this version]
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (m/safer-bump version level))))
+      (mbt-core/maven-bump version level))))
 
 
 (def semver-scheme
   (reify p/VersionScheme
     (current-version [_ desc]
-      (-> desc parse-git-descripton m/semver-version))
+      (-> desc parse-git-descripton mbt-core/semver-version))
 
     (initial-version [_]
-      (m/semver-version))
+      mbt-core/initial-semver-version)
 
     (bump [this version]
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (m/safer-bump version level))))
+      (mbt-core/semver-bump version level))))

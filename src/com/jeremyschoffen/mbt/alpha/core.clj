@@ -50,15 +50,18 @@
 (u/alias-fn new-pom pom/new-pom)
 (u/alias-fn sync-pom! pom/sync-pom!)
 
-(u/alias-fn parse-maven-version maven-like/parse-version)
-(u/alias-fn parse-semver-version maven-like/parse-version)
+(u/alias-fn parse-version maven-like/parse-version)
 
 (u/alias-fn maven-version maven-like/maven-version)
 (u/alias-fn semver-version maven-like/semver-version)
+
+(def initial-maven-version maven-like/initial-maven-version)
+(def initial-semver-version maven-like/initial-semver-version)
 
 (u/alias-fn maven-bump maven-like/safer-bump)
 (u/alias-fn semver-bump maven-like/safer-bump)
 
 (u/alias-fn parse-simple-version simple-version/parse-version-number)
 (u/alias-fn simple-version simple-version/simple-version)
+(def initial-simple-version simple-version/initial-simple-version)
 (u/alias-fn simple-version-bump simple-version/bump)
