@@ -7,7 +7,8 @@
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.specs]
-    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs])
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]
+    [com.jeremyschoffen.mbt.alpha.default.utils :as du])
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
 
@@ -207,3 +208,19 @@
            :deps [check-repo-in-order mbt-core/git-tag!]
            :param {:req [:git/repo
                          :git/tag!]})
+
+
+(defn bump-tag!
+  [param]
+  (-> param
+      (du/augment-computed :git/tag! next-tag)
+      tag!))
+
+
+(u/spec-op bump-tag!
+           :deps [next-tag tag!]
+           :param {:req [:project/working-dir
+                         :git/repo
+                         :versioning/scheme
+                         :versioning/tag-base-name]
+                   :opt [:versioning/bump-level]})
