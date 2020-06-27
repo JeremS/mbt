@@ -132,13 +132,13 @@
 (s/def :git/prefix (every-pred fs/path? (complement fs/absolute?)))
 
 
-(s/def :git.addition/file-patterns (s/coll-of string?))
-(s/def :git.addition/update? boolean?)
-(s/def :git.addition/working-tree-iterator any?) ;; TODO: find the right type
+(s/def :git.add!/file-patterns (s/coll-of string?))
+(s/def :git.add!/update? boolean?)
+(s/def :git.add!/working-tree-iterator any?) ;; TODO: find the right type
 
-(s/def :git/addition (s/keys :req [:git.addition/file-patterns]
-                             :opt [:git.addition/update?
-                                   :git.addition/working-tree-iterator]))
+(s/def :git/add! (s/keys :req [:git.add!/file-patterns]
+                         :opt [:git.add!/update?
+                               :git.add!/working-tree-iterator]))
 
 
 (s/def :git.identity/name string?)

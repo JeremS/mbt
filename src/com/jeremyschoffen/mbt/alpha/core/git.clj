@@ -123,14 +123,14 @@
 
 
 (defn add! [{repo     :git/repo
-             addition :git/addition}]
-  (let [{patterns :git.addition/file-patterns} addition
-        opts (format-opts addition #{:git.addition/file-patterns})]
+             addition :git/add!}]
+  (let [{patterns :git.add!/file-patterns} addition
+        opts (format-opts addition #{:git.add!/file-patterns})]
     (apply git/git-add repo patterns opts)))
 
 (u/spec-op add!
            :param {:req [:git/repo
-                         :git/addition]})
+                         :git/add!]})
 
 
 (defn list-all-changed-patterns [param]
@@ -148,7 +148,7 @@
 (defn add-all! [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
-            :git/addition {:git.addition/file-patterns patterns}))))
+            :git/add! {:git.add!/file-patterns patterns}))))
 
 (u/spec-op add-all!
            :deps [status]
@@ -158,8 +158,8 @@
 (defn update-all! [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
-            :git/addition {:git.addition/file-patterns patterns
-                           :git.addition/update? true}))))
+            :git/add! {:git.add!/file-patterns patterns
+                       :git.add!/update? true}))))
 
 (u/spec-op update-all!
            :deps [status]
