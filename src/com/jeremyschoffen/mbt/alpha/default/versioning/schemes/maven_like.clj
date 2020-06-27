@@ -15,7 +15,7 @@
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
     (-> current-str
-        mbt-core/parse-version
+        mbt-core/parse-maven-like-version
         (merge relevant-part))))
 
 

@@ -17,7 +17,7 @@
     (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
 
 
-(defn get-dir [^Git repo]
+(defn- get-dir [^Git repo]
   (let [dir (-> repo
                 .getRepository
                 .getDirectory)]
@@ -247,11 +247,11 @@
            :ret #(instance? Ref %))
 
 
-(defn create-tag! [{repo :git/repo :as param}]
+(defn tag! [{repo :git/repo :as param}]
   (let [tag-ref (create-tag!* param)]
     (get-tag* repo (-> tag-ref .getObjectId))))
 
-(u/spec-op create-tag!
+(u/spec-op tag!
            :deps [create-tag!*]
            :param {:req [:git/repo :git/tag!]}
            :ret :git/tag)

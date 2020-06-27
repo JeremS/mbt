@@ -172,13 +172,13 @@
               :git.tag/tagger  {:git.identity/name  tagger-name
                                 :git.identity/email tagger-email}}
 
-        _    (git/create-tag! (assoc ctxt :git/tag! tag!))
+        _    (git/tag! (assoc ctxt :git/tag! tag!))
         tag' (git/get-tag (assoc ctxt :git.tag/name tag-name))]
 
     (facts
       tag' =in=> tag!
 
-      (git/create-tag! (assoc ctxt :git/tag! tag!))
+      (git/tag! (assoc ctxt :git/tag! tag!))
       =throws=> (ex-info? "The tag tag already exists."
                           {::anom/category ::anom/forbidden,
                            :mbt/error :tag-already-exists}))))
@@ -211,9 +211,9 @@
   (let [{:keys [ctxt]} (make-temp-repo!)
         wd (:project/working-dir ctxt)]
 
-    (git/create-tag! (assoc ctxt
-                       :git/tag! {:git.tag/name "tag0"
-                                  :git.tag/message "tag0"}))
+    (git/tag! (assoc ctxt
+                :git/tag! {:git.tag/name "tag0"
+                           :git.tag/message "tag0"}))
     (fact
       (git/describe ctxt) =in=> {:git.describe/distance 0
                                  :git/tag {:git.tag/name "tag0"}
@@ -224,9 +224,9 @@
     (git/commit! (assoc ctxt
                    :git/commit! {:git.commit/message "commit 1"}))
 
-    (git/create-tag! (assoc ctxt
-                       :git/tag! {:git.tag/name "tag1"
-                                  :git.tag/message "tag1"}))
+    (git/tag! (assoc ctxt
+                :git/tag! {:git.tag/name "tag1"
+                           :git.tag/message "tag1"}))
 
     (facts
       (git/describe ctxt) =in=> {:git.describe/distance 0
