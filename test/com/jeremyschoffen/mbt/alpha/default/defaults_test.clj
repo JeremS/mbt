@@ -6,8 +6,8 @@
     [com.jeremyschoffen.java.nio.file :as fs]
 
     [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.test.helpers :as h]))
+    [com.jeremyschoffen.mbt.alpha.test.helpers :as h]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (st/instrument)

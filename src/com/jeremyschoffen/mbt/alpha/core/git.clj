@@ -9,7 +9,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.java.nio.internal.coercions :as coercions]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (org.eclipse.jgit.revwalk RevTag RevCommit)
     (org.eclipse.jgit.lib Ref PersonIdent)

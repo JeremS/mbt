@@ -3,7 +3,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.core.shell :as shell]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 

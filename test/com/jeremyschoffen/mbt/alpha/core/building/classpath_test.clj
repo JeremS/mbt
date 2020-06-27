@@ -6,7 +6,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (def clojure-jar? #(re-matches #".*/clojure-.*\.jar$" %))

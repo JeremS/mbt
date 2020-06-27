@@ -3,12 +3,10 @@
     [clojure.string :as string]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.specs]
-    [com.jeremyschoffen.mbt.alpha.default.utils :as du]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (def working-dir (constantly (u/safer-path)))
@@ -19,6 +17,7 @@
 
 (defn output-dir [{wd :project/working-dir}]
   (u/safer-path wd "target"))
+
 
 (u/spec-op output-dir
            :param {}
@@ -145,7 +144,7 @@
 
 
 (defn make-context [user-defined]
-  (->> (apply du/ensure-computed user-defined ctxt-building-scheme)))
+  (->> (apply u/ensure-computed user-defined ctxt-building-scheme)))
 
 (into (sorted-map)
       (make-context {:project/working-dir (u/safer-path "test-repos" "monorepo" "project1")}))

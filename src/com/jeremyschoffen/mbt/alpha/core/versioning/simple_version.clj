@@ -1,8 +1,8 @@
 (ns com.jeremyschoffen.mbt.alpha.core.versioning.simple-version
   (:require
     [cognitect.anomalies :as anom]
-    [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.core.specs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defrecord SimpleVersion [number distance sha dirty?]

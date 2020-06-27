@@ -3,7 +3,7 @@
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     [java.nio.file FileVisitResult FileVisitor]))
 

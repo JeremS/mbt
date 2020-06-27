@@ -2,7 +2,7 @@
   (:require
     [clojure.tools.deps.alpha.reader :as deps-reader]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defn get-deps [{wd :project/working-dir}]

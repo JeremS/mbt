@@ -3,7 +3,7 @@
             [clojure.string :as string]
             [cognitect.anomalies :as anom]
             [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
-            [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+            [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import [java.lang Comparable]
            [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 

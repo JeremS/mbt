@@ -1,14 +1,11 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version
   (:require
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]))
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defn- current-version* [{tag :git/tag
-                          distance :git.describe/distance
-                          sha      :git/sha
-                          dirty    :git.repo/dirty?
                           :as git-desc}]
   (let [last-version-number (-> tag
                                 :git.tag/message

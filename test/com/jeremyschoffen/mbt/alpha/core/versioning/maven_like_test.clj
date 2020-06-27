@@ -269,6 +269,4 @@
       (str (safer-bump v :beta))
       =throws=>
       (ex-info? identity {::anom/category ::anom/forbidden
-                          :mbt/error :versioning/duplicating-tag})))) ;;duplication
-
-(clojure.test/run-tests)
+                          :mbt/error :versioning/duplicating-tag}))))

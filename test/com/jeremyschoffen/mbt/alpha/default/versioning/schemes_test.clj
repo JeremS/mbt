@@ -5,8 +5,8 @@
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
 
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]))
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 (st/instrument)
 

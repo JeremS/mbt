@@ -1,7 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.test.repos
   (:require
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (def test-repos (u/safer-path "test-repos"))

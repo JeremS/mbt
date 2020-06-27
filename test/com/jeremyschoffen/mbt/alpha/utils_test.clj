@@ -1,10 +1,10 @@
-(ns com.jeremyschoffen.mbt.alpha.core.utils-test
+(ns com.jeremyschoffen.mbt.alpha.utils-test
   (:require
     [clojure.test :refer [deftest]]
     [clojure.spec.alpha :as s]
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 

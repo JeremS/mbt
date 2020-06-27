@@ -6,7 +6,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.manifest :as manifest]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (java.nio.file FileSystem)
     (java.net URI)

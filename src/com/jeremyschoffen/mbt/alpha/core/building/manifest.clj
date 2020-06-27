@@ -4,7 +4,7 @@
     [clojure.string :as string]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.version :as v]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj

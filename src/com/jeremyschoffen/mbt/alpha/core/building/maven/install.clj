@@ -1,11 +1,9 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.maven.install
   (:require
     [clojure.tools.deps.alpha.util.maven :as maven]
-    [clojure.java.io :as io]
-    [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     [org.eclipse.aether.installation InstallRequest]))
 

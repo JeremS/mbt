@@ -2,7 +2,7 @@
   (:require
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.gpg :as gpg]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     [org.eclipse.aether.artifact DefaultArtifact]))
 

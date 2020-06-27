@@ -5,7 +5,7 @@
     [clojure.tools.deps.alpha.util.maven :as maven]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/classpath.clj#L6

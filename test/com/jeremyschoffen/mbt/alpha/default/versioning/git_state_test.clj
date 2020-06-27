@@ -2,6 +2,7 @@
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
+    [com.jeremyschoffen.java.nio.file :as fs]
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
 
@@ -12,8 +13,8 @@
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.test.helpers :as h]
 
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.java.nio.file :as fs]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
+
 
 (st/instrument)
 

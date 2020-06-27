@@ -1,11 +1,11 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.schemes
   (:require
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like :as maven-like]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version :as simple]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
-    [com.jeremyschoffen.mbt.alpha.default.specs]))
+    [com.jeremyschoffen.mbt.alpha.default.specs]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Smoothing the polymorphic interface

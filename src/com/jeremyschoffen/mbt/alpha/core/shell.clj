@@ -2,7 +2,7 @@
   (:require
     [clojure.java.shell :as shell]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;; inspired by https://github.com/EwenG/badigeon/blob/master/src/badigeon/exec.clj
 

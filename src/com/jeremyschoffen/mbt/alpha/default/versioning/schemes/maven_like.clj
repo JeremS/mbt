@@ -1,8 +1,8 @@
 (ns com.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like
   (:require
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
-    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]))
+    [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 (defn parse-git-descripton [git-desc]
   (let [current-str (-> git-desc

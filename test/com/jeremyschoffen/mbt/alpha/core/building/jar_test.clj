@@ -12,7 +12,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (spec-test/instrument)

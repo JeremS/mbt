@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.core.utils
+(ns com.jeremyschoffen.mbt.alpha.utils
   (:require
     [clojure.set :as set]
     [clojure.spec.alpha :as s]
@@ -38,6 +38,12 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Additional map utils
 ;;----------------------------------------------------------------------------------------------------------------------
+
+(defn- check-kfs [kfs]
+  (when-not (even? (count kfs))
+    (throw (IllegalArgumentException.
+             "Expected even number of arguments after map/vector, found odd number."))))
+
 ;; totally riped from clojure core...
 (defn assoc-computed
   ([m k f]
@@ -51,6 +57,41 @@
                   "assoc-computed expects even number of arguments after map/vector, found odd number")))
        ret))))
 
+;; TODO: use this version
+(comment
+  (defn assoc-computed [m & kfs]
+    (check-kfs kfs)
+    (reduce (fn [m [k f]]
+              (assoc m k (f m)))
+            m
+            (partition 2 kfs))))
+
+
+
+(defn ensure-computed [m & kfs]
+  (check-kfs kfs)
+  (reduce (fn [m [k f]]
+            (if (get m k)
+              m
+              (assoc m k (f m))))
+          m
+          (partition 2 kfs)))
+
+
+(defn- augment-computed*
+  [m k f]
+  (let [defaults (get m k)
+        res (f m)]
+    (assoc m k (medley/deep-merge defaults res))))
+
+
+(defn augment-computed
+  [m & kfs]
+  (check-kfs kfs)
+  (reduce (fn [m [k f]]
+            (augment-computed* m k f))
+          m
+          (partition 2 kfs)))
 
 (defn merge-computed [m f]
   (merge m (f m)))
@@ -120,9 +161,9 @@
 
 (defn- make-spec-form [{:keys [req opt req-un opt-un]}]
   (list `s/keys :req (vec req)
-                :opt (vec opt)
-                :req-un (vec req-un)
-                :opt-un (vec opt-un)))
+        :opt (vec opt)
+        :req-un (vec req-un)
+        :opt-un (vec opt-un)))
 
 
 (defn- make-defn-spec-form [n param-spec ret-spec]
@@ -246,3 +287,6 @@
        (s/def ~alias ~aliased-name)
        (add-spec! '~(ns-qualify alias) (get-spec '~aliased-name))
        ~alias)))
+
+
+;; TODO group all utils here

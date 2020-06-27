@@ -5,10 +5,9 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.specs]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]
-    [com.jeremyschoffen.mbt.alpha.default.utils :as du])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
 
@@ -213,7 +212,7 @@
 (defn bump-tag!
   [param]
   (-> param
-      (du/augment-computed :git/tag! next-tag)
+      (u/augment-computed :git/tag! next-tag)
       tag!))
 
 

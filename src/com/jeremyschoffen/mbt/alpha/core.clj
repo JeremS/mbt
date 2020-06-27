@@ -14,7 +14,7 @@
     [com.jeremyschoffen.mbt.alpha.core.git :as git]
     [com.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as maven-like]
     [com.jeremyschoffen.mbt.alpha.core.versioning.simple-version :as simple-version]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

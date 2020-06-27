@@ -5,7 +5,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
     [com.jeremyschoffen.mbt.alpha.core.specs]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u])
+    [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     [org.apache.maven.properties.internal SystemProperties]
     [org.apache.maven.settings Server Settings]
