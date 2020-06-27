@@ -70,7 +70,6 @@
                          :maven.settings/file]})
 
 
-
 (defn- make-remote-repo [{server :maven/server
                           cred   :maven/credentials
                           :as param}]

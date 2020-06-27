@@ -102,3 +102,5 @@
       (throw e))
     (finally
       (cleaning/clean! ctxt))))
+
+;;TODO: test the fetching of opts for maven conf in the case of deploy
