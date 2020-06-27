@@ -65,4 +65,4 @@
            :param {:opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides]}
-           :ret string?)
+           :ret :jar/manifest)
