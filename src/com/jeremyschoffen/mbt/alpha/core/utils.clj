@@ -8,15 +8,6 @@
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Potemkin stuff
-;;----------------------------------------------------------------------------------------------------------------------
-(defmacro alias-fn [alias aliased-name]
-  (let [aliased-name (-> aliased-name resolve symbol)]
-    `(do
-       (p/import-fn ~aliased-name ~alias)
-       (s/def ~alias ~aliased-name))))
-
-;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven stuff
 ;;----------------------------------------------------------------------------------------------------------------------
 (def maven-default-settings-file (fs/path (System/getProperty "user.home") ".m2" "settings.xml"))
@@ -113,7 +104,9 @@
   "Qualify symbol s by resolving it or using the current *ns*."
   [s]
   (if-let [ns-sym (some-> s namespace symbol)]
-    (or (some-> (get (ns-aliases *ns*) ns-sym) str (symbol (name s)))
+    (or (some-> (get (ns-aliases *ns*) ns-sym)
+                str
+                (symbol (name s)))
         s)
     (symbol (str (.name *ns*)) (str s))))
 
@@ -146,7 +139,9 @@
   (let [sanitized (-> spec
                       (update :deps #(set (mapv ns-qualify %)))
                       (update-in [:param :req] set)
-                      (update-in [:param :opt] set))]
+                      (update-in [:param :opt] set)
+                      (update-in [:param :req-un] set)
+                      (update-in [:param :opt-un] set))]
     `(do
        (add-spec! '~(ns-qualify n) '~sanitized)
        ~(make-defn-spec-form n param ret))))
@@ -239,3 +234,15 @@
                             (contains? opt kw))
                     f))))
         @param-specs-store))
+
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Potemkin stuff
+;;----------------------------------------------------------------------------------------------------------------------
+(defmacro alias-fn [alias aliased-name]
+  (let [aliased-name (-> aliased-name resolve symbol)]
+    `(do
+       (p/import-fn ~aliased-name ~alias)
+       (s/def ~alias ~aliased-name)
+       (add-spec! '~(ns-qualify alias) (get-spec '~aliased-name))
+       ~alias)))
