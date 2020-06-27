@@ -61,5 +61,3 @@
     (fact (ex-data e)
           =in=> {:clojure.spec.alpha/failure :instrument
                  :clojure.spec.alpha/fn `foo})))
-
-(clojure.test/run-tests)

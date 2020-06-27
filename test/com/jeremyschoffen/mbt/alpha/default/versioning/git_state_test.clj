@@ -5,10 +5,10 @@
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
 
-    [com.jeremyschoffen.mbt.alpha.core.git :as git]
-    [com.jeremyschoffen.mbt.alpha.default.specs :as default-specs]
+    [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
+    [com.jeremyschoffen.mbt.alpha.default.specs]
     [com.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]
-    [com.jeremyschoffen.mbt.alpha.default.names :as names]
+    [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
     [com.jeremyschoffen.mbt.alpha.test.helpers :as h]
 
@@ -19,28 +19,28 @@
 
 (defn novelty! [repo & dirs]
   (apply h/add-src! repo dirs)
-  (git/add-all! {:git/repo repo})
-  (git/commit! {:git/repo repo
-                :git/commit! {:git.commit/message "Novelty!"}}))
+  (mbt-core/git-add-all! {:git/repo repo})
+  (mbt-core/git-commit! {:git/repo repo
+                         :git/commit! {:git.commit/message "Novelty!"}}))
 
 
 (deftest most-recent-desc
   (let [repo (h/make-temp-repo!)
         ctxt {:git/repo repo}]
 
-    (git/create-tag! (assoc ctxt :git/tag! {:git.tag/name "tag-v1"
-                                            :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "tag-v1"
+                                              :git.tag/message ""}))
 
 
     (novelty! repo "src")
 
-    (git/create-tag! (assoc ctxt :git/tag! {:git.tag/name "tag-v2"
-                                            :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "tag-v2"
+                                              :git.tag/message ""}))
 
     (novelty! repo "src")
 
-    (git/create-tag! (assoc ctxt :git/tag! {:git.tag/name "gat-v1"
-                                            :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "gat-v1"
+                                              :git.tag/message ""}))
     (testing "The most recent tag surfaces without pattern to match"
       (fact
         (git-state/most-recent-description ctxt)
@@ -55,16 +55,22 @@
                :git/tag {:git.tag/name "tag-v2"}}))))
 
 
+(def tag-name-regex #"(.*)-v(\d.*)")
+
+
 (defn current-version* [desc]
   (-> desc
       (get-in [:git/tag :git.tag/name])
-      (->> (re-matches default-specs/tag-name-regex))
+      (->> (re-matches tag-name-regex))
       (get 2)))
+
 
 (defn bump* [v]
   (-> v Integer/parseInt inc str))
 
+
 (def initial-v "0")
+
 
 (def test-scheme
   (reify vp/VersionScheme
@@ -83,13 +89,13 @@
         ctxt {:git/repo repo
               :versioning/scheme test-scheme}]
 
-    (git/create-tag! (assoc ctxt
-                       :git/tag! {:git.tag/name "tag-v2"
-                                  :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt
+                         :git/tag! {:git.tag/name "tag-v2"
+                                    :git.tag/message ""}))
 
-    (git/create-tag! (assoc ctxt
-                       :git/tag! {:git.tag/name "gat-v1.1.1"
-                                  :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt
+                         :git/tag! {:git.tag/name "gat-v1.1.1"
+                                    :git.tag/message ""}))
 
     (facts
       (git-state/current-version ctxt) => "1.1.1"
@@ -107,9 +113,9 @@
         (git-state/current-version ctxt) => nil
         (git-state/next-version ctxt) => initial-v))
 
-    (git/create-tag! (assoc ctxt
-                       :git/tag! {:git.tag/name "p-v3"
-                                  :git.tag/message ""}))
+    (mbt-core/git-tag! (assoc ctxt
+                         :git/tag! {:git.tag/name "p-v3"
+                                    :git.tag/message ""}))
 
     (testing "When we have a tag, we get current and next version."
       (facts
@@ -123,7 +129,7 @@
               :project/working-dir (fs/path repo)
               :versioning/scheme test-scheme}
         tag (-> ctxt
-                (u/assoc-computed :versioning/tag-base-name names/tag-base-name)
+                (u/assoc-computed :versioning/tag-base-name defaults/tag-base-name)
                 git-state/next-tag
                 (update :git.tag/message clojure.edn/read-string))
         base-name (-> repo fs/file-name str)
@@ -145,7 +151,7 @@
         ctxt1 (u/assoc-computed {:git/repo repo
                                  :project/working-dir (fs/path repo project-dir1)
                                  :versioning/scheme test-scheme}
-                :versioning/tag-base-name names/tag-base-name)
+                                :versioning/tag-base-name defaults/tag-base-name)
         base-name1 (:versioning/tag-base-name ctxt1)
 
 
@@ -153,7 +159,7 @@
         ctxt2 (u/assoc-computed {:git/repo repo
                                  :project/working-dir (fs/path repo project-dir2)
                                  :versioning/scheme test-scheme}
-                :versioning/tag-base-name names/tag-base-name)
+                                :versioning/tag-base-name defaults/tag-base-name)
         base-name2 (:versioning/tag-base-name ctxt2)
 
         next-tag #(-> %
@@ -187,7 +193,7 @@
         ctxt1 (u/assoc-computed {:git/repo repo
                                  :project/working-dir (fs/path repo project-dir1)
                                  :versioning/scheme test-scheme}
-                                :versioning/tag-base-name names/tag-base-name)
+                                :versioning/tag-base-name defaults/tag-base-name)
         base-name1 (:versioning/tag-base-name ctxt1)
 
 
@@ -195,7 +201,7 @@
         ctxt2 (u/assoc-computed {:git/repo repo
                                  :project/working-dir (fs/path repo project-dir2)
                                  :versioning/scheme test-scheme}
-                                :versioning/tag-base-name names/tag-base-name)
+                                :versioning/tag-base-name defaults/tag-base-name)
         base-name2 (:versioning/tag-base-name ctxt2)]
 
     (facts
@@ -209,8 +215,8 @@
                           {::anom/category ::anom/not-found
                            :mbt/error :no-commit}))
 
-    (git/commit! (assoc ctxt1
-                   :git/commit! {:git.commit/message "initial commit"}))
+    (mbt-core/git-commit! (assoc ctxt1
+                            :git/commit! {:git.commit/message "initial commit"}))
 
     (facts
       (bump-tag! ctxt1)
@@ -237,9 +243,9 @@
                           {::anom/category ::anom/forbidden
                            :mbt/error :dirty-repo}))
 
-    (git/add-all! ctxt1)
-    (git/commit! (assoc ctxt1
-                   :git/commit! {:git.commit/message "initial commit"}))
+    (mbt-core/git-add-all! ctxt1)
+    (mbt-core/git-commit! (assoc ctxt1
+                            :git/commit! {:git.commit/message "initial commit"}))
 
     (bump-tag! ctxt1)
     (bump-tag! ctxt2)

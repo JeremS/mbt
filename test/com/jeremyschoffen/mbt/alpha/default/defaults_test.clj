@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.default.names-test
+(ns com.jeremyschoffen.mbt.alpha.default.defaults-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]

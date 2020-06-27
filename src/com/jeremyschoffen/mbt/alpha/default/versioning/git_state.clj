@@ -3,12 +3,10 @@
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [com.jeremyschoffen.java.nio.file :as fs]
-
-    [com.jeremyschoffen.mbt.alpha.core.git :as git]
+    [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.core.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.specs]
-    [com.jeremyschoffen.mbt.alpha.default.names :as names]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs])
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
@@ -18,13 +16,13 @@
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn check-some-commit [param]
-  (when-not (git/any-commit? param)
+  (when-not (mbt-core/git-any-commit? param)
     (throw (ex-info "No commits  found."
                     (merge param {::anom/category ::anom/not-found
                                   :mbt/error      :no-commit})))))
 
 (u/spec-op check-some-commit
-           :deps [git/any-commit?]
+           :deps [mbt-core/git-any-commit?]
            :param {:req [:git/repo]})
 
 
@@ -32,11 +30,11 @@
                                 tag-base :versioning/tag-base-name
                                 :as param}]
   (check-some-commit param)
-  (git/describe {:git/repo                 repo
-                 :git.describe/tag-pattern (str tag-base "*")}))
+  (mbt-core/git-describe {:git/repo                 repo
+                          :git.describe/tag-pattern (str tag-base "*")}))
 
 (u/spec-op most-recent-description
-           :deps [git/describe]
+           :deps [mbt-core/git-describe]
            :param {:req [:git/repo]
                    :opt [:versioning/tag-base-name]}
            :ret (s/nilable :git/description))
@@ -55,7 +53,6 @@
            :ret (s/nilable :versioning/version))
 
 
-
 (defn next-version [param]
   (if-let [desc (most-recent-description param)]
     (-> param
@@ -66,8 +63,10 @@
 
 (u/spec-op next-version
            :deps [most-recent-description vs/initial-version vs/bump]
-           :param {:req [:git/repo :versioning/scheme]
-                   :opt [:versioning/tag-base-name :versioning/bump-level]}
+           :param {:req [:git/repo
+                         :versioning/scheme]
+                   :opt [:versioning/tag-base-name
+                         :versioning/bump-level]}
            :ret :versioning/version)
 
 
@@ -113,15 +112,14 @@
            :ret map?)
 
 
-(defn tag
+(defn make-tag
   "Creates tag data usable by our git wrapper."
   [param]
   (let [m (make-tag-data param)]
     {:git.tag/name (:tag-name m)
      :git.tag/message (pr-str m)}))
 
-
-(u/spec-op tag
+(u/spec-op make-tag
            :deps [make-tag-data]
            :param {:req [:versioning/tag-base-name
                          :versioning/version
@@ -132,12 +130,12 @@
 (defn next-tag [param]
   (-> param
       (u/assoc-computed
-        :git/prefix git/prefix
+        :git/prefix mbt-core/git-prefix
         :versioning/version next-version)
-      tag))
+      make-tag))
 
 (u/spec-op next-tag
-           :deps [git/prefix names/tag-base-name tag next-version]
+           :deps [mbt-core/git-prefix make-tag next-version]
            :param {:req #{:git/repo
                           :project/working-dir
                           :versioning/tag-base-name
@@ -175,13 +173,13 @@
 
 
 (defn check-not-dirty [param]
-  (when (git/dirty? param)
+  (when (mbt-core/git-dirty? param)
     (throw (ex-info "Can't do this operation on a dirty repo."
                     (merge param {::anom/category ::anom/forbidden
                                   :mbt/error :dirty-repo})))))
 
 (u/spec-op check-not-dirty
-           :deps [git/dirty?]
+           :deps [mbt-core/git-dirty?]
            :param {:req [:git/repo]})
 
 
@@ -196,14 +194,16 @@
 
 (u/spec-op check-repo-in-order
            :deps [check-build-file check-some-commit check-not-dirty]
-           :param {:req [:project/working-dir :git/repo]})
+           :param {:req [:project/working-dir
+                         :git/repo]})
 
 
 (defn tag! [param]
   (-> param
       (u/check check-repo-in-order)
-      git/create-tag!))
+      mbt-core/git-tag!))
 
 (u/spec-op tag!
-           :deps [ git/create-tag!]
-           :param {:req [:git/repo :git/tag!]})
+           :deps [check-repo-in-order mbt-core/git-tag!]
+           :param {:req [:git/repo
+                         :git/tag!]})
