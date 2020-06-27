@@ -37,11 +37,17 @@
   (let [param-spec #(-> % u/get-spec :param)]
     (facts
       (param-spec `foo) => {:req #{::a}
-                            :opt #{::c}}
+                            :opt #{::c}
+                            :req-un #{}
+                            :opt-un #{}}
       (param-spec `bar) => {:req #{::b}
-                            :opt #{::d}}
+                            :opt #{::d}
+                            :req-un #{}
+                            :opt-un #{}}
       (param-spec `baz) => {:req #{}
-                            :opt #{}}
+                            :opt #{}
+                            :req-un #{}
+                            :opt-un #{}}
 
       (u/param-suggestions baz) => {:req #{::a ::b}
                                     :opt #{::c ::d}
@@ -55,3 +61,5 @@
     (fact (ex-data e)
           =in=> {:clojure.spec.alpha/failure :instrument
                  :clojure.spec.alpha/fn `foo})))
+
+(clojure.test/run-tests)
