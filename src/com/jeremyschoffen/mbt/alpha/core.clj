@@ -20,22 +20,35 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Building
 ;;----------------------------------------------------------------------------------------------------------------------
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Classpath
 (u/alias-fn raw-classpath classpath/raw-classpath)
 (u/alias-fn indexed-classpath classpath/indexed-classpath)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Cleaning
 (u/alias-fn clean! cleaning/clean!)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Compilation
 (u/alias-fn compile! compilation/compile!)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Deps
 (u/alias-fn get-deps deps/get-deps)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; GPG
 (u/alias-fn sign-file! gpg/sign-file!)
 (u/alias-fn sign-files! gpg/sign-files!)
 
-(u/alias-fn simple-jar-srcs jar/simple-jar-srcs)
-(u/alias-fn uber-jar-srcs jar/uber-jar-srcs)
+;;----------------------------------------------------------------------------------------------------------------------
+;; Jar
+(u/alias-fn open-jar-fs jar/open-jar-fs)
 (u/alias-fn add-srcs! jar/add-srcs!)
 (u/alias-fn make-jar-archive! jar/make-jar-archive!)
+
 
 (u/alias-fn make-manifest manifest/make-manifest)
 
@@ -46,12 +59,13 @@
 (u/alias-fn make-usual-artefacts maven-common/make-usual-artefacts)
 (u/alias-fn make-usual-artefacts+signatures! maven-common/make-usual-artefacts+signatures!)
 
-(u/alias-fn deploy! deploy/deploy!)
-
-(u/alias-fn install! install/install!)
-
+;;----------------------------------------------------------------------------------------------------------------------
+;; Maven
 (u/alias-fn new-pom pom/new-pom)
 (u/alias-fn sync-pom! pom/sync-pom!)
+
+(u/alias-fn deploy! deploy/deploy!)
+(u/alias-fn install! install/install!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
@@ -71,20 +85,27 @@
 (u/alias-fn git-describe-raw git/describe-raw)
 (u/alias-fn git-describe git/describe)
 (u/alias-fn git-any-commit? git/any-commit?)
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/alias-fn parse-maven-like-version maven-like/parse-version)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Maven
 (u/alias-fn maven-version maven-like/maven-version)
-(u/alias-fn semver-version maven-like/semver-version)
-
 (def initial-maven-version maven-like/initial-maven-version)
-(def initial-semver-version maven-like/initial-semver-version)
-
 (u/alias-fn maven-bump maven-like/safer-bump)
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Semver
+(u/alias-fn semver-version maven-like/semver-version)
+(def initial-semver-version maven-like/initial-semver-version)
 (u/alias-fn semver-bump maven-like/safer-bump)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Simple
 (u/alias-fn parse-simple-version simple-version/parse-version-number)
 (u/alias-fn simple-version simple-version/simple-version)
 (def initial-simple-version simple-version/initial-simple-version)
