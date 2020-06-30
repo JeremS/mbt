@@ -12,7 +12,10 @@
 
  :aliases
  {:build {:extra-paths ["bin"]}
+
   :dev {:extra-paths ["dev"]}
+
+  :perf {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}}}
 
   :test {:extra-paths ["test"]
          :extra-deps {metosin/testit {:mvn/version "0.4.0"}

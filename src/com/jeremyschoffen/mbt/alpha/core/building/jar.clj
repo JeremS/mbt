@@ -8,7 +8,7 @@
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
-    (java.nio.file FileSystem)
+    (java.nio.file FileSystem FileVisitResult FileVisitor)
     (java.net URI)
     (java.util HashMap)))
 
@@ -297,22 +297,39 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Zipping the temp jar dir into the jar archive
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn- make-archive-visitor! [zfs temp-out]
+  (reify FileVisitor
+    (postVisitDirectory [_ _ exception]
+      (when exception (throw exception))
+      FileVisitResult/CONTINUE)
+
+    (visitFile [_ src _]
+      (let [dest (->> src
+                      (fs/relativize temp-out)
+                      (fs/path zfs))]
+        (fs/copy! src dest)
+        FileVisitResult/CONTINUE))
+
+    (preVisitDirectory [_ dir _]
+      (let [dest-dir (->> dir
+                          (fs/relativize temp-out)
+                          (fs/path zfs))]
+        (u/ensure-dir! dest-dir)
+        FileVisitResult/CONTINUE))
+
+    (visitFileFailed [_ _ exception]
+      (throw exception))))
+
+
 (defn make-jar-archive!
   "Zips the a dir into a .jar archive file."
   [{temp :jar/temp-output
     output :jar/output
     :as               param}]
   (with-open [zfs (make-output-jar-fs param)]
-    (doseq [src (->> temp
-                     fs/walk
-                     fs/realize
-                     (remove fs/directory?))]
-      (let [dest (->> src
-                      (fs/relativize temp)
-                      (fs/path zfs))]
-        (u/ensure-parent! dest)
-        (fs/copy! src dest))))
+    (fs/walk-file-tree temp (make-archive-visitor! zfs temp)))
   output)
+
 
 (u/spec-op make-jar-archive!
            :deps [make-output-jar-fs]

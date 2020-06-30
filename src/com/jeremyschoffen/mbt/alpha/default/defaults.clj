@@ -51,7 +51,7 @@
            :param {:req [:project/working-dir]}
            :ret :maven/group-id)
 
-
+;; TODO: add something la :project/major with value like alpha and beta, reflecting the versioned part of the nss
 (defn artefact-name [param]
   (let [prefix (mbt-core/git-prefix param)]
     (if-not (-> prefix str seq)

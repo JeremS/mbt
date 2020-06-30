@@ -2,6 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]))
 
 

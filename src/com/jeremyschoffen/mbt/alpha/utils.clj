@@ -44,28 +44,13 @@
     (throw (IllegalArgumentException.
              "Expected even number of arguments after map/vector, found odd number."))))
 
-;; totally riped from clojure core...
-(defn assoc-computed
-  ([m k f]
-   (assoc m k (f m)))
-  ([m k f & kfs]
-   (let [ret (assoc-computed m k f)]
-     (if kfs
-       (if (next kfs)
-         (recur ret (first kfs) (second kfs) (nnext kfs))
-         (throw (IllegalArgumentException.
-                  "assoc-computed expects even number of arguments after map/vector, found odd number")))
-       ret))))
 
-;; TODO: use this version
-(comment
-  (defn assoc-computed [m & kfs]
-    (check-kfs kfs)
-    (reduce (fn [m [k f]]
-              (assoc m k (f m)))
-            m
-            (partition 2 kfs))))
-
+(defn assoc-computed [m & kfs]
+  (check-kfs kfs)
+  (reduce (fn [m [k f]]
+            (assoc m k (f m)))
+          m
+          (partition 2 kfs)))
 
 
 (defn ensure-computed [m & kfs]
@@ -287,6 +272,3 @@
        (s/def ~alias ~aliased-name)
        (add-spec! '~(ns-qualify alias) (get-spec '~aliased-name))
        ~alias)))
-
-
-;; TODO group all utils here
