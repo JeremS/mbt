@@ -136,6 +136,8 @@
    :project/output-dir output-dir
    :project/author project-author
 
+   :cleaning/target cleaning-target
+
    :clojure.compilation/output-dir compilation-dir
 
    :maven/artefact-name artefact-name
