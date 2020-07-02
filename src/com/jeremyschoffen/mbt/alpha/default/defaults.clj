@@ -32,6 +32,14 @@
            :ret :clojure.compilation/output-dir)
 
 
+(defn cleaning-target [param]
+  (:project/output-dir param))
+
+(u/spec-op cleaning-target
+           :param {:req [:project/output-dir]}
+           :ret :cleaning/target)
+
+
 (defn project-author [_]
   (System/getProperty "user.name"))
 
