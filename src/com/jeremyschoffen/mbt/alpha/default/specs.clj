@@ -23,4 +23,5 @@
 
 (s/def :versioning/version any?)
 
+(s/def :versioning/major keyword?)
 
