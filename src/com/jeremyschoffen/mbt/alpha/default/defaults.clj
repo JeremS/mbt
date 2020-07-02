@@ -18,7 +18,6 @@
 (defn output-dir [{wd :project/working-dir}]
   (u/safer-path wd "target"))
 
-
 (u/spec-op output-dir
            :param {}
            :ret :project/output-dir)
@@ -32,19 +31,40 @@
            :ret :clojure.compilation/output-dir)
 
 
+(defn project-author [_]
+  (System/getProperty "user.name"))
+
+(u/spec-op project-author
+           :ret :project/author)
+
+
+(declare group-id)
+
+
+(defn project-name [{major :versioning/major
+                     :as param}]
+  (let [prefix (mbt-core/git-prefix param)
+        base (if-not (-> prefix str seq)
+               (str (group-id param))
+               (->> prefix
+                    (map str)
+                    (string/join "-")))]
+    (-> base
+        (cond-> major (str "-" (name major))))))
+
+(u/spec-op project-name
+           :deps [group-id mbt-core/git-prefix]
+           :param {:req [:project/working-dir]
+                   :opt [:versioning/major]}
+           :ret :project/name)
+
+
 (defn cleaning-target [param]
   (:project/output-dir param))
 
 (u/spec-op cleaning-target
            :param {:req [:project/output-dir]}
            :ret :cleaning/target)
-
-
-(defn project-author [_]
-  (System/getProperty "user.name"))
-
-(u/spec-op project-author
-           :ret :project/author)
 
 
 (defn group-id [param]
@@ -59,25 +79,13 @@
            :param {:req [:project/working-dir]}
            :ret :maven/group-id)
 
-;; TODO: add something la :project/major with value like alpha and beta, reflecting the versioned part of the nss
-(defn artefact-name [{major :versioning/major
-                      :as param}]
 
-  (let [prefix (mbt-core/git-prefix param)
-
-        base (if-not (-> prefix str seq)
-               (group-id param)
-               (->> prefix
-                    (map str)
-                    (string/join "-")
-                    symbol))]
-    (-> base
-        (cond-> major (str "-" (name major)))
-        symbol)))
-
+(defn artefact-name [param]
+  (let [p-name (:project/name param (project-name param))]
+    (symbol p-name)))
 
 (u/spec-op artefact-name
-           :deps [group-id mbt-core/git-prefix]
+           :deps [project-name]
            :param {:req [:project/working-dir]
                    :opt [:versioning/major]}
            :ret :maven/artefact-name)
@@ -128,12 +136,13 @@
            :ret :build/uberjar-name)
 
 
-(defn tag-base-name [{n :maven/artefact-name}]
-  (str n))
+(defn tag-base-name [param]
+  (:project/name param (project-name param)))
 
 (u/spec-op tag-base-name
-           :deps [artefact-name]
-           :param {:req [:maven/artefact-name]}
+           :deps [project-name]
+           :param {:req [:project/working-dir]
+                   :opt [:versioning/major]}
            :ret :versioning/tag-base-name)
 
 
@@ -141,6 +150,7 @@
   [:project/working-dir working-dir
    :project/output-dir output-dir
    :project/author project-author
+   :project/name project-name
 
    :cleaning/target cleaning-target
 

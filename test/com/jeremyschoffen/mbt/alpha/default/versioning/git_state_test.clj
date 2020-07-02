@@ -130,7 +130,8 @@
               :project/working-dir (fs/path repo)
               :versioning/scheme test-scheme}
         tag (-> ctxt
-                (u/assoc-computed :versioning/tag-base-name defaults/tag-base-name)
+                (u/assoc-computed
+                  :versioning/tag-base-name defaults/tag-base-name)
                 git-state/next-tag
                 (update :git.tag/message clojure.edn/read-string))
         base-name (-> repo fs/file-name str)
@@ -259,5 +260,3 @@
 
       (git-state/next-tag ctxt2)
       =in=> {:git.tag/name (str base-name2 "-v" (bump* initial-v))})))
-
-

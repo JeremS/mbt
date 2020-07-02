@@ -5,7 +5,7 @@
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]))
 
-
+(s/def :project/name string?)
 (s/def :project/output-dir fs/path?)
 
 (defn- jar-ext? [s]

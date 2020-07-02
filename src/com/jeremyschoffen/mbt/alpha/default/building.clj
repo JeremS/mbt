@@ -3,6 +3,7 @@
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default.building.jar :as jar]
+    [com.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [com.jeremyschoffen.mbt.alpha.default.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
@@ -13,6 +14,32 @@
 (u/alias-fn make-staples-entries jar/make-staples-entries)
 (u/alias-fn simple-jar-srcs jar/simple-jar-srcs)
 (u/alias-fn uber-jar-srcs jar/uber-jar-srcs)
+
+
+(defn ensure-jar-defaults [p]
+  (u/ensure-computed p
+    :project/version (comp str v/current-version)
+    :project/deps mbt-core/get-deps
+    :classpath/index mbt-core/indexed-classpath
+    :maven/pom mbt-core/new-pom
+    :jar/manifest mbt-core/make-manifest))
+
+(u/spec-op ensure-jar-defaults
+           :deps [v/current-version
+                  mbt-core/indexed-classpath
+                  mbt-core/make-manifest
+                  mbt-core/new-pom
+                  mbt-core/get-deps]
+           :param {:req #{:git/repo
+                          :maven/artefact-name
+                          :maven/group-id
+                          :project/working-dir
+                          :versioning/scheme},
+                   :opt #{:jar/main-ns
+                          :jar.manifest/overrides
+                          :project/author
+                          :project.deps/aliases
+                          :versioning/tag-base-name},})
 
 
 (defn make-jar&clean! [{out :project/output-dir
@@ -30,7 +57,6 @@
           (u/side-effect! mbt-core/clean!))
       @res)))
 
-
 (u/spec-op make-jar&clean!
            :deps [mbt-core/add-srcs!
                   mbt-core/make-jar-archive!
@@ -41,19 +67,24 @@
                    :opt [:jar/exclude?]})
 
 
-(defn jar! [{jar-name :build/jar-name
-             out :project/output-dir
-             :as param}]
+(defn jar-out [{jar-name :build/jar-name
+                out :project/output-dir}]
+  (u/safer-path out jar-name))
+
+(u/spec-op jar-out
+           :param {:req [:build/jar-name :project/output-dir]})
+
+
+(defn jar! [param]
   (-> param
       (assoc :jar/srcs (jar/simple-jar-srcs param)
-             :jar/output (u/safer-path out jar-name))
+             :jar/output (jar-out param))
       make-jar&clean!))
 
 (u/spec-op jar!
-           :deps [jar/simple-jar-srcs make-jar&clean!]
+           :deps [jar-out jar/simple-jar-srcs make-jar&clean!]
            :param {:req [:classpath/index
                          :build/jar-name
-                         :jar/manifest
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
@@ -61,23 +92,29 @@
                          :project/working-dir]
                    :opt [:jar/exclude?
                          :jar/main-ns
+                         :jar/manifest
                          :jar.manifest/overrides
                          :project/author]})
 
 
-(defn uberjar! [{jar-name :build/uberjar-name
-                 out :project/output-dir
-                 :as param}]
+(defn uberjar-out [{jar-name :build/uberjar-name
+                    out :project/output-dir}]
+  (u/safer-path out jar-name))
+
+(u/spec-op uberjar-out
+           :param {:req [:build/jar-name :project/output-dir]})
+
+
+(defn uberjar! [param]
   (-> param
       (assoc :jar/srcs (jar/uber-jar-srcs param)
-             :jar/output (u/safer-path out jar-name))
+             :jar/output (uberjar-out param))
       make-jar&clean!))
 
 (u/spec-op uberjar!
-           :deps [jar/simple-jar-srcs make-jar&clean!]
+           :deps [uberjar-out jar/simple-jar-srcs make-jar&clean!]
            :param {:req [:classpath/index
                          :build/uberjar-name
-                         :jar/manifest
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
@@ -85,5 +122,6 @@
                          :project/working-dir]
                    :opt [:jar/exclude?
                          :jar/main-ns
+                         :jar/manifest
                          :jar.manifest/overrides
                          :project/author]})

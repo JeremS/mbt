@@ -15,22 +15,26 @@
 
 (deftest names
   (let [repo (h/make-temp-repo!)
-        group-id (-> repo fs/file-name str symbol)]
+        group-id (-> repo fs/file-name str symbol)
+
+        ctxt (defaults/make-context {:project/working-dir (u/safer-path repo)})
+        ctxt' (defaults/make-context {:project/working-dir (u/safer-path repo "module1" "toto")})]
     (facts
-      (defaults/group-id {:project/working-dir (u/safer-path repo)})
+      (:maven/group-id ctxt)
       => group-id
 
-      (defaults/group-id {:project/working-dir (u/safer-path repo "module1" "toto")})
+      (:maven/group-id ctxt')
       => group-id
 
-      (defaults/artefact-name {:project/working-dir (u/safer-path repo)})
+      (:maven/artefact-name ctxt)
       => group-id
 
-      (defaults/artefact-name {:project/working-dir (u/safer-path repo "module1" "toto")})
+      (:maven/artefact-name ctxt')
       => 'module1-toto
 
-      (defaults/tag-base-name {:project/working-dir (u/safer-path repo)})
+      (:versioning/tag-base-name ctxt)
       => (str group-id)
 
-      (defaults/tag-base-name {:project/working-dir (u/safer-path repo "module1" "toto")})
+
+      (:versioning/tag-base-name ctxt')
       => "module1-toto")))
