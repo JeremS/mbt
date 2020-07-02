@@ -14,7 +14,8 @@
   (vp/initial-version h))
 
 (u/spec-op initial-version
-           :param {:req [:versioning/scheme]})
+           :param {:req [:versioning/scheme]}
+           :ret :versioning/version)
 
 
 (defn current-version [{s :versioning/scheme
@@ -22,7 +23,8 @@
   (vp/current-version s desc))
 
 (u/spec-op current-version
-           :param {:req [:versioning/scheme :git/description]})
+           :param {:req [:versioning/scheme :git/description]}
+           :ret :versioning/version)
 
 
 (defn bump [{s :versioning/scheme
@@ -34,7 +36,8 @@
 
 (u/spec-op bump
            :param {:req [:versioning/scheme :versioning/version]
-                   :opt [:versioning/bump-level]})
+                   :opt [:versioning/bump-level]}
+           :ret :versioning/version)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
