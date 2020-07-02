@@ -60,18 +60,26 @@
            :ret :maven/group-id)
 
 ;; TODO: add something la :project/major with value like alpha and beta, reflecting the versioned part of the nss
-(defn artefact-name [param]
-  (let [prefix (mbt-core/git-prefix param)]
-    (if-not (-> prefix str seq)
-      (group-id param)
-      (->> prefix
-           (map str)
-           (string/join "-")
-           symbol))))
+(defn artefact-name [{major :versioning/major
+                      :as param}]
+
+  (let [prefix (mbt-core/git-prefix param)
+
+        base (if-not (-> prefix str seq)
+               (group-id param)
+               (->> prefix
+                    (map str)
+                    (string/join "-")
+                    symbol))]
+    (-> base
+        (cond-> major (str "-" (name major)))
+        symbol)))
+
 
 (u/spec-op artefact-name
            :deps [group-id mbt-core/git-prefix]
-           :param {:req [:project/working-dir]}
+           :param {:req [:project/working-dir]
+                   :opt [:versioning/major]}
            :ret :maven/artefact-name)
 
 
@@ -120,14 +128,12 @@
            :ret :build/uberjar-name)
 
 
-(defn tag-base-name [param]
-  (-> param
-      artefact-name
-      str))
+(defn tag-base-name [{n :maven/artefact-name}]
+  (str n))
 
 (u/spec-op tag-base-name
            :deps [artefact-name]
-           :param {:req [:project/working-dir]}
+           :param {:req [:maven/artefact-name]}
            :ret :versioning/tag-base-name)
 
 
@@ -156,7 +162,9 @@
 (defn make-context [user-defined]
   (->> (apply u/ensure-computed user-defined ctxt-building-scheme)))
 
-(into (sorted-map)
-      (make-context {:project/working-dir (u/safer-path "test-repos" "monorepo" "project1")}))
+(comment
+  (into (sorted-map)
+        (make-context {:project/working-dir (u/safer-path "test-repos" "monorepo" "project1")
+                       :versioning/major :alpha})))
 
 
