@@ -78,9 +78,6 @@
           m
           (partition 2 kfs)))
 
-(defn merge-computed [m f]
-  (merge m (f m)))
-
 
 (defn side-effect! [v f!]
   (f! v)
@@ -94,6 +91,7 @@
 
 (defn strip-keys-nss [m]
   (medley/map-keys #(-> % name keyword) m))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
@@ -197,16 +195,6 @@
   (get-in specs-map [sym :deps] #{}))
 
 
-(defn get-all-deps* [specs-map sym]
-  (loop [res #{sym}]
-    (let [t (into #{} (mapcat (partial get-deps* specs-map)) res)
-          new-deps (set/difference t res)
-          new-res (set/union res new-deps)]
-      (if (not-empty new-deps)
-        (recur new-res)
-        (disj res sym)))))
-
-
 (defn- merge-param-specs* [param-specs type]
   (into (sorted-set)
         (mapcat type)
@@ -221,11 +209,12 @@
 
 
 (defn get-param-specs-suggestions* [spec-map sym]
-  (->> sym
-       (get-all-deps* spec-map)
-       (into [] (comp (map (partial get spec-map))
-                      (map :param)))
-       merge-param-specs))
+  (let [deps (get-deps* spec-map sym)]
+    (with-meta (->> deps
+                    (into [] (comp (map (partial get spec-map))
+                                   (map :param)))
+                    merge-param-specs)
+               {:details (select-keys spec-map deps)})))
 
 
 (defn get-param-specs-suggestions [sym]
@@ -241,7 +230,7 @@
 
 (defn get-param-specs [sym]
   {:spec (get-spec sym)
-   :transitive-suggections (get-param-specs-suggestions sym)})
+   :transitive-suggestions (get-param-specs-suggestions sym)})
 
 
 (defmacro param-specs

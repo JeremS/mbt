@@ -49,10 +49,7 @@
                             :req-un #{}
                             :opt-un #{}}
 
-      (u/param-suggestions baz) => {:req #{::a ::b}
-                                    :opt #{::c ::d}
-                                    :req-un #{}
-                                    :opt-un #{}})))
+      (u/param-suggestions baz) => (param-spec `bar))))
 
 (st/instrument)
 (deftest instrumenting-works
