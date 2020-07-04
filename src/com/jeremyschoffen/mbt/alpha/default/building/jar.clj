@@ -71,14 +71,21 @@
    (-> param make-deps-entry)])
 
 (u/spec-op make-staples-entries
-           :deps [mbt-core/make-manifest make-manifest-entry make-pom-entry make-deps-entry]
-           :param {:req[:project/deps
-                        :maven/pom
-                        :maven/group-id
-                        :maven/artefact-name]
-                   :opt [:project/author
-                         :jar/main-ns
-                         :jar.manifest/overrides]})
+           :deps [make-manifest-entry make-pom-entry make-deps-entry]
+           :param {:req [:jar/manifest
+                         :maven/artefact-name
+                         :maven/group-id
+                         :maven/pom
+                         :project/deps]})
+
+
+(defn- warn-wayward-files [{cp :classpath/index}]
+  (let [wayward-files (:classpath/file cp)]
+    (when-let [files (seq wayward-files)]
+      (binding [*out* *err*]
+        (println "Wayward files on classpath")
+        (doseq [f files]
+          (println f))))))
 
 
 (defn- classpath->sources [cp ks]
@@ -89,14 +96,6 @@
                       cat
                       (map u/safer-path))))))
 
-
-(defn warn-wayward-files [{cp :classpath/index}]
-  (let [wayward-files (:classpath/file cp)]
-    (when-let [files (seq wayward-files)]
-      (binding [*out* *err*]
-        (println "Wayward files on classpath")
-        (doseq [f files]
-          (println f))))))
 
 (defn simple-jar-srcs
   "Makes the jar srcs used in a skinny jar."
@@ -109,10 +108,11 @@
 (u/spec-op simple-jar-srcs
            :deps [make-staples-entries]
            :param {:req [:classpath/index
-                         :project/deps
-                         :maven/pom
+                         :jar/manifest
+                         :maven/artefact-name
                          :maven/group-id
-                         :maven/artefact-name]
+                         :maven/pom
+                         :project/deps]
                    :opt [:project/author
                          :jar/main-ns
                          :jar.manifest/overrides]}
@@ -130,13 +130,11 @@
                                  :classpath/jar})))
 
 (u/spec-op uber-jar-srcs
-           :deps [make-staples-entries]
+           :deps [make-staples-entries classpath->sources]
            :param {:req [:classpath/index
-                         :project/deps
-                         :maven/pom
+                         :jar/manifest
+                         :maven/artefact-name
                          :maven/group-id
-                         :maven/artefact-name]
-                   :opt [:project/author
-                         :jar/main-ns
-                         :jar.manifest/overrides]}
+                         :maven/pom
+                         :project/deps]}
            :ret :jar/srcs)

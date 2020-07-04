@@ -18,28 +18,24 @@
 
 (defn ensure-jar-defaults [p]
   (u/ensure-computed p
-    :project/version (comp str v/current-version)
     :project/deps mbt-core/get-deps
     :classpath/index mbt-core/indexed-classpath
     :maven/pom mbt-core/new-pom
     :jar/manifest mbt-core/make-manifest))
 
 (u/spec-op ensure-jar-defaults
-           :deps [v/current-version
-                  mbt-core/indexed-classpath
+           :deps [mbt-core/indexed-classpath
                   mbt-core/make-manifest
                   mbt-core/new-pom
                   mbt-core/get-deps]
-           :param {:req #{:git/repo
-                          :maven/artefact-name
+           :param {:req #{:maven/artefact-name
                           :maven/group-id
                           :project/working-dir
-                          :versioning/scheme},
+                          :project/version}
                    :opt #{:jar/main-ns
                           :jar.manifest/overrides
                           :project/author
-                          :project.deps/aliases
-                          :versioning/tag-base-name},})
+                          :project.deps/aliases},})
 
 
 (defn make-jar&clean! [{out :project/output-dir
@@ -83,18 +79,16 @@
 
 (u/spec-op jar!
            :deps [jar-out jar/simple-jar-srcs make-jar&clean!]
-           :param {:req [:classpath/index
-                         :build/jar-name
+           :param {:req [:build/jar-name
+                         :classpath/index
+                         :jar/manifest
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
                          :project/deps
+                         :project/output-dir
                          :project/working-dir]
-                   :opt [:jar/exclude?
-                         :jar/main-ns
-                         :jar/manifest
-                         :jar.manifest/overrides
-                         :project/author]})
+                   :opt [:jar/exclude?]})
 
 
 (defn uberjar-out [{jar-name :build/uberjar-name
@@ -102,7 +96,7 @@
   (u/safer-path out jar-name))
 
 (u/spec-op uberjar-out
-           :param {:req [:build/jar-name :project/output-dir]})
+           :param {:req [:build/uberjar-name :project/output-dir]})
 
 
 (defn uberjar! [param]
@@ -112,16 +106,14 @@
       make-jar&clean!))
 
 (u/spec-op uberjar!
-           :deps [uberjar-out jar/simple-jar-srcs make-jar&clean!]
-           :param {:req [:classpath/index
-                         :build/uberjar-name
+           :deps [uberjar-out jar/uber-jar-srcs make-jar&clean!]
+           :param {:req [:build/uberjar-name
+                         :classpath/index
+                         :jar/manifest
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
                          :project/deps
+                         :project/output-dir
                          :project/working-dir]
-                   :opt [:jar/exclude?
-                         :jar/main-ns
-                         :jar/manifest
-                         :jar.manifest/overrides
-                         :project/author]})
+                   :opt [:jar/exclude?]})
