@@ -59,6 +59,15 @@
            :ret :project/name)
 
 
+(defn git-repo [param]
+  (mbt-core/git-make-jgit-repo param))
+
+(u/spec-op git-repo
+           :deps [mbt-core/git-make-jgit-repo]
+           :param {:req [:project/working-dir]}
+           :ret :git/repo)
+
+
 (defn cleaning-target [param]
   (:project/output-dir param))
 
@@ -151,6 +160,8 @@
    :project/output-dir output-dir
    :project/author project-author
    :project/name project-name
+
+   :git/repo git-repo
 
    :cleaning/target cleaning-target
 
