@@ -1,8 +1,6 @@
 (ns build
   (:require
     [clojure.spec.test.alpha :as spec-test]
-    [clojure.string :as string]
-    [clj-jgit.porcelain :as jgit]
     [com.jeremyschoffen.java.nio.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
@@ -26,7 +24,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn next-version [param]
   (let [current-version (mbt-defaults/current-version param)]
-    (if (= current-version)
+    (if-not current-version
       (mbt-defaults/initial-version param)
       (-> param
           (assoc :versioning/version
@@ -47,25 +45,37 @@
                                                                (fs/relativize repo)
                                                                str)]}}))
 
-(defn commit-version-file! [{repo :git/repo :as param}]
+(defn git-commit-version-file! [param]
   (mbt-core/git-commit! (assoc param
                           :git/commit! {:git.commit/message "Committed version file."})))
 
 
 (defn add-version-file! [ctxt]
   (-> ctxt
-      (u/check mbt-defaults/check-repo-in-order)
       (u/side-effect! write-version-file!)
       (u/side-effect! git-add-version-file!)
-      (u/side-effect! commit-version-file!)))
+      (u/side-effect! git-commit-version-file!)))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Build
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn tag-new-version! [param]
   (-> param
+      (u/check mbt-defaults/check-repo-in-order)
       (u/side-effect! add-version-file!)
       (u/side-effect! mbt-defaults/bump-tag!)))
 
+
+(defn build! [conf]
+  (-> conf
+      (u/assoc-computed :project/version (comp str mbt-defaults/current-version))
+      mbt-defaults/ensure-jar-defaults
+      mbt-defaults/jar!))
+
+
 (comment
-  (tag-new-version! conf))
+  (str (mbt-defaults/current-version conf))
+  (str (next-version conf))
+  (tag-new-version! conf)
+
+  (build! conf))
