@@ -25,3 +25,6 @@
 
 (s/def :versioning/major keyword?)
 
+(s/def :version-file/path fs/path?)
+(s/def :version-file/ns symbol?)
+

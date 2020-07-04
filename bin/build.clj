@@ -4,91 +4,68 @@
     [clojure.string :as string]
     [clj-jgit.porcelain :as jgit]
     [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.classic-scheme :as c]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.schemes :as vs]
-    [com.jeremyschoffen.mbt.alpha.core.versioning.git-state :as gs]
-    [com.jeremyschoffen.mbt.alpha.core.git :as git]
-    [com.jeremyschoffen.mbt.alpha.core.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
+    [com.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
+    [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (spec-test/instrument)
 
 
+(def conf (-> (sorted-map
+                :project/working-dir (u/safer-path)
+                :versioning/scheme mbt-defaults/simple-scheme
+                :project/author "Jeremy Schoffen"
+                :version-file/ns 'com.jeremyschoffen.mbt.alpha.version
+                :version-file/path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "version.clj"))
+              mbt-defaults/make-conf))
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; utils
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn next-version [param]
+  (let [current-version (mbt-defaults/current-version param)]
+    (if (= current-version)
+      (mbt-defaults/initial-version param)
+      (-> param
+          (assoc :versioning/version
+                 (update current-version :distance inc))
+          mbt-defaults/bump-version))))
 
 
-(def version-file-path (u/safer-path "src" "com" "jeremyschoffen" "mbt" "alpha" "version.clj"))
+(defn write-version-file! [param]
+  (-> param
+      (u/assoc-computed :project/version (comp str next-version))
+      (mbt-defaults/write-version-file!)))
 
 
-(defn write-version-file! [ctxt]
-  (let [next-version (gs/next-version ctxt)
-        updated-next-version (if (= next-version (vs/initial-version ctxt))
-                               next-version
-                               (update next-version :base-number inc))]
-    (spit version-file-path
-          (string/join "\n" ["(ns com.jeremyschoffen.mbt.alpha.version)"
-                             ""
-                             (format "(def version \"%s\")" updated-next-version)
-                             ""]))))
-
-
-(defn git-add-version-file! [{wd :project/working-dir
+(defn git-add-version-file! [{p :version-file/path
                               repo :git/repo}]
-  (jgit/git-add repo (str (fs/relativize wd version-file-path))))
+  (mbt-core/git-add! {:git/repo repo
+                      :git/add! {:git.add!/file-patterns [(->> p
+                                                               (fs/relativize repo)
+                                                               str)]}}))
 
-
-(defn commit-version-file [{repo :git/repo}]
-  (when-not (->> repo
-                 jgit/git-status
-                 vals
-                 (apply concat)
-                 empty?))
-  (jgit/git-commit repo "Committed version file."))
+(defn commit-version-file! [{repo :git/repo :as param}]
+  (mbt-core/git-commit! (assoc param
+                          :git/commit! {:git.commit/message "Committed version file."})))
 
 
 (defn add-version-file! [ctxt]
   (-> ctxt
+      (u/check mbt-defaults/check-repo-in-order)
       (u/side-effect! write-version-file!)
       (u/side-effect! git-add-version-file!)
-      (u/side-effect! commit-version-file)))
+      (u/side-effect! commit-version-file!)))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Build
 ;;----------------------------------------------------------------------------------------------------------------------
-(def conf {:project/working-dir (u/safer-path)
-           :version/scheme vs/simple-scheme
-           :project/author "Jeremy Schoffen"})
-
-(defn build! []
-  (-> conf
-      (c/get-state)
-      (gs/check-not-dirty)
-      (add-version-file!)
-      (u/assoc-computed :new-tag gs/bump-tag!)))
-
-
-
+(defn tag-new-version! [param]
+  (-> param
+      (u/side-effect! add-version-file!)
+      (u/side-effect! mbt-defaults/bump-tag!)))
 
 (comment
-  (defn version-file [ctxt]
-    (let [next-version (gs/next-version ctxt)
-          next-version (if (= next-version (vs/initial-version ctxt))
-                         next-version
-                         (update next-version :distance inc))]
-      next-version))
-
-
-  (build!)
-
-  (-> conf
-      (c/get-state)
-      version-file)
-  (->> conf
-      (c/get-state)
-      gs/next-version)
-
-  (-> conf
-      (c/get-state)
-      (git/dirty?)))
+  (tag-new-version! conf))
