@@ -2,7 +2,7 @@
   (:require
     [clojure.string :as string]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.default.specs]

@@ -4,7 +4,7 @@
     [clojure.spec.test.alpha :as stest]
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]))
 
 

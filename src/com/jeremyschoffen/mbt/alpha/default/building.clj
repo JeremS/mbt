@@ -1,6 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.default.building
   (:require
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.default.versioning :as v]

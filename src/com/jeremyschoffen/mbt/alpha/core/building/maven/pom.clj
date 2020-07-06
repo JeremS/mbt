@@ -8,7 +8,7 @@
     [clojure.zip :as zip]
     [clojure.tools.deps.alpha.util.maven :as maven]
     [clojure.tools.deps.alpha.util.io :refer [printerrln]]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import

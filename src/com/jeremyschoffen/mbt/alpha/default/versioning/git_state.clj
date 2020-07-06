@@ -2,7 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.default.specs]

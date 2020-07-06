@@ -1,7 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.compilation
   (:require
     [clojure.tools.namespace.find :as ns-find]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
 
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))

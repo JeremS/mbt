@@ -2,7 +2,7 @@
   (:require
     [clojure.spec.alpha :as s]
     [clojure.tools.deps.alpha.specs :as deps-specs]
-    [com.jeremyschoffen.java.nio.file :as fs])
+    [com.jeremyschoffen.java.nio.alpha.file :as fs])
   (:import (org.eclipse.jgit.api Git)))
 
 (def path? fs/path?)

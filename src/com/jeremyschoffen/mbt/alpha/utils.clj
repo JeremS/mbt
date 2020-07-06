@@ -4,7 +4,7 @@
     [clojure.spec.alpha :as s]
     [medley.core :as medley]
     [potemkin :as p]
-    [com.jeremyschoffen.java.nio.file :as fs]))
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

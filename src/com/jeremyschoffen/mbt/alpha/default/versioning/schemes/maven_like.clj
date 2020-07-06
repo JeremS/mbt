@@ -4,6 +4,7 @@
     [com.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
+
 (defn parse-git-descripton [git-desc]
   (let [current-str (-> git-desc
                         (get-in  [:git/tag :git.tag/message])

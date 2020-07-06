@@ -1,6 +1,6 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.gpg
   (:require
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.core.shell :as shell]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))

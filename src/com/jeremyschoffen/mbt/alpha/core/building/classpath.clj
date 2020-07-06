@@ -3,7 +3,7 @@
     [clojure.string :as string]
     [clojure.tools.deps.alpha :as deps]
     [clojure.tools.deps.alpha.util.maven :as maven]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 

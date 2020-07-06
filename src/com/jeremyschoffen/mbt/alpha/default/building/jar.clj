@@ -1,8 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.default.building.jar
   (:require
     [clojure.data.xml :as xml]
-    [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 

@@ -3,7 +3,7 @@
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
 
     [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [com.jeremyschoffen.mbt.alpha.test.helpers :as h]

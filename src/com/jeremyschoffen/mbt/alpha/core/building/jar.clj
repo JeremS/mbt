@@ -1,10 +1,8 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.jar
   (:require
-    [clojure.data.xml :as xml]
     [clojure.edn :as edn]
     [clojure.set :as c-set]
-    [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.building.manifest :as manifest]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import

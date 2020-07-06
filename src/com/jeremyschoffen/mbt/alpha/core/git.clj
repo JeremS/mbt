@@ -6,8 +6,8 @@
     [cognitect.anomalies :as anom]
     [clj-jgit.porcelain :as git]
     [clj-jgit.internal :as git-i]
-    [com.jeremyschoffen.java.nio.file :as fs]
-    [com.jeremyschoffen.java.nio.internal.coercions :as coercions]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.internal.coercions :as coercions]
     [com.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import

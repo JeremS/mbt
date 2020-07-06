@@ -2,7 +2,7 @@
   (:require
     [clojure.test :refer [deftest]]
     [testit.core :refer :all]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]

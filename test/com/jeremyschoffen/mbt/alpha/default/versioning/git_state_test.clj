@@ -2,7 +2,7 @@
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [cognitect.anomalies :as anom]
     [testit.core :refer :all]
 

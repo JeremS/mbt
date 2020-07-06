@@ -1,7 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.test.helpers
   (:require
     [clj-jgit.porcelain :as git-p]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.git]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 

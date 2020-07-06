@@ -4,13 +4,12 @@
     [clojure.edn :as edn]
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
 
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.default.building :as building]
-    [com.jeremyschoffen.mbt.alpha.default.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]))
 

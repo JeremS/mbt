@@ -1,7 +1,7 @@
 (ns build
   (:require
     [clojure.spec.test.alpha :as spec-test]
-    [com.jeremyschoffen.java.nio.file :as fs]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
@@ -78,4 +78,5 @@
   (str (next-version conf))
   (tag-new-version! conf)
 
+  (mbt-core/clean! conf)
   (build! conf))
