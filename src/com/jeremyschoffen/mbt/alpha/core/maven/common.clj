@@ -49,7 +49,8 @@
 
 
 (defn sign-artefact!
-  "Signs one maven deployment artefact using gpg."
+  "Signs one maven deployment artefact using gpg, return a map
+  specifiying the resulting signature as instance :maven.deploy/artefact spec."
   [{artefact :maven.deploy/artefact
     sign-key  :gpg/key-id
     :as param}]
@@ -86,41 +87,4 @@
            :param {:req [:maven.deploy/artefacts]
                    :opt [:project/working-dir
                          :gpg/key-id]}
-           :ret :maven.deploy/artefacts)
-
-(defn make-usual-artefacts
-  "Makes a sequence of maps representing maven artefacts (in the deployment sense where an artefact
-  is one of the different files that will be pushed to a maven server).
-
-  Here representations for a pom.xml and a jar are made."
-  [{pom-dir :maven.pom/dir
-    jar-path :jar/output}]
-  [{:maven.deploy.artefact/path (fs/path pom-dir "pom.xml")
-    :maven.deploy.artefact/extension "pom"}
-
-   {:maven.deploy.artefact/path jar-path
-    :maven.deploy.artefact/extension "jar"}])
-
-(u/spec-op make-usual-artefacts
-           :param {:req [:maven.pom/dir
-                         :jar/output]}
-           :ret :maven.deploy/artefacts)
-
-
-(defn make-usual-artefacts+signatures!
-  "Makes a sequence of maps representing maven artefacts (in the deployment sense where an artefact
-  is one of the different files that will be pushed to a maven server) and gpg sigs them.
-
-  Here representations for a pom.xml and a jar are made. The project jar and pom are signed with
-  gpg. The artefact represntations for the signatures are returned."
-  [ctxt]
-  (let [artefacts (make-usual-artefacts ctxt)
-        signatures (sign-artefacts!
-                     (assoc ctxt :maven.deploy/artefacts artefacts))]
-    (into artefacts signatures)))
-
-(u/spec-op make-usual-artefacts+signatures!
-           :deps [make-usual-artefacts sign-artefacts!]
-           :param {:req [:jar/output :maven.pom/dir]
-                   :opt [:gpg/key-id :project/working-dir]}
            :ret :maven.deploy/artefacts)

@@ -52,21 +52,20 @@
 (u/alias-fn add-srcs! jar/add-srcs!)
 (u/alias-fn make-jar-archive! jar/make-jar-archive!)
 
-
 (u/alias-fn make-manifest manifest/make-manifest)
 
-(u/alias-fn make-maven-artefact maven-common/make-maven-artefact)
-(u/alias-fn make-maven-artefacts maven-common/make-maven-artefacts)
-(u/alias-fn sign-artefact! maven-common/sign-artefact!)
-(u/alias-fn sign-artefacts! maven-common/sign-artefacts!)
-(u/alias-fn make-usual-artefacts maven-common/make-usual-artefacts)
-(u/alias-fn make-usual-artefacts+signatures! maven-common/make-usual-artefacts+signatures!)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/alias-fn new-pom pom/new-pom)
 (u/alias-fn sync-pom! pom/sync-pom!)
+
+(u/alias-fn make-maven-artefact maven-common/make-maven-artefact)
+(u/alias-fn make-maven-artefacts maven-common/make-maven-artefacts)
+(u/alias-fn sign-artefact! maven-common/sign-artefact!)
+(u/alias-fn sign-artefacts! maven-common/sign-artefacts!)
 
 (u/alias-fn deploy! deploy/deploy!)
 (u/alias-fn install! install/install!)

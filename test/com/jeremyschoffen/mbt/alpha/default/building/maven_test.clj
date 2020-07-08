@@ -6,6 +6,7 @@
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default.building.jar :as jar]
+    [com.jeremyschoffen.mbt.alpha.default.maven.common :as maven-common]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
@@ -61,7 +62,7 @@
         :classpath/index mbt-core/indexed-classpath
         :maven/pom mbt-core/new-pom
         :jar/srcs jar/simple-jar-srcs
-        :maven.deploy/artefacts mbt-core/make-usual-artefacts)))
+        :maven.deploy/artefacts maven-common/make-usual-artefacts)))
 
 
 (defn build! [ctxt]
