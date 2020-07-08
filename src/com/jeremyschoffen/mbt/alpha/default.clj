@@ -2,6 +2,7 @@
   (:require
     [com.jeremyschoffen.mbt.alpha.default.building :as building]
     [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [com.jeremyschoffen.mbt.alpha.default.specs]
     [com.jeremyschoffen.mbt.alpha.default.tasks :as tasks]
     [com.jeremyschoffen.mbt.alpha.default.versioning :as versioning]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))

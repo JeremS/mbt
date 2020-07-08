@@ -1,9 +1,9 @@
-(ns com.jeremyschoffen.mbt.alpha.core.building.maven.deploy
+(ns com.jeremyschoffen.mbt.alpha.core.maven.deploy
   (:require
     [clojure.tools.deps.alpha.extensions.maven]
     [clojure.tools.deps.alpha.util.maven :as maven]
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
+    [com.jeremyschoffen.mbt.alpha.core.maven.common :as common]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import

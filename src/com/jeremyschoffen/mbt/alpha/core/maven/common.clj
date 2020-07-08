@@ -1,4 +1,4 @@
-(ns com.jeremyschoffen.mbt.alpha.core.building.maven.common
+(ns com.jeremyschoffen.mbt.alpha.core.maven.common
   (:require
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.building.gpg :as gpg]

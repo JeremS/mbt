@@ -1,7 +1,7 @@
-(ns com.jeremyschoffen.mbt.alpha.core.building.maven.install
+(ns com.jeremyschoffen.mbt.alpha.core.maven.install
   (:require
     [clojure.tools.deps.alpha.util.maven :as maven]
-    [com.jeremyschoffen.mbt.alpha.core.building.maven.common :as common]
+    [com.jeremyschoffen.mbt.alpha.core.maven.common :as common]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
