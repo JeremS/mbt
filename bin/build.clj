@@ -3,11 +3,13 @@
     [clojure.spec.test.alpha :as spec-test]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
-    [com.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(spec-test/instrument)
+(spec-test/instrument
+  [mbt-defaults/add-version-file!
+   mbt-defaults/bump-tag!
+   mbt-defaults/build-jar!])
 
 (def specific-conf
   (sorted-map

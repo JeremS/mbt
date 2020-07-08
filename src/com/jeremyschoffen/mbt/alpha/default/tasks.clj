@@ -88,7 +88,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn jar! [param]
   (-> param
-      (u/ensure-computed :project/version (comp str (v/current-version)))
+      (u/ensure-computed :project/version (comp str v/current-version))
       b/ensure-jar-defaults
       b/jar!))
 
@@ -111,7 +111,7 @@
 
 (defn uberjar! [param]
   (-> param
-      (u/ensure-computed :project/version (comp str (v/current-version)))
+      (u/ensure-computed :project/version (comp str v/current-version))
       b/ensure-jar-defaults
       b/uberjar!))
 
