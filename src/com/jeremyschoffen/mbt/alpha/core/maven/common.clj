@@ -6,7 +6,17 @@
   (:import
     [org.eclipse.aether.artifact DefaultArtifact]))
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Maven Constants
+;;----------------------------------------------------------------------------------------------------------------------
+(def home (u/safer-path (System/getProperty "user.home")))
+(def default-local-repo (u/safer-path home ".m2"))
+(def maven-default-settings-file (u/safer-path default-local-repo "settings.xml"))
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Common utils
+;;----------------------------------------------------------------------------------------------------------------------
 (defn make-maven-artefact
   "Constructor org.eclipse.aether.artifact.DefaultArtifact."
   [{artefact-name :maven/artefact-name

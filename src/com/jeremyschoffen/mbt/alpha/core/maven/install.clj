@@ -24,7 +24,7 @@
 
 
 (defn install! [{install-dir :maven.install/dir
-                 :or         {install-dir maven/default-local-repo}
+                 :or         {install-dir common/default-local-repo}
                  :as         param}]
   (let [system (maven/make-system)
         session (maven/make-session system (str install-dir))

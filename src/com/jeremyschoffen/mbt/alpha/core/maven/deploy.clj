@@ -18,7 +18,7 @@
 ;; remake of org.apache.maven.settings.DefaultMavenSettingsBuilder method buildSettings
 ;; TODO: Find a way to get the global maven settings.
 (defn- ^Settings get-maven-settings [{maven-settings-file :maven.settings/file
-                                      :or {maven-settings-file u/maven-default-settings-file}}]
+                                      :or {maven-settings-file common/maven-default-settings-file}}]
   (let [settings-builder (.newInstance (DefaultSettingsBuilderFactory.))
         settings-building-request (-> (DefaultSettingsBuildingRequest.)
                                       (.setUserSettingsFile (fs/file maven-settings-file))
@@ -113,7 +113,7 @@
                 :or {local-repo maven/default-local-repo}}]
   (System/setProperty "aether.checksums.forSignature" "true")
   (let [system (maven/make-system)
-        session (maven/make-session system local-repo)
+        session (maven/make-session system (str local-repo))
         deploy-request (make-deploy-request param)]
     (.deploy system session deploy-request)))
 

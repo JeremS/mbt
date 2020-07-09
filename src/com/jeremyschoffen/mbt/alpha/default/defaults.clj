@@ -133,7 +133,7 @@
 
 
 (defn maven-settings-file [_]
-  (fs/path u/maven-default-settings-file))
+  (fs/path mbt-core/maven-default-settings-file))
 
 (u/spec-op maven-settings-file
            :ret :maven.settings/file)

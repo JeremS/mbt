@@ -62,6 +62,9 @@
 (u/alias-fn new-pom pom/new-pom)
 (u/alias-fn sync-pom! pom/sync-pom!)
 
+(u/alias-def maven-default-local-repo maven-common/default-local-repo)
+(u/alias-def maven-default-settings-file maven-common/maven-default-settings-file)
+
 (u/alias-fn make-maven-artefact maven-common/make-maven-artefact)
 (u/alias-fn make-maven-artefacts maven-common/make-maven-artefacts)
 (u/alias-fn sign-artefact! maven-common/sign-artefact!)
