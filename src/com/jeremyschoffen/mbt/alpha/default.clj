@@ -5,7 +5,8 @@
     [com.jeremyschoffen.mbt.alpha.default.specs]
     [com.jeremyschoffen.mbt.alpha.default.tasks :as tasks]
     [com.jeremyschoffen.mbt.alpha.default.versioning :as versioning]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [com.jeremyschoffen.mbt.alpha.default.versioning :as v]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
@@ -23,6 +24,8 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning machinery
 ;;----------------------------------------------------------------------------------------------------------------------
+(u/alias-fn current-project-version v/current-project-version)
+
 ;; Git versioning
 (u/alias-fn bump-tag! versioning/bump-tag!)
 
