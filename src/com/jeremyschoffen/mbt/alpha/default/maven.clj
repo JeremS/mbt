@@ -10,11 +10,23 @@
 (u/alias-fn make-usual-artefacts mc/make-usual-artefacts)
 (u/alias-fn make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 
-
-(defn ensure-install-conf [param]
+(defn ensure-basic-conf [param]
   (-> param
       (u/ensure-computed
         :jar/output b/jar-out
+        :project/deps mbt-core/get-deps)))
+
+(u/spec-op ensure-basic-conf
+           :deps [b/jar-out mbt-core/get-deps]
+           :param {:req [:build/jar-name
+                         :project/output-dir
+                         :project/working-dir]})
+
+
+(defn ensure-install-conf [param]
+  (-> param
+      ensure-basic-conf
+      (u/ensure-computed
         :maven.deploy/artefacts make-usual-artefacts)))
 
 (u/spec-op ensure-install-conf
@@ -49,8 +61,8 @@
                                 make-usual-artefacts+signatures!
                                 make-usual-artefacts)]
     (-> param
+        ensure-basic-conf
         (u/ensure-computed
-          :jar/output b/jar-out
           :maven.deploy/artefacts make-deploy-artefacts))))
 
 (u/spec-op ensure-deploy-conf
