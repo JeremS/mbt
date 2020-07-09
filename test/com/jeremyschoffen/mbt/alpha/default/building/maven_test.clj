@@ -6,9 +6,7 @@
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default.building :as building]
-    [com.jeremyschoffen.mbt.alpha.default.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
-    [com.jeremyschoffen.mbt.alpha.default.maven.common :as maven-common]
     [com.jeremyschoffen.mbt.alpha.default.maven :as maven]
     [com.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [com.jeremyschoffen.mbt.alpha.utils :as u]))

@@ -1,11 +1,13 @@
 (ns com.jeremyschoffen.mbt.alpha.default.maven
   (:require
     [clojure.spec.alpha :as s]
+    [cognitect.anomalies :as anom]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.default.building :as b]
     [com.jeremyschoffen.mbt.alpha.default.maven.common :as mc]
     [com.jeremyschoffen.mbt.alpha.default.specs]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]))
 
 (u/alias-fn make-usual-artefacts mc/make-usual-artefacts)
 (u/alias-fn make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
@@ -37,10 +39,27 @@
            :ret (s/keys :req [:jar/output :maven.deploy/artefacts]))
 
 
+(defn check-artefacts-exist [{artefacts :maven.deploy/artefacts
+                              :as param}]
+  (let [missing? (into #{}
+                       (comp
+                         (map :maven.deploy.artefact/path)
+                         (remove fs/exists?))
+                       artefacts)]
+    (when (seq missing?)
+      (throw (ex-info "Missing artefacts when installing/deploying."
+                      (merge param
+                             {::anom/category ::anom/not-found
+                              :missing-artefacts missing?}))))))
+
+(u/spec-op check-artefacts-exist
+           :param {:req [:maven.deploy/artefacts]})
+
 (defn install! [param]
   (-> param
       ensure-install-conf
       (u/side-effect! mbt-core/sync-pom!)
+      (u/check check-artefacts-exist)
       mbt-core/install!))
 
 (u/spec-op install!
@@ -80,6 +99,7 @@
   (-> param
       ensure-deploy-conf
       (u/side-effect! mbt-core/sync-pom!)
+      (u/check check-artefacts-exist)
       mbt-core/deploy!))
 
 (u/spec-op deploy!
