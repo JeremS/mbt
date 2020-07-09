@@ -31,7 +31,7 @@
 
 (defn- write-version-file! [param]
   (-> param
-      (u/assoc-computed :project/version (comp str next-version))
+      (u/assoc-computed :project/version v/current-project-version)
       (v/write-version-file!)))
 
 (u/spec-op write-version-file!
@@ -88,7 +88,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn jar! [param]
   (-> param
-      (u/ensure-computed :project/version (comp str v/current-version))
+      (u/ensure-computed :project/version v/current-project-version)
       b/ensure-jar-defaults
       b/jar!))
 

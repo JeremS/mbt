@@ -6,6 +6,7 @@
     [com.jeremyschoffen.mbt.alpha.default.building :as b]
     [com.jeremyschoffen.mbt.alpha.default.maven.common :as mc]
     [com.jeremyschoffen.mbt.alpha.default.specs]
+    [com.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [com.jeremyschoffen.java.nio.alpha.file :as fs]))
 
@@ -16,7 +17,8 @@
   (-> param
       (u/ensure-computed
         :jar/output b/jar-out
-        :project/deps mbt-core/get-deps)))
+        :project/deps mbt-core/get-deps
+        :project/version v/current-project-version)))
 
 (u/spec-op ensure-basic-conf
            :deps [b/jar-out mbt-core/get-deps]
@@ -68,7 +70,6 @@
                          :maven/artefact-name
                          :maven/group-id
                          :maven.pom/dir
-                         :project/deps
                          :project/output-dir
                          :project/version]
                    :opt [:maven/classifier :maven.install/dir]})

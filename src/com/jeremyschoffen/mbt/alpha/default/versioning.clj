@@ -27,3 +27,15 @@
 (u/alias-fn make-version-file vf/make-version-file)
 (u/alias-fn write-version-file! vf/write-version-file!)
 
+
+(defn current-project-version [param]
+  (-> param
+      current-version
+      str))
+
+(u/spec-op current-project-version
+           :deps [current-version]
+           :param {:req [:git/repo
+                         :versioning/scheme]
+                   :opt [:versioning/tag-base-name]}
+           :ret string?)
