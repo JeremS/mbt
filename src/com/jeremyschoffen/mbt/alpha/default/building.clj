@@ -68,13 +68,15 @@
   (u/safer-path out jar-name))
 
 (u/spec-op jar-out
-           :param {:req [:build/jar-name :project/output-dir]})
+           :param {:req [:build/jar-name :project/output-dir]}
+           :ret :jar/output)
 
 
 (defn jar! [param]
   (-> param
-      (assoc :jar/srcs (jar/simple-jar-srcs param)
-             :jar/output (jar-out param))
+      (u/ensure-computed
+        :jar/srcs jar/simple-jar-srcs
+        :jar/output jar-out)
       make-jar&clean!))
 
 (u/spec-op jar!
@@ -96,13 +98,15 @@
   (u/safer-path out jar-name))
 
 (u/spec-op uberjar-out
-           :param {:req [:build/uberjar-name :project/output-dir]})
+           :param {:req [:build/uberjar-name :project/output-dir]}
+           :ret :jar/output)
 
 
 (defn uberjar! [param]
   (-> param
-      (assoc :jar/srcs (jar/uber-jar-srcs param)
-             :jar/output (uberjar-out param))
+      (u/ensure-computed
+        :jar/srcs jar/uber-jar-srcs
+        :jar/output uberjar-out)
       make-jar&clean!))
 
 (u/spec-op uberjar!
