@@ -70,8 +70,7 @@
                          :maven/artefact-name
                          :maven/group-id
                          :maven.pom/dir
-                         :project/output-dir
-                         :project/version]
+                         :project/output-dir]
                    :opt [:maven/classifier :maven.install/dir]})
 
 
@@ -115,8 +114,7 @@
                          :maven/server
                          :maven.pom/dir
                          :project/deps
-                         :project/output-dir
-                         :project/version]
+                         :project/output-dir]
                    :opt [:gpg/key-id
                          :maven.deploy/sign-artefacts?
                          :maven/classifier
