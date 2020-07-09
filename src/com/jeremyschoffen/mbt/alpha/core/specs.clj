@@ -19,7 +19,7 @@
 ;; General
 ;;----------------------------------------------------------------------------------------------------------------------
 (s/def :project/working-dir (every-pred path-like? fs/absolute?))
-(s/def :project/version string?)
+(s/def :project/version (s/and string? seq))
 (s/def :project/author string?)
 
 
