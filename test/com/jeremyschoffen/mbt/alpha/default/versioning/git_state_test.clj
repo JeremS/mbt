@@ -29,18 +29,18 @@
   (let [repo (h/make-temp-repo!)
         ctxt {:git/repo repo}]
 
-    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "tag-v1"
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name "tag-v1"
                                               :git.tag/message ""}))
 
 
     (novelty! repo "src")
 
-    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "tag-v2"
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name "tag-v2"
                                               :git.tag/message ""}))
 
     (novelty! repo "src")
 
-    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name           "gat-v1"
+    (mbt-core/git-tag! (assoc ctxt :git/tag! {:git.tag/name "gat-v1"
                                               :git.tag/message ""}))
     (testing "The most recent tag surfaces without pattern to match"
       (fact
