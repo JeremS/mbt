@@ -11,7 +11,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Version file
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn next-version [param]
+(defn anticipated-next-version [param]
   (let [current-version (v/current-version param)]
     (if-not current-version
       (v/schemes-initial-version param)
@@ -20,7 +20,7 @@
                  (update current-version :distance inc))
           v/schemes-bump))))
 
-(u/spec-op next-version
+(u/spec-op anticipated-next-version
            :deps [v/current-version v/schemes-initial-version v/schemes-bump]
            :param {:req [:git/repo
                          :versioning/scheme]
@@ -35,7 +35,7 @@
       (v/write-version-file!)))
 
 (u/spec-op write-version-file!
-           :deps [next-version v/write-version-file!]
+           :deps [anticipated-next-version v/write-version-file!]
            :param {:req [:git/repo
                          :version-file/ns
                          :version-file/path
