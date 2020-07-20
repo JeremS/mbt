@@ -15,6 +15,9 @@
     [org.eclipse.aether.util.repository AuthenticationBuilder]))
 
 
+;; Inspired mostly by https://github.com/EwenG/badigeon/blob/master/src/badigeon/deploy.clj
+
+
 ;; remake of org.apache.maven.settings.DefaultMavenSettingsBuilder method buildSettings
 ;; TODO: Find a way to get the global maven settings.
 (defn- ^Settings get-maven-settings [{maven-settings-file :maven.settings/file
@@ -110,7 +113,7 @@
 
 (defn deploy! [{local-repo :maven/local-repo
                 :as param
-                :or {local-repo maven/default-local-repo}}]
+                :or {local-repo common/default-local-repo}}]
   (System/setProperty "aether.checksums.forSignature" "true")
   (let [system (maven/make-system)
         session (maven/make-session system (str local-repo))

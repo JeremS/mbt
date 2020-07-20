@@ -10,8 +10,9 @@
 ;; Maven Constants
 ;;----------------------------------------------------------------------------------------------------------------------
 (def home (u/safer-path (System/getProperty "user.home")))
-(def default-local-repo (u/safer-path home ".m2"))
-(def maven-default-settings-file (u/safer-path default-local-repo "settings.xml"))
+(def default-maven-home (u/safer-path home ".m2"))
+(def default-local-repo (u/safer-path default-maven-home "repository"))
+(def maven-default-settings-file (u/safer-path default-maven-home "settings.xml"))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
