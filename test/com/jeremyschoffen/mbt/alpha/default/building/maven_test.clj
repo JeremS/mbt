@@ -12,7 +12,14 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(stest/instrument)
+(stest/instrument [building/ensure-jar-defaults
+                   building/jar-out
+                   building/jar!
+
+                   maven/install!
+                   maven/deploy!
+
+                   mbt-core/clean!])
 
 
 (def project-path test-repos/deploy-project)

@@ -8,7 +8,18 @@
     [com.jeremyschoffen.mbt.alpha.test.helpers :as h]
     [com.jeremyschoffen.mbt.alpha.core.git :as git]))
 
-(st/instrument)
+(st/instrument [git/any-commit?
+                git/commit!
+                git/describe
+                git/dirty?
+                git/get-tag
+                git/make-jgit-repo
+                git/prefix
+                git/status
+                git/tag!
+                git/top-level
+                git/update-all!])
+
 
 (defn make-temp-repo! []
   (let [repo (h/make-temp-repo!)

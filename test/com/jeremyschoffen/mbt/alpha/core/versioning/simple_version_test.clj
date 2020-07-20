@@ -7,7 +7,8 @@
 
     [com.jeremyschoffen.mbt.alpha.core.versioning.simple-version :as sv]))
 
-(st/instrument)
+(st/instrument [sv/simple-version
+                sv/bump])
 
 (def dumy-sha "AAA123")
 

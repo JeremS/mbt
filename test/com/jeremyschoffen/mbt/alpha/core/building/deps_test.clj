@@ -7,6 +7,7 @@
 
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]))
 
+(stest/instrument [deps/make-deps-coords])
 
 (def group-id 'group)
 (def name 'project-gamma)

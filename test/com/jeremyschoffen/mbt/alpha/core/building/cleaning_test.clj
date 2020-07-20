@@ -9,7 +9,7 @@
 
 
 
-(stest/instrument)
+(stest/instrument [cleaning/clean!])
 
 
 (deftest cleaning

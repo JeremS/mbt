@@ -16,7 +16,18 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(st/instrument)
+(st/instrument [mbt-core/git-add!
+                mbt-core/git-add-all!
+                mbt-core/git-commit!
+                mbt-core/git-tag!
+
+                git-state/most-recent-description
+                git-state/current-version
+                git-state/next-version
+                git-state/next-tag
+                git-state/bump-tag!])
+
+
 
 (defn novelty! [repo & dirs]
   (apply h/add-src! repo dirs)
@@ -130,10 +141,9 @@
               :project/working-dir (fs/path repo)
               :versioning/scheme test-scheme}
         tag (-> ctxt
-                (u/assoc-computed
-                  :versioning/tag-base-name defaults/tag-base-name)
-                git-state/next-tag
-                (update :git.tag/message clojure.edn/read-string))
+                (u/assoc-computed :versioning/tag-base-name defaults/tag-base-name)
+                (-> git-state/next-tag
+                    (update :git.tag/message clojure.edn/read-string)))
         base-name (-> repo fs/file-name str)
         tag-name (str base-name
                       "-v"

@@ -10,7 +10,7 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(st/instrument)
+(st/instrument [defaults/make-context])
 
 (deftest names
   (let [repo (h/make-temp-repo!)
