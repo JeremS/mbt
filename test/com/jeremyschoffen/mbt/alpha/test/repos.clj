@@ -4,7 +4,7 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(def test-repos (u/safer-path "test-repos"))
+(def test-repos (u/safer-path "resources-test" "test-repos"))
 
 (def deploy-project (u/safer-path test-repos "deploy"))
 
