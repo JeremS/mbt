@@ -41,4 +41,3 @@
 
       (:versioning/tag-base-name ctxt')
       => "module1-toto")))
-(clojure.test/run-tests)
