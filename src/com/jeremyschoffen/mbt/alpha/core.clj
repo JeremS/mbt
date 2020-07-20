@@ -4,7 +4,7 @@
     [com.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]
     [com.jeremyschoffen.mbt.alpha.core.building.compilation :as compilation]
     [com.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [com.jeremyschoffen.mbt.alpha.core.building.gpg :as gpg]
+    [com.jeremyschoffen.mbt.alpha.core.gpg :as gpg]
     [com.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
     [com.jeremyschoffen.mbt.alpha.core.building.manifest :as manifest]
     [com.jeremyschoffen.mbt.alpha.core.specs]
@@ -43,8 +43,8 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
 ;;----------------------------------------------------------------------------------------------------------------------
+(u/alias-fn gpg-version gpg/gpg-version)
 (u/alias-fn sign-file! gpg/sign-file!)
-(u/alias-fn sign-files! gpg/sign-files!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
@@ -54,8 +54,6 @@
 (u/alias-fn make-jar-archive! jar/make-jar-archive!)
 
 (u/alias-fn make-manifest manifest/make-manifest)
-
-
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven

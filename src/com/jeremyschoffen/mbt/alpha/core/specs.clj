@@ -219,21 +219,27 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Shell
 ;;----------------------------------------------------------------------------------------------------------------------
-(s/def :shell/command (s/* string?))
+(s/def :shell/command (s/cat :cmd (s/* string?)
+                             :opts (s/* (s/cat :opt-name keyword? :opt-value any?))))
+(s/def :shell/exit int?)
+(s/def :shell/out string?)
+(s/def :shell/err string?)
 
+(s/def :shell/result (s/keys :req-un [:shell/exit :shell/out :shell/err]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
 ;;----------------------------------------------------------------------------------------------------------------------
-(s/def :gpg.sign/in path?)
-(s/def :gpg.sign/out path?)
+(s/def :gpg/home-dir path?)
+(s/def :gpg/command string?)
+(s/def :gpg/version (s/and vector? (s/cat :major int? :minor int? :patch int?)))
 (s/def :gpg/key-id string?)
+(s/def :gpg/pass-phrase string?)
+(s/def :gpg.sign!/in path?)
+(s/def :gpg.sign!/out path?)
 
-(s/def :gpg.sign/spec (s/keys :req [:gpg.sign/in]
-                              :opt [:gpg.sign/out
-                                    :gpg/key-id]))
-
-(s/def :gpg.sign/specs (s/* :gpg.sign/spec))
+(s/def :gpg/sign! (s/keys :req [:gpg.sign!/in]
+                          :opt [:gpg.sign!/out]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

@@ -12,13 +12,16 @@
 
 (st/instrument)
 
-
 (deftest names
   (let [repo (h/make-temp-repo!)
+        wd (u/safer-path repo)
+        wd' (u/safer-path repo "module1" "toto")
+        _ (u/ensure-dir! wd')
+
         group-id (-> repo fs/file-name str symbol)
 
-        ctxt (defaults/make-context {:project/working-dir (u/safer-path repo)})
-        ctxt' (defaults/make-context {:project/working-dir (u/safer-path repo "module1" "toto")})]
+        ctxt (defaults/make-context {:project/working-dir wd})
+        ctxt' (defaults/make-context {:project/working-dir wd'})]
     (facts
       (:maven/group-id ctxt)
       => group-id
@@ -38,3 +41,4 @@
 
       (:versioning/tag-base-name ctxt')
       => "module1-toto")))
+(clojure.test/run-tests)

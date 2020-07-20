@@ -2,11 +2,15 @@
   (:require
     [clojure.string :as string]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
+    [medley.core :as medley]
+
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [com.jeremyschoffen.mbt.alpha.core.specs]
+    [com.jeremyschoffen.mbt.alpha.default.defaults.gpg :as gpg-defaults]
     [com.jeremyschoffen.mbt.alpha.default.specs]
-    [com.jeremyschoffen.mbt.alpha.utils :as u]))
+    [com.jeremyschoffen.mbt.alpha.utils :as u]
+    [clojure.spec.alpha :as s]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; General project values
@@ -61,6 +65,23 @@
            :ret :project/name)
 
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; GPG
+;;----------------------------------------------------------------------------------------------------------------------
+(defn gpg-command [_]
+  (gpg-defaults/default-gpg-command))
+
+(u/spec-op gpg-command
+           :ret (s/nilable :gpg/command))
+
+
+(defn gpg-version [param]
+  (when (:gpg/command param)
+    (mbt-core/gpg-version param)))
+
+(u/spec-op gpg-version
+           :param {:opt [:gpg/command]}
+           :ret (s/nilable :gpg/version))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -178,6 +199,9 @@
    :project/author project-author
    :project/name project-name
 
+   :gpg/command gpg-command
+   :gpg/version gpg-version
+
    :git/repo git-repo
 
    :cleaning/target cleaning-target
@@ -198,11 +222,10 @@
 
 
 (defn make-context [user-defined]
-  (->> (apply u/ensure-computed user-defined ctxt-building-scheme)))
+  (->> (apply u/ensure-computed user-defined ctxt-building-scheme)
+       (medley/filter-vals identity)))
 
 (comment
   (into (sorted-map)
         (make-context {:project/working-dir (u/safer-path "test-repos" "monorepo" "project1")
                        :versioning/major :alpha})))
-
-

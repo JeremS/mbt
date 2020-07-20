@@ -1,7 +1,7 @@
 (ns com.jeremyschoffen.mbt.alpha.core.maven.common
   (:require
     [com.jeremyschoffen.java.nio.alpha.file :as fs]
-    [com.jeremyschoffen.mbt.alpha.core.building.gpg :as gpg]
+    [com.jeremyschoffen.mbt.alpha.core.gpg :as gpg]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     [org.eclipse.aether.artifact DefaultArtifact]))
@@ -62,25 +62,23 @@
   "Signs one maven deployment artefact using gpg, return a map
   specifiying the resulting signature as instance :maven.deploy/artefact spec."
   [{artefact :maven.deploy/artefact
-    sign-key  :gpg/key-id
     :as param}]
   (let [{p :maven.deploy.artefact/path
          ext :maven.deploy.artefact/extension} artefact
-        signature-path (gpg/make-sign-out p)]
-    (gpg/sign-file!
-      (assoc param
-        :gpg.sign/spec (cond-> {:gpg.sign/in p
-                                :gpg.sign/out signature-path}
-
-                               sign-key (assoc :gpg/key-id sign-key))))
-    {:maven.deploy.artefact/path signature-path
+        {out :gpg.sign!/out} (-> param
+                                 (assoc :gpg/sign! {:gpg.sign!/in p})
+                                 gpg/sign-file!)]
+    {:maven.deploy.artefact/path out
      :maven.deploy.artefact/extension (str ext ".asc")}))
 
 (u/spec-op sign-artefact!
            :deps [gpg/sign-file!]
            :param {:req [:maven.deploy/artefact]
-                   :opt [:project/working-dir
-                         :gpg/key-id]}
+                   :opt [:gpg/command
+                         :gpg/home-dir
+                         :gpg/key-id
+                         :gpg/pass-phrase
+                         :project/working-dir]}
            :ret :maven.deploy/artefact)
 
 
@@ -95,6 +93,9 @@
 (u/spec-op sign-artefacts!
            :deps [sign-artefact!]
            :param {:req [:maven.deploy/artefacts]
-                   :opt [:project/working-dir
-                         :gpg/key-id]}
+                   :opt [:gpg/command
+                         :gpg/home-dir
+                         :gpg/key-id
+                         :gpg/pass-phrase
+                         :project/working-dir]}
            :ret :maven.deploy/artefacts)
