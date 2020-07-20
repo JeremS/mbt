@@ -82,6 +82,8 @@
 (u/spec-op gpg-version
            :param {:opt [:gpg/command]}
            :ret (s/nilable :gpg/version))
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -139,6 +141,7 @@
            :param {:req [:project/output-dir]}
            :ret :maven.pom/dir)
 
+
 (defn maven-local-repo [_]
   (fs/path deps-maven/default-local-repo))
 
@@ -159,7 +162,6 @@
 (u/spec-op maven-settings-file
            :ret :maven.settings/file)
 
-;; TODO: See if the :maven/server conf needs to have defaults
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building
