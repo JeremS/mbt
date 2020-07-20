@@ -37,3 +37,9 @@
 (u/alias-fn build-uberjar! tasks/uberjar!)
 (u/alias-fn install! maven/install!)
 (u/alias-fn deploy! maven/deploy!)
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Default remote repo
+;;----------------------------------------------------------------------------------------------------------------------
+(def clojars {:id "clojars"
+              :url "https://repo.clojars.org/"})
