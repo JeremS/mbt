@@ -28,8 +28,8 @@
            :ret :gpg/version)
 
 
-(def gpg-v2-1 [2 1 0])
-(def gpg-v2 [2 0 0])
+(def ^:private gpg-v2-1 [2 1 0])
+(def ^:private gpg-v2 [2 0 0])
 
 
 (defn- gr-or-eq [x y]
@@ -38,7 +38,7 @@
 
 
 ;; Mostly from https://github.com/boot-clj/boot/blob/master/boot/pod/src/boot/gpg.clj
-(defn make-sign-cmd [param]
+(defn- make-sign-cmd [param]
   (let [{cmd :gpg/command
          gpg-v :gpg/version
          home-dir :gpg/home-dir
@@ -99,7 +99,7 @@
            :ret :gpg.sign!/out)
 
 
-(defn ensure-sign-out [param]
+(defn- ensure-sign-out [param]
   (update param
           :gpg/sign! u/ensure-computed :gpg.sign!/out make-sign-out))
 
@@ -129,4 +129,3 @@
                               :gpg.sign!/out
                               :shell/command
                               :shell/result]))
-
