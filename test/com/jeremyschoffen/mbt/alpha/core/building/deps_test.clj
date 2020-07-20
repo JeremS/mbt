@@ -10,15 +10,15 @@
 (stest/instrument [deps/make-deps-coords])
 
 (def group-id 'group)
-(def name 'project-gamma)
+(def project-name 'project-gamma)
 (def classifier 'sources)
 (def version "0.4.3-beta")
 
 (def conf
-  {:maven/group-id group-id
-   :maven/artefact-name name
-   :maven/classifier classifier
-   :project/version version})
+  {:maven/group-id      group-id
+   :maven/artefact-name project-name
+   :maven/classifier    classifier
+   :project/version     version})
 
 
 (def ex (deps/make-deps-coords conf))
@@ -28,5 +28,5 @@
     ex => {'group/project-gamma$sources {:mvn/version version}}
 
     (str (deps-maven/coord->artifact 'group/project-gamma$sources {:mvn/version version}))
-    => (clojure.string/join ":" [group-id name "jar" classifier version])))
+    => (clojure.string/join ":" [group-id project-name "jar" classifier version])))
 

@@ -63,7 +63,8 @@
     (-> builder
         (.addUsername user-name)
         (.addPassword ^String password)
-        (.addPrivateKey ^String private-key ^String passphrase)
+        (.addPrivateKey ^String (when private-key (str private-key))
+                        ^String passphrase)
         (.build))))
 
 (u/spec-op make-maven-authentication

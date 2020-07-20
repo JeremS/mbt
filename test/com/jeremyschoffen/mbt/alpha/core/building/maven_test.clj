@@ -26,11 +26,11 @@
 
     (-> baseconf
         (assoc :maven/credentials {:maven.credentials/user-name "tester"
-                                   :maven.credentials/private-key "tester"
+                                   :maven.credentials/private-key (fs/path "dummy" "path" "to" "key")
                                    :maven.credentials/password "passwd"
                                    :maven.credentials/passphrase "phrase"})
         creds)
-    => "username=tester, password=***, privateKey.path=tester, privateKey.passphrase=***"
+    => "username=tester, password=***, privateKey.path=dummy/path/to/key, privateKey.passphrase=***"
 
     (-> baseconf
         (assoc-in [:maven/server :maven.server/id] "dummy-repo")
