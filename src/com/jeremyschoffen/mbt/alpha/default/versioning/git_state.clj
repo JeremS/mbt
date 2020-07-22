@@ -29,7 +29,7 @@
 
 
 (defn most-recent-description
-  "Get the most recent description for the tags named witht the base `:versioning/tag-base-name`."
+  "Get the most recent description for the tags named with the base `:versioning/tag-base-name`."
   [{repo :git/repo
     tag-base :versioning/tag-base-name
     :as param}]
@@ -122,7 +122,7 @@
 
 
 (defn make-tag
-  "Creates tag data usable by our git wrapper."
+  "Create tag data usable by our git wrapper."
   [param]
   (let [m (make-tag-data param)]
     {:git.tag/name (:tag-name m)
@@ -199,8 +199,10 @@
 
 
 (defn check-repo-in-order
-  "Checks that the working dir has a build file and is in a repo
-  which already has at least one commit. Throws if the checks don't pass."
+  "Concentrate several checks in one function. Namely:
+    - [[com.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-some-commit]]
+    - [[com.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-build-file]]
+    - [[com.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-not-dirty]]"
   [ctxt]
   (-> ctxt
       (u/check check-some-commit)
@@ -214,7 +216,8 @@
 
 
 (defn tag!
-  "Create a new git tag provided some checks pass."
+  "Create a new git tag provided [[com.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-repo-in-order]]
+  passes."
   [param]
   (-> param
       (u/check check-repo-in-order)
@@ -228,7 +231,7 @@
 
 (defn bump-tag!
   "Create a new tag in git marking a new milestone in the project. The next version, tag name, etc... are computed from
-  the previous versionning state already in git. If no version has been established yet, the initial version of the used
+  the previous versioning state already in git. If no version has been established yet, the initial version of the used
   version scheme will be selected."
   [param]
   (-> param

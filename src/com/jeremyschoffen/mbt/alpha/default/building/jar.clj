@@ -35,7 +35,7 @@
 
 
 (defn make-pom-entry
-  "Make a `:jar/entry` for a pom.xml file."
+  "Make a `:jar/entry` for a `pom.xml` file."
   [{pom :maven/pom
     group-id :maven/group-id
     artefact-id :maven/artefact-name}]
@@ -56,7 +56,7 @@
 
 
 (defn make-deps-entry
-  "Make a `:jar/entry` for a deps.edn file."
+  "Make a `:jar/entry` for a `deps.edn` file."
   [{deps :project/deps
     group-id :maven/group-id
     artefact-id :maven/artefact-name}]
@@ -106,8 +106,8 @@
 
 
 (defn simple-jar-srcs
-  "Makes the jar srcs used in a skinny jar, Basically all the project local source and resource directories given in the
-  classpath."
+  "Make the jar srcs used in a skinny jar. Basically all the project local sources and resources directories present in
+  the classpath."
   [{cp :classpath/index
     :as param}]
   (warn-wayward-files param)
@@ -129,8 +129,8 @@
 
 
 (defn uber-jar-srcs
-  "Makes the jar srcs that will go into an uberjar. Similar to `simple-jar-srcs` but also adds the other sources in the
-  classpath."
+  "Make the jar srcs that will go into an uberjar. Similar to [[simple-jar-srcs]] but also adds the other sources
+   present in the classpath."
   [{cp :classpath/index
     :as param}]
   (warn-wayward-files param)

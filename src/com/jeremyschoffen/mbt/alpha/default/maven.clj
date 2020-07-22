@@ -14,7 +14,7 @@
 (u/alias-fn make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 
 (defn ensure-basic-conf
-  "Ensure the necessary basic keys needed to install and deploy maven artefact are present in the config. Fill the
+  "Ensure the necessary basic keys needed to install/deploy maven artefacts are present in the config. Fill the
   blanks with: default values. Those keys are:
     - :jar/output
     - :project/deps
@@ -34,11 +34,10 @@
 
 
 (defn ensure-install-conf
-  "Ensure that the keys nedded to install a jar are part of the config.
-   The basic ones are taken care of using `ensure-basic-conf`. The key `:maven.deploy/artefacts` is
-   computed specifically.
-
-   In the case of an install, default behavior is to make 2 artefacts, one for the jar, one for a pom.xml."
+  "Ensure that the keys needed to install a jar are part of the config.
+   The basic ones are taken care of using [[com.jeremyschoffen.mbt.alpha.default.maven/ensure-basic-conf]].
+   The key `:maven.deploy/artefacts` is computed specifically. Default behavior is to make 2 artefacts, one for the jar,
+   one for a pom.xml."
   [param]
   (-> param
       ensure-basic-conf
@@ -54,7 +53,7 @@
 
 
 (defn check-artefacts-exist
-  "Check that the artefacts describe under the key `:maven.deploy/artefacts` actually exist."
+  "Check that the artefacts described under the key `:maven.deploy/artefacts` actually exist."
   [{artefacts :maven.deploy/artefacts
     :as param}]
   (let [missing? (into #{}
@@ -75,7 +74,8 @@
   "Install a jar of the current project into the local maven repo.
 
   Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the `:maven.pom/dir` location.
-  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate it using `ensure-install-conf`."
+  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate it using
+  [[com.jeremyschoffen.mbt.alpha.default.maven/ensure-install-conf]]."
   [param]
   (-> param
       ensure-install-conf
@@ -96,13 +96,12 @@
 
 
 (defn ensure-deploy-conf
-  "Ensure that the keys nedded to install a jar are part of the config.
-   The basic ones are taken care of using `ensure-basic-conf`. The key `:maven.deploy/artefacts` is
-   computed specifically. In the case of an install, default behavior is to make 2 artefacts,
-   one for the jar, one for a pom.xml.
+  "Ensure that the keys needed to deploy a jar are part of the config.
+   The basic ones are taken care of using [[com.jeremyschoffen.mbt.alpha.default.maven/ensure-basic-conf]].
 
-   In the case of an deployment, default behavior is to make 2 artefacts, one for the jar, one for a pom.xml.
-   Gnupg can be used to sign these artefacts if the parameter under the key `:maven.deploy/sign-artefacts?` is true."
+   The key `:maven.deploy/artefacts` is computed here specifically. Default behavior is to make 2 artefacts,
+   one for the jar, one for a pom.xml. Also gnupg can be used to sign these artefacts if the parameter under the key
+   `:maven.deploy/sign-artefacts?` is true."
   [{sign? :maven.deploy/sign-artefacts?
     :as param}]
   (let [make-deploy-artefacts (if sign?
@@ -129,10 +128,11 @@
 (u/param-suggestions ensure-deploy-conf)
 
 (defn deploy!
-  "Deploy a jar of the current project to a remote repo..
+  "Deploy a jar of the current project to a remote repo.
 
   Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the `:maven.pom/dir` location.
-  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate it using `ensure-deploy-conf`."
+  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate and assoc it to the conf using
+  [[com.jeremyschoffen.mbt.alpha.default.maven/ensure-deploy-conf]]."
   [param]
   (-> param
       ensure-deploy-conf

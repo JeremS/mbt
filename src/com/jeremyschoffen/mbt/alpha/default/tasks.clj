@@ -12,10 +12,9 @@
 ;; Version file
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn anticipated-next-version
-  "Get the next version of the project assuming it the commit distance from the previous one will be one more than it
-  is now.
+  "Get the next version of the project assuming the commit distance will be one more than it is now.
 
-  It is usefull when the build process must generate and committing files before tagging the next version."
+  Useful when the build process must generate and commit files before tagging the next version."
   [param]
   (let [current-version (v/current-version param)]
     (if-not current-version
@@ -70,7 +69,8 @@
 
 (defn add-version-file!
   "Add a version file to the project. Must be used right before tagging a new version.
-  The version used in this file will be computed using `anticipated-next-version`."
+  The version used in this file will be computed using
+  [[com.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]]."
   [ctxt]
   (-> ctxt
       (u/check v/check-repo-in-order)
@@ -95,7 +95,9 @@
 ;; Building jars
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn jar!
-  "Build a skinny jar for the project."
+  "Build a skinny jar for the project. Ensure that the `:project/version` is present int the config with
+  [[com.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
+  Also ensure other keys using [[com.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
       (u/ensure-computed :project/version v/current-project-version)
@@ -120,10 +122,12 @@
 
 
 (defn uberjar!
-  "Build an uberjar for the project."
+  "Build an uberjar for the project. Ensure that the `:project/version` is present int the config with
+  [[com.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
+  Also ensure other keys using [[com.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
-      (u/ensure-computed :project/version (comp str v/current-version))
+      (u/ensure-computed :project/version v/current-project-version)
       b/ensure-jar-defaults
       b/uberjar!))
 

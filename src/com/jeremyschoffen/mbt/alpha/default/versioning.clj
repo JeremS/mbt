@@ -12,7 +12,7 @@
 (u/alias-def semver-scheme schemes/semver-scheme)
 (u/alias-def simple-scheme schemes/simple-scheme)
 
-(u/alias-fn  schemes-current-version schemes/current-version)
+(u/alias-fn schemes-current-version schemes/current-version)
 (u/alias-fn schemes-initial-version schemes/initial-version)
 (u/alias-fn schemes-bump schemes/bump)
 
@@ -27,7 +27,10 @@
 (u/alias-fn write-version-file! vf/write-version-file!)
 
 
-(defn current-project-version [param]
+(defn current-project-version
+  "Get the project's current version using git state and the provided version scheme then
+  get its string representation."
+  [param]
   (-> param
       current-version
       str))

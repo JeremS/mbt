@@ -24,9 +24,8 @@
 
 
 (defn make-usual-artefacts+signatures!
-  "Makes a sequence of maps representing maven artefacts `:maven.deploy/artefact` spec.
-
-  Here representations for a pom.xml, a jar and their signatures (using gnupg) are returned."
+  "Make the usual artefacts using [[com.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts]] and
+  their gpg signatures."
   [ctxt]
   (let [artefacts (make-usual-artefacts ctxt)
         signatures (mbt-core/maven-sign-artefacts!

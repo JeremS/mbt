@@ -9,7 +9,7 @@
 
 
 (defn ensure-jar-defaults
-  "Adds to a config map the necessary keys to make a jar. Namely:
+  "Add to a config map the necessary keys to make a jar. Namely:
     - :project/deps
     - :classpath/index
     - :maven/pom
@@ -37,8 +37,8 @@
 
 
 (defn make-jar&clean!
-  "Create a jar, simplying the process by handling the creation and deletion of the tempout put that will be zipped
-  into the result jar."
+  "Create a jar, simplifying the process by handling the creation and deletion of the temporary output put that will
+  be zipped into the resulting jar."
   [{out :project/output-dir
     jar-out :jar/output
     :as param}]
@@ -77,7 +77,8 @@
 
 (defn jar!
   "Create a skinny jar. The jar sources are determined using
-  `com.jeremyschoffen.mbt.alpha.default.building.jar/simple-jar-srcs`, the jar's path name `jar-out`."
+  [[com.jeremyschoffen.mbt.alpha.default.building.jar/simple-jar-srcs]], the jar's path name
+  [[com.jeremyschoffen.mbt.alpha.default.building/jar-out]]."
   [param]
   (-> param
       (u/ensure-computed
@@ -112,7 +113,8 @@
 
 (defn uberjar!
   "Build an uberjar. The jar sources are determined using
-  `com.jeremyschoffen.mbt.alpha.default.building.jar/uber-jar-srcs`, the uberjar's path `uberjar-out`."
+  [[com.jeremyschoffen.mbt.alpha.default.building.jar/uber-jar-srcs]], the uberjar's path
+  [[com.jeremyschoffen.mbt.alpha.default.building/uberjar-out]]."
   [param]
   (-> param
       (u/ensure-computed

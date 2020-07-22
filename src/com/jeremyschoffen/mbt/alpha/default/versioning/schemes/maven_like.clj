@@ -6,7 +6,7 @@
 
 
 (defn- parse-git-descripton
-  "Parse a git descript into a map usable by a maven-like version cstr."
+  "Parse a git description into a map usable by a maven-like version cstr."
   [git-desc]
   (let [current-str (-> git-desc
                         (get-in  [:git/tag :git.tag/message])
