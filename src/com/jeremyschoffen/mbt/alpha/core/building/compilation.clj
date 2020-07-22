@@ -21,7 +21,8 @@
   "Use an indexed classpath to find all Clojure namespaces from src directories located inside the working directory.
 
   See:
-    - `com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath`"
+    - [[com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+  "
   [{cp :classpath/index}]
   (-> cp :classpath/dir dirs->nss))
 
@@ -35,7 +36,8 @@
   These would be namespaces from local deps or directly from a git repo.
 
   See:
-    - `com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath`"
+    - [[com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+  "
   [{cp :classpath/index}]
   (-> cp :ext-dep dirs->nss))
 
@@ -44,11 +46,13 @@
            :ret :clojure.compilation/namespaces)
 
 
-(defn jar-nss [{cp :classpath/index}]
+(defn jar-nss
   "Use an indexed classpath to find all Clojure namespaces from jars.
 
   See:
-    - `com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath`"
+    - [[com.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+  "
+  [{cp :classpath/index}]
   (into []
         (comp
           (map #(JarFile. ^String %))

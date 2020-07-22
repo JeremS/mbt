@@ -6,8 +6,7 @@
 
 
 (defn make-usual-artefacts
-  "Makes a sequence of maps representing maven artefacts (in the deployment sense where an artefact
-  is one of the different files that will be pushed to a maven server).
+  "Makes a sequence of maps representing maven artefacts following the `:maven.deploy/artefact` spec.
 
   Here representations for a pom.xml and a jar are made."
   [{pom-dir :maven.pom/dir
@@ -25,18 +24,22 @@
 
 
 (defn make-usual-artefacts+signatures!
-  "Makes a sequence of maps representing maven artefacts (in the deployment sense where an artefact
-  is one of the different files that will be pushed to a maven server) and signs them using gpg.
+  "Makes a sequence of maps representing maven artefacts `:maven.deploy/artefact` spec.
 
-  Here representations for a pom.xml, a jar and their signatures are returned."
+  Here representations for a pom.xml, a jar and their signatures (using gnupg) are returned."
   [ctxt]
   (let [artefacts (make-usual-artefacts ctxt)
-        signatures (mbt-core/sign-artefacts!
+        signatures (mbt-core/maven-sign-artefacts!
                      (assoc ctxt :maven.deploy/artefacts artefacts))]
     (into artefacts signatures)))
 
 (u/spec-op make-usual-artefacts+signatures!
-           :deps [make-usual-artefacts mbt-core/sign-artefacts!]
+           :deps [make-usual-artefacts mbt-core/maven-sign-artefacts!]
            :param {:req [:jar/output :maven.pom/dir]
-                   :opt [:gpg/key-id :project/working-dir]}
+                   :opt [:gpg/command
+                         :gpg/home-dir
+                         :gpg/key-id
+                         :gpg/pass-phrase
+                         :gpg/version
+                         :project/working-dir]}
            :ret :maven.deploy/artefacts)

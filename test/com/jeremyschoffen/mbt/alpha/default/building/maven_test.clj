@@ -59,7 +59,7 @@
 
 
 (defn list-jar-files [jar-path]
-  (with-open [zfs (mbt-core/open-jar-fs jar-path)]
+  (with-open [zfs (mbt-core/jar-open-fs jar-path)]
     (->> zfs
          fs/walk
          fs/realize

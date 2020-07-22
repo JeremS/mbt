@@ -5,7 +5,9 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(defn parse-git-descripton [git-desc]
+(defn- parse-git-descripton
+  "Parse a git descript into a map usable by a maven-like version cstr."
+  [git-desc]
   (let [current-str (-> git-desc
                         (get-in  [:git/tag :git.tag/message])
                         clojure.edn/read-string
@@ -16,35 +18,37 @@
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
     (-> current-str
-        mbt-core/parse-maven-like-version
+        mbt-core/version-parse-maven-like
         (merge relevant-part))))
 
 
 (def maven-scheme
+  "A maven version scheme."
   (reify p/VersionScheme
     (current-version [_ desc]
-      (-> desc parse-git-descripton mbt-core/maven-version))
+      (-> desc parse-git-descripton mbt-core/version-maven))
 
     (initial-version [_]
-      mbt-core/initial-maven-version)
+      mbt-core/version-initial-maven)
 
     (bump [this version]
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (mbt-core/maven-bump version level))))
+      (mbt-core/version-maven-bump version level))))
 
 
 (def semver-scheme
+  "A Semver version scheme."
   (reify p/VersionScheme
     (current-version [_ desc]
       (-> desc parse-git-descripton mbt-core/semver-version))
 
     (initial-version [_]
-      mbt-core/initial-semver-version)
+      mbt-core/version-initial-semver)
 
     (bump [this version]
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (mbt-core/semver-bump version level))))
+      (mbt-core/version-semver-bump version level))))

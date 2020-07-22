@@ -32,6 +32,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
+(u/alias-fn anticipated-next-version tasks/anticipated-next-version)
 (u/alias-fn add-version-file! tasks/add-version-file!)
 (u/alias-fn build-jar! tasks/jar!)
 (u/alias-fn build-uberjar! tasks/uberjar!)
@@ -41,5 +42,5 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default remote repo
 ;;----------------------------------------------------------------------------------------------------------------------
-(def clojars {:id "clojars"
-              :url "https://repo.clojars.org/"})
+(def clojars #:maven.server{:id "clojars"
+                            :url "https://repo.clojars.org/"})

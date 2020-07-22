@@ -5,8 +5,10 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(defn- current-version* [{tag :git/tag
-                          :as git-desc}]
+(defn- current-version*
+  "Parse a git description into the current version.`"
+  [{tag :git/tag
+    :as git-desc}]
   (let [last-version-number (-> tag
                                 :git.tag/message
                                 clojure.edn/read-string
@@ -17,19 +19,20 @@
                                          :git.describe/distance
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
-    (mbt-core/simple-version (assoc relevant-part :number last-version-number))))
+    (mbt-core/version-simple (assoc relevant-part :number last-version-number))))
 
 
 (def simple-scheme
+  "A simple version scheme."
   (reify p/VersionScheme
     (current-version [_ desc]
       (current-version* desc))
 
     (initial-version [_]
-      mbt-core/initial-simple-version)
+      mbt-core/version-initial-simple)
 
     (bump [_ version]
-      (mbt-core/simple-version-bump version))
+      (mbt-core/version-simple-bump version))
 
     (bump [_ version _]
-      (mbt-core/simple-version-bump version))))
+      (mbt-core/version-simple-bump version))))

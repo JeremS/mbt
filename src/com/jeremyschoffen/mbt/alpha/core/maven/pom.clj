@@ -12,11 +12,13 @@
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
-    [java.io File Reader]
+    [java.io Reader]
     [clojure.data.xml.node Element]))
 
 
-(defn non-maven-deps [{deps-map :project/deps}]
+(defn non-maven-deps
+  "Utility signaling non maven deps. These deps can't go into a pom file."
+  [{deps-map :project/deps}]
   (into #{}
         (keep (fn [[k v]]
                 (when-not (contains? v :mvn/version)
@@ -78,10 +80,12 @@
   (remove #(= "https://repo1.maven.org/maven2/" (-> % val :url)) rs))
 
 
-(defn new-pom [{project-name :maven/artefact-name
-                group-id :maven/group-id
-                project-version :project/version
-                project-deps :project/deps}]
+(defn new-pom
+  "Make a fresh pom using the tree of maps representation used in the `clojure.data.xml` library."
+  [{project-name :maven/artefact-name
+    group-id :maven/group-id
+    project-version :project/version
+    project-deps :project/deps}]
   (let [{deps :deps
          [path & paths] :paths
          repos :mvn/repos} project-deps
@@ -201,8 +205,11 @@
   (u/safer-path pom-dir "pom.xml"))
 
 
-(defn sync-pom! [{pom-dir :maven.pom/dir
-                  :as      param}]
+(defn sync-pom!
+  "Function similar to `clojure.tools.deps.alpha.gen.pom/sync-pom` with added behaviour. Fills the
+  maven coordinates for the project in addition to tools deps operation."
+  [{pom-dir :maven.pom/dir
+    :as      param}]
   (let [p (pom-path pom-dir)
         current-pom (when (fs/exists? p)
                       (read-xml p))]

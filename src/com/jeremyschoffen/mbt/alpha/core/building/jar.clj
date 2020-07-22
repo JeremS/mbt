@@ -29,7 +29,9 @@
     (.put "encoding" "UTF-8")))
 
 
-(defn make-output-jar-fs
+(defn- make-output-jar-fs
+  "Create a jar file system located at the path specified under the key `:jar/output`.
+  This file system is created with the purpose of the creation of a fresh jar in mind."
   {:tag FileSystem}
   [{output :jar/output}]
   (u/ensure-parent! output)
@@ -48,6 +50,8 @@
 
 
 (defn open-jar-fs
+  "Open a jar (zip) file system at the location passed as a parameter.
+  This file system is read only."
   {:tag FileSystem}
   [jar-path]
   (-> jar-path
@@ -163,9 +167,11 @@
            :ret :jar/entry)
 
 
-(defn- add-entry! [{output   :jar/temp-output
-                    exclude? :jar/exclude?
-                    entry :jar/entry}]
+(defn- add-entry!
+  "Function that copies a jar entry into the temp ouput, handling the exclusion cases and the clashes."
+  [{output   :jar/temp-output
+    exclude? :jar/exclude?
+    entry :jar/entry}]
   (let [entry (-> entry
                   (assoc :jar/temp-output output)
                   (update :jar.entry/dest #(fs/resolve output %)))]
@@ -278,8 +284,25 @@
 
 
 (defn add-srcs!
-  "Copies the files grouped under the key `:jar/srcs` into
-  the temp jar directory."
+  "Copy the files grouped under the key `:jar/srcs` into the temp jar directory specified under the key
+  `:jar/temp-output`.
+
+  A source can be:
+    - a sequence of `:jar/entry`
+    - a path to a jar or a src directory.
+
+  An optional exclusion function can be passed under the key `:jar/exclude`. If this function returns true, the jar
+  entry will be excluded from the jar. It must take only one argument which will be a map with the following keys:
+    - `:jar.entry/src`
+    - `:jar.entry/dest`
+    - `:jar/temp-output`
+
+  The return value is a sequence of map, each one basically a `jar/entry` with additional keys:
+    - `:jar/temp-output` a reminder of the temp output path
+    - `:jar.adding/result`: the `:filtered-out` keyword in the case of an exclusion, whichever value was returned by
+       whichever copying function was used otherwise.
+    - `:jar.clash/strategy`: a keyword indicating which clash strategy has been used for this entry
+  "
   [{srcs :jar/srcs
     :as param}]
   (into []
@@ -320,10 +343,11 @@
 
 
 (defn make-jar-archive!
-  "Zips the a dir into a .jar archive file."
+  "Zips the dir specified by under the key `:jar/temp-output` into a .jar archive file at the location provided under
+  the key `:jar/output`."
   [{temp :jar/temp-output
     output :jar/output
-    :as               param}]
+    :as param}]
   (with-open [zfs (make-output-jar-fs param)]
     (fs/walk-file-tree temp (make-archive-visitor! zfs temp)))
   output)

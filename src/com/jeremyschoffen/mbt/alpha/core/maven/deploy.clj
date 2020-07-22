@@ -112,9 +112,18 @@
                          :maven.settings/file]})
 
 
-(defn deploy! [{local-repo :maven/local-repo
-                :as param
-                :or {local-repo common/default-local-repo}}]
+(defn deploy!
+  "Deploy artefacts. Some key parameters:
+    - `:maven.deploy/artefacts`: sequence of maps respecting the `:maven.deploy/artefact` spec. These represents the
+       artefacts to deploy like jars, pom.xml files, etc...
+    - `:maven/server`: info about the remote repo
+    - `:maven/credentials`: an optional parameter that would contain the credentials info needed to deploy
+      to a particular repo. The user's maven setting.xml is consulted to fill blanks in this parameter. Note that the
+      values specified here take priority over the ones in the settings file.
+    - `:maven.settings/file`: optional parameter allowing to change the location of the maven `setting.xml` file."
+  [{local-repo :maven/local-repo
+    :as param
+    :or {local-repo common/default-local-repo}}]
   (System/setProperty "aether.checksums.forSignature" "true")
   (let [system (maven/make-system)
         session (maven/make-session system (str local-repo))

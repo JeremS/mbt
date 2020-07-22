@@ -15,7 +15,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn check-some-commit [param]
+(defn check-some-commit
+  "Check whether the repo has any commit or not. Throws an exception if not."
+  [param]
   (when-not (mbt-core/git-any-commit? param)
     (throw (ex-info "No commits  found."
                     (merge param {::anom/category ::anom/not-found
@@ -26,9 +28,11 @@
            :param {:req [:git/repo]})
 
 
-(defn most-recent-description [{repo :git/repo
-                                tag-base :versioning/tag-base-name
-                                :as param}]
+(defn most-recent-description
+  "Get the most recent description for the tags named witht the base `:versioning/tag-base-name`."
+  [{repo :git/repo
+    tag-base :versioning/tag-base-name
+    :as param}]
   (check-some-commit param)
   (mbt-core/git-describe {:git/repo                 repo
                           :git.describe/tag-pattern (str tag-base "*")}))
@@ -40,7 +44,9 @@
            :ret (s/nilable :git/description))
 
 
-(defn current-version [param]
+(defn current-version
+  "Get the current version using the provided version scheme."
+  [param]
   (when-let [desc (most-recent-description param)]
     (-> param
         (assoc :git/description desc)
@@ -53,7 +59,9 @@
            :ret (s/nilable :versioning/version))
 
 
-(defn next-version [param]
+(defn next-version
+  "Get the next version using the provided version scheme."
+  [param]
   (if-let [desc (most-recent-description param)]
     (-> param
         (assoc :git/description desc)
@@ -73,8 +81,8 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Buidling tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn tag-name [{base :versioning/tag-base-name
-                 v    :versioning/version}]
+(defn- tag-name [{base :versioning/tag-base-name
+                  v    :versioning/version}]
   (str base "-v" v))
 
 (u/spec-op tag-name
@@ -82,7 +90,7 @@
                          :versioning/version]}
            :ret :git.tag/name)
 
-
+;; taken from https://github.com/jgrodziski/metav/blob/master/src/metav/domain/metadata.clj#L8
 (defn- iso-now []
   (let [tz (TimeZone/getTimeZone "UTC")
         df (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss'Z'")]
@@ -90,10 +98,11 @@
     (.format df (Date.))))
 
 
-(defn make-tag-data [{base :versioning/tag-base-name
-                      v :versioning/version
-                      git-prefix :git/prefix
-                      :as param}]
+;; inspired by https://github.com/jgrodziski/metav/blob/master/src/metav/domain/metadata.clj#L15
+(defn- make-tag-data [{base :versioning/tag-base-name
+                       v :versioning/version
+                       git-prefix :git/prefix
+                       :as param}]
   (let [prefix (str git-prefix)
         path (if (empty? prefix)
                "."
@@ -127,7 +136,9 @@
            :ret :git/tag)
 
 
-(defn next-tag [param]
+(defn next-tag
+  "Make the next tag/milestone."
+  [param]
   (-> param
       (u/assoc-computed
         :git/prefix mbt-core/git-prefix
@@ -161,7 +172,9 @@
            :ret boolean?)
 
 
-(defn check-build-file [param]
+(defn check-build-file
+  "Check that the working dir contains a `deps.edn` file. Throws an exception if not."
+  [param]
   (when-not (has-build-file? param)
     (throw (ex-info "No build file detected."
                     (merge param {::anom/category ::anom/not-found
@@ -172,7 +185,9 @@
            :param {:req [:project/working-dir]})
 
 
-(defn check-not-dirty [param]
+(defn check-not-dirty
+  "Check xheter the git repo is dirty or not. Throws if it is."
+  [param]
   (when (mbt-core/git-dirty? param)
     (throw (ex-info "Can't do this operation on a dirty repo."
                     (merge param {::anom/category ::anom/forbidden
@@ -185,7 +200,7 @@
 
 (defn check-repo-in-order
   "Checks that the working dir has a build file and is in a repo
-  which already has at least one commit."
+  which already has at least one commit. Throws if the checks don't pass."
   [ctxt]
   (-> ctxt
       (u/check check-some-commit)
@@ -198,7 +213,9 @@
                          :git/repo]})
 
 
-(defn tag! [param]
+(defn tag!
+  "Create a new git tag provided some checks pass."
+  [param]
   (-> param
       (u/check check-repo-in-order)
       mbt-core/git-tag!))
@@ -210,11 +227,13 @@
 
 
 (defn bump-tag!
+  "Create a new tag in git marking a new milestone in the project. The next version, tag name, etc... are computed from
+  the previous versionning state already in git. If no version has been established yet, the initial version of the used
+  version scheme will be selected."
   [param]
   (-> param
       (u/augment-computed :git/tag! next-tag)
       tag!))
-
 
 (u/spec-op bump-tag!
            :deps [next-tag tag!]

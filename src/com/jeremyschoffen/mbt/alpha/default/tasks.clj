@@ -11,7 +11,12 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Version file
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn anticipated-next-version [param]
+(defn anticipated-next-version
+  "Get the next version of the project assuming it the commit distance from the previous one will be one more than it
+  is now.
+
+  It is usefull when the build process must generate and committing files before tagging the next version."
+  [param]
   (let [current-version (v/current-version param)]
     (if-not current-version
       (v/schemes-initial-version param)
@@ -31,7 +36,7 @@
 
 (defn- write-version-file! [param]
   (-> param
-      (u/assoc-computed :project/version v/current-project-version)
+      (u/assoc-computed :project/version (comp str anticipated-next-version))
       (v/write-version-file!)))
 
 (u/spec-op write-version-file!
@@ -63,7 +68,10 @@
 (u/spec-op git-commit-version-file!)
 
 
-(defn add-version-file! [ctxt]
+(defn add-version-file!
+  "Add a version file to the project. Must be used right before tagging a new version.
+  The version used in this file will be computed using `anticipated-next-version`."
+  [ctxt]
   (-> ctxt
       (u/check v/check-repo-in-order)
       (u/side-effect! write-version-file!)
@@ -86,7 +94,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Building jars
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn jar! [param]
+(defn jar!
+  "Build a skinny jar for the project."
+  [param]
   (-> param
       (u/ensure-computed :project/version v/current-project-version)
       b/ensure-jar-defaults
@@ -109,7 +119,9 @@
                          :versioning/tag-base-name]})
 
 
-(defn uberjar! [param]
+(defn uberjar!
+  "Build an uberjar for the project."
+  [param]
   (-> param
       (u/ensure-computed :project/version (comp str v/current-version))
       b/ensure-jar-defaults

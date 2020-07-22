@@ -14,8 +14,11 @@
       :LANGUAGE "en")))
 
 
-(defn safer-sh [{wd :project/working-dir
-                 cmd :shell/command}]
+(defn safer-sh
+  "Wrapper aroungd the `clojure.java.shell/sh function. Position the sh current dir on the
+  project's working dir if provided.`"
+  [{wd :project/working-dir
+    cmd :shell/command}]
   (shell/with-sh-env (get-english-env)
     (shell/with-sh-dir (or wd (u/safer-path))
       (apply shell/sh cmd))))

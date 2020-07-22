@@ -8,9 +8,9 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(def maven-scheme schemes/maven-scheme)
-(def semver-scheme schemes/semver-scheme)
-(def simple-scheme schemes/simple-scheme)
+(u/alias-def maven-scheme schemes/maven-scheme)
+(u/alias-def semver-scheme schemes/semver-scheme)
+(u/alias-def simple-scheme schemes/simple-scheme)
 
 (u/alias-fn  schemes-current-version schemes/current-version)
 (u/alias-fn schemes-initial-version schemes/initial-version)
@@ -24,7 +24,6 @@
 (u/alias-fn check-repo-in-order git-state/check-repo-in-order)
 (u/alias-fn bump-tag! git-state/bump-tag!)
 
-(u/alias-fn make-version-file vf/make-version-file)
 (u/alias-fn write-version-file! vf/write-version-file!)
 
 

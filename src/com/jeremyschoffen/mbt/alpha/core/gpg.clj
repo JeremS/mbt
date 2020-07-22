@@ -9,8 +9,11 @@
     [java.io StringReader]))
 
 
-(defn gpg-version [{cmd :gpg/command
-                    :as param}]
+(defn gpg-version
+  "Try to get the current gpg version installed on the system. Returns in a vector of 3 ints: major minor and patch
+  numbers."
+  [{cmd :gpg/command
+    :as param}]
   (let [res (shell/safer-sh (assoc param
                               :shell/command [cmd "--version"]))
         {:keys [exit out]} res]
@@ -85,7 +88,9 @@
                          :gpg/pass-phrase]})
 
 
-(defn make-sign-out [{in :gpg.sign!/in}]
+(defn make-sign-out
+  "Generates an ouput path for a signature given the path of the file to sign."
+  [{in :gpg.sign!/in}]
   (let [p (fs/parent in)
         n (-> in
               fs/file-name
@@ -107,7 +112,19 @@
            :param {:req [:gpg/sign!]})
 
 
-(defn sign-file! [param]
+(defn sign-file!
+  "Use gnupg to sign a file. The different options are:
+  - `:gpg/sign!`: in/output passed to the gnupg call
+  - `:gpg/command`: actual gnupg command to call gpg, gpg2...
+  - `:gpg/home-dir`: option telling gnupg where the directory containing keys is located
+  - `:gpg/key-id`: id of the key used to create the signature
+  - `:gpg/pass-phrase`: option to directly give the pass phrase instead of being prompted by the gpg agent during
+    execution
+  - `:gpg/version`: optional gnupg version in the vector form described in `gpg-version`. Used to determine which gpg
+    options may be necessary to use.
+  - `:project/working-dir`: the project's working dir. It will position the shell used to call gnupg on it.
+  "
+  [param]
   (let [param (ensure-sign-out param)
         spec (:gpg/sign! param)
         cmd (make-sign-cmd param)]

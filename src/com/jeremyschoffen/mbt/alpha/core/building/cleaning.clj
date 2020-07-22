@@ -23,8 +23,8 @@
     (visitFileFailed [_ file exception]
       (throw exception))))
 
-(defn check-wd [{wd :project/working-dir
-                 :as param}]
+(defn- check-wd [{wd :project/working-dir
+                  :as param}]
   (when-not wd
     (throw (ex-info "Can't clean without a project directory for reference."
                     (assoc param
@@ -35,9 +35,9 @@
            :param {:req [:project/working-dir]})
 
 
-(defn check-proper-ancestry [{wd :project/working-dir
-                              file :cleaning/target
-                              :as param}]
+(defn- check-proper-ancestry [{wd :project/working-dir
+                               file :cleaning/target
+                               :as param}]
   (when-not (fs/ancestor? wd file)
     (throw (ex-info "Can't clean file outside of the project directory"
                     (assoc param
@@ -62,8 +62,14 @@
            :param {:req [:cleaning/target]})
 
 
-(defn clean! [{t :cleaning/target
-               :as param}]
+(defn clean!
+  "Delete a file or directory at the path specified by the key `:cleaning/target`. The target can't be the project
+  directory specified by the key `:project/working-dir` and must be inside it. You can still delete anything inside
+  your project dir with this function, src dir included.
+
+  Returns the cleaning target."
+  [{t :cleaning/target
+    :as param}]
   (when-not (fs/exists? t)
     (throw (ex-info "File to clean doesn't exist."
                     (merge param

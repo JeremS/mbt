@@ -31,7 +31,7 @@
   (-to-u-path [this] (get-dir this)))
 
 
-(defn datafy-jgit-obj [o]
+(defn- datafy-jgit-obj [o]
   (vary-meta (datafy/datafy o) assoc :jgit/object o))
 
 
@@ -69,6 +69,13 @@
 
 
 (defn top-level
+  "Given the project's working dir, find the git top level.
+
+  Similar to using:
+  ```bash
+  git -C wd/ rev-parse --show-toplevel
+  ```
+  "
   [{wd :project/working-dir}]
   (first (parent-repos wd)))
 
@@ -77,7 +84,15 @@
            :ret :git/top-level)
 
 
-(defn prefix [{wd :project/working-dir :as context}]
+(defn prefix
+  "Given the project's working dir, find the git prefix.
+
+  Similar to using:
+  ```bash
+  git -C wd/ rev-parse --show-prefix
+  ```
+  "
+  [{wd :project/working-dir :as context}]
   (let [repo (top-level context)]
     (if (= wd repo)
       (fs/path "")
@@ -92,7 +107,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Repo cstr
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn make-jgit-repo [param]
+(defn make-jgit-repo
+  "Builds a `org.eclipse.jgit.api.Git` object."
+  [param]
   (-> param top-level str git/load-repo))
 
 (u/spec-op make-jgit-repo
@@ -104,7 +121,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git status
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn status [{repo :git/repo}]
+(defn status
+  "Get the status of the current repo via [[clj-jgit.porcelain/git-status]]."
+  [{repo :git/repo}]
   (git/git-status repo))
 
 (u/spec-op status
@@ -115,15 +134,21 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git add
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- format-opts [m keys]
+(defn- format-opts
+  "Format an options map used in mbt into a sequence of  k v options used in clj-jgit api.
+  Removes the parts that aren't actually options in the clj-jgit api."
+  [m keys]
   (-> (apply dissoc m keys)
       u/strip-keys-nss
       seq
       flatten))
 
 
-(defn add! [{repo     :git/repo
-             addition :git/add!}]
+(defn add!
+  "Git add operation using [[clj-jgit.porcelain/git-add]]. The parameter and options are specified under the key
+  `:git/add!`."
+  [{repo     :git/repo
+    addition :git/add!}]
   (let [{patterns :git.add!/file-patterns} addition
         opts (format-opts addition #{:git.add!/file-patterns})]
     (apply git/git-add repo patterns opts)))
@@ -133,7 +158,11 @@
                          :git/add!]})
 
 
-(defn list-all-changed-patterns [param]
+(defn list-all-changed-patterns
+  "Make a list of strings taken from the `:modified` and `:untracked` sections of a git status.
+
+  See: [[status]]"
+  [param]
   (-> param
       status
       (select-keys #{:modified :untracked})
@@ -145,7 +174,10 @@
            :param {:req [:git/repo]})
 
 
-(defn add-all! [param]
+(defn add-all!
+  "Use the git add operation on all patterns listed by [[list-all-changed-patterns]]. In effect stages modified and
+  un-tracked files."
+  [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
             :git/add! {:git.add!/file-patterns patterns}))))
@@ -155,7 +187,9 @@
            :param {:req [:git/repo]})
 
 
-(defn update-all! [param]
+(defn update-all!
+  "Similar to [[add-all!]] but uses the `:git.add!/update?` option set to `true`."
+  [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
             :git/add! {:git.add!/file-patterns patterns
@@ -181,9 +215,9 @@
 
 
 (defn commit!
-  "Commit to a git repo using `clj-jgit.porcelain/git-commit`.
+  "Commit to a git repo using [[clj-jgit.porcelain/git-commit]].
   The options to the porcelain function are passed in the git/commit map,
-  se the :git/commit spec."
+  see the `:git/commit!` spec."
   {:tag RevCommit}
   [{repo :git/repo
     commit :git/commit!}]
@@ -204,8 +238,10 @@
       (.parseTag walk (git-i/resolve-object id repo)))))
 
 
-(defn get-tag [{repo :git/repo
-                tag-name :git.tag/name}]
+(defn get-tag
+  "Get a git tag using its name. The original jgit object is accessible via metadata under the key `:jgit/object`."
+  [{repo :git/repo
+    tag-name :git.tag/name}]
   (get-tag* repo tag-name))
 
 (u/spec-op get-tag
@@ -247,7 +283,11 @@
            :ret #(instance? Ref %))
 
 
-(defn tag! [{repo :git/repo :as param}]
+(defn tag!
+  "Create a new git tag using [[clj-jgit.porcelain/git-tag-create]].
+
+  See the `:git/tag!` specs for all the options."
+  [{repo :git/repo :as param}]
   (let [tag-ref (create-tag!* param)]
     (get-tag* repo (-> tag-ref .getObjectId))))
 
@@ -259,7 +299,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git describe
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn dirty? [{repo :git/repo}]
+(defn dirty?
+  "Test whether the git repo is dirty or not."
+  [{repo :git/repo}]
   (not (.isClean ^Status (git/git-status repo :jgit? true))))
 
 (u/spec-op dirty?
@@ -267,8 +309,19 @@
            :ret boolean?)
 
 
-(defn describe-raw [{repo        :git/repo
-                     tag-pattern :git.describe/tag-pattern}]
+(defn describe-raw
+  "Get a git description.
+
+  Similar to:
+  ```
+  git describe --long --match tag-pattern
+  ```
+  `tag-pattern` being the value passed under the key `:git.describe/tag-pattern`.
+
+  Can return nil if there are no tag matching the pattern or no tags at all.
+  "
+  [{repo        :git/repo
+    tag-pattern :git.describe/tag-pattern}]
   (-> ^Git repo
       .describe
       (.setLong true)
@@ -281,7 +334,9 @@
            :ret (s/nilable :git/raw-description))
 
 
-(def raw-description-regex #"(.*)-(\d+)-g([a-f0-9]*)$")
+(def raw-description-regex
+  "Regex used to parse a git raw description."
+  #"(.*)-(\d+)-g([a-f0-9]*)$")
 
 
 (defn- parse-description [desc]
@@ -291,8 +346,12 @@
      :git/sha sha}))
 
 
-(defn describe [{repo :git/repo
-                 :as param}]
+(defn describe
+  "Get a git description in a map form. This is an evolved version of [[describe-raw]] with additional data.
+
+  See the spec `:git/description`."
+  [{repo :git/repo
+    :as param}]
   (when-let [raw-desc (describe-raw param)]
     (let [{tag-name :git.tag/name
            :as desc} (parse-description raw-desc)]
@@ -313,7 +372,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Utils
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn any-commit? [{repo :git/repo}]
+(defn any-commit?
+  "Test whether the git repo has any commits or not."
+  [{repo :git/repo}]
   (try
     (-> repo git/git-log seq)
     (catch Exception _

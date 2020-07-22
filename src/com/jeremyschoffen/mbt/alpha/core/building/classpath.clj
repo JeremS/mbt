@@ -63,9 +63,9 @@
 
 
 (defn indexed-classpath
-  "Returns a map indexing the classpath. Return a map with the keys being
-  `com.jeremyschoffen.mbt.alpha.specs/classpath-index-categories, the values are seq of
-  classpath entries corresponding to the categoories.
+  "Construct a classpath using [[raw-classpath]] then group the different entries inside a map.
+  The keys of this map are defined in [[com.jeremyschoffen.mbt.alpha.core.specs/classpath-index-categories]], the values
+  are a seq of classpath entries corresponding to the categories.
   "
   [{wd :project/working-dir
     :as param}]

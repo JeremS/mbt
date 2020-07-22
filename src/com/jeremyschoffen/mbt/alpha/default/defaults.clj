@@ -223,7 +223,10 @@
    :versioning/tag-base-name tag-base-name])
 
 
-(defn make-context [user-defined]
+(defn make-context
+  "Makes a config usable by mbt's apis. The `user-defined` parameter must be a map of configuration. Any key not present
+  in `user-defined` will be set to a default value."
+  [user-defined]
   (->> (apply u/ensure-computed user-defined ctxt-building-scheme)
        (medley/filter-vals identity)))
 

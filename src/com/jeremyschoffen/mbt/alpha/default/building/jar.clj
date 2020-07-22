@@ -15,7 +15,9 @@
 (def manifest-name "MANIFEST.MF")
 (def manifest-path (fs/path meta-dir manifest-name))
 
-(defn make-manifest-entry [{manifest :jar/manifest}]
+(defn make-manifest-entry
+  "Make a `:jar/entry` for a jar manifest."
+  [{manifest :jar/manifest}]
   {:jar.entry/src manifest
    :jar.entry/dest manifest-path})
 
@@ -32,9 +34,11 @@
   (fs/path meta-dir maven-dir (str group-id) (str artefact-id) "pom.xml"))
 
 
-(defn make-pom-entry [{pom :maven/pom
-                       group-id :maven/group-id
-                       artefact-id :maven/artefact-name}]
+(defn make-pom-entry
+  "Make a `:jar/entry` for a pom.xml file."
+  [{pom :maven/pom
+    group-id :maven/group-id
+    artefact-id :maven/artefact-name}]
   {:jar.entry/src (xml/indent-str pom)
    :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
 
@@ -51,9 +55,11 @@
   (fs/path meta-dir deps-dir (str group-id) (str artefact-id) "deps.edn"))
 
 
-(defn make-deps-entry [{deps :project/deps
-                        group-id :maven/group-id
-                        artefact-id :maven/artefact-name}]
+(defn make-deps-entry
+  "Make a `:jar/entry` for a deps.edn file."
+  [{deps :project/deps
+    group-id :maven/group-id
+    artefact-id :maven/artefact-name}]
   {:jar.entry/src (pr-str deps)
    :jar.entry/dest (make-jar-deps-path group-id artefact-id)})
 
@@ -64,7 +70,9 @@
 
 
 ;; Pom + manifest + deps
-(defn make-staples-entries [param]
+(defn make-staples-entries
+  "Make a `:jar/src` containing the usual manifest, pom.xml and deps.edn `jar/entry`s."
+  [param]
   [(-> param make-manifest-entry)
    (-> param make-pom-entry)
    (-> param make-deps-entry)])
@@ -75,7 +83,8 @@
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
-                         :project/deps]})
+                         :project/deps]}
+           :ret :jar/src)
 
 
 (defn- warn-wayward-files [{cp :classpath/index}]
@@ -97,7 +106,8 @@
 
 
 (defn simple-jar-srcs
-  "Makes the jar srcs used in a skinny jar."
+  "Makes the jar srcs used in a skinny jar, Basically all the project local source and resource directories given in the
+  classpath."
   [{cp :classpath/index
     :as param}]
   (warn-wayward-files param)
@@ -119,7 +129,8 @@
 
 
 (defn uber-jar-srcs
-  "Makes the jar srcs that will go into an uberjar."
+  "Makes the jar srcs that will go into an uberjar. Similar to `simple-jar-srcs` but also adds the other sources in the
+  classpath."
   [{cp :classpath/index
     :as param}]
   (warn-wayward-files param)

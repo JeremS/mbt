@@ -13,7 +13,9 @@
                 dirty? (str "-DIRTY")))))
 
 
-(def initial-simple-version (SimpleVersion. 0 0 "" false))
+(def initial-simple-version
+  "Initial value to use when starting the versioning process from scratch."
+  (SimpleVersion. 0 0 "" false))
 
 
 (defn parse-version-number [s]
@@ -24,7 +26,10 @@
                :simple-version/number)
 
 
-(defn simple-version [x]
+(defn simple-version
+  "Make a representation of a version in a simple style.
+  Here the version is ultimately just 1 number counting the number of commits since version 0."
+  [x]
   (map->SimpleVersion x))
 
 (u/spec-op simple-version

@@ -10,7 +10,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Smoothing the polymorphic interface
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn initial-version [{h :versioning/scheme}]
+(defn initial-version
+  "Get the initial version for a version scheme."
+  [{h :versioning/scheme}]
   (vp/initial-version h))
 
 (u/spec-op initial-version
@@ -18,8 +20,10 @@
            :ret :versioning/version)
 
 
-(defn current-version [{s :versioning/scheme
-                        desc :git/description}]
+(defn current-version
+  "Get the current version using a version scheme."
+  [{s :versioning/scheme
+    desc :git/description}]
   (vp/current-version s desc))
 
 (u/spec-op current-version
@@ -27,9 +31,11 @@
            :ret :versioning/version)
 
 
-(defn bump [{s :versioning/scheme
-             v :versioning/version
-             l :versioning/bump-level}]
+(defn bump
+  "Bump a version using a version scheme."
+  [{s :versioning/scheme
+    v :versioning/version
+    l :versioning/bump-level}]
   (if l
     (vp/bump s v l)
     (vp/bump s v)))
@@ -43,6 +49,6 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default version schemes
 ;;----------------------------------------------------------------------------------------------------------------------
-(def maven-scheme maven-like/maven-scheme)
-(def semver-scheme maven-like/semver-scheme)
-(def simple-scheme simple/simple-scheme)
+(u/alias-def maven-scheme maven-like/maven-scheme)
+(u/alias-def semver-scheme maven-like/semver-scheme)
+(u/alias-def simple-scheme simple/simple-scheme)

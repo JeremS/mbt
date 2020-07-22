@@ -190,7 +190,17 @@
                      :mbt/error :versioning/going-backward}))))
 
 
-(defn safer-bump [v level]
+(defn safer-bump
+  "Bump a version according to a level :major, :minor, or :patch in the general case and :alpha, :beta, :rc and :release
+  in the maven case.
+
+  Using commit distances this function can throw exceptions when the bump would just make another version of the same
+  artefact or would in effect progress backward.
+
+  Example:
+  - with commit distance 0, bumping from 0.0.1 to 0.0.2 would crete 2 version of the same artefact.
+  - bumping from 0.1.0-beta to 0.1.0-alpha would be going backward."
+  [v level]
   (let [new-v (bump v level)]
     (assert-bump? v level new-v)
     new-v))
@@ -213,7 +223,9 @@
 (def ^:private initial-version "0.1.0")
 
 
-(defn maven-version [x]
+(defn maven-version
+  "Make a representation of a version in the maven style."
+  [x]
   (let [v (map->MavenVersion x)
         label (get-in v [:qualifier :label])]
     (if (and label (not (contains? specs/allowed-qualifiers label)))
@@ -222,7 +234,6 @@
                        :qualifier label}))
       v)))
 
-
 (u/spec-op maven-version
            :param {:req-un [:maven-like/subversions]
                    :opt-un [:maven-like/qualifier
@@ -230,7 +241,9 @@
                             :git/sha
                             :git.repo/dirty?]})
 
-(def initial-maven-version (-> initial-version parse-version maven-version))
+(def initial-maven-version
+  "Initial value to use when starting the versioning process from scratch."
+  (-> initial-version parse-version maven-version))
 
 
 (defrecord SemverVersion [subversions distance sha dirty?]
@@ -247,7 +260,9 @@
       (not-supported level))))
 
 
-(defn semver-version [x]
+(defn semver-version
+  "Make a representation of a version in the semver style."
+  [x]
   (-> x
       (dissoc :qualifier)
       map->SemverVersion))
@@ -259,4 +274,6 @@
                             :git.repo/dirty?]})
 
 
-(def initial-semver-version (-> initial-version parse-version semver-version))
+(def initial-semver-version
+  "Initial value to use when starting the versioning process from scratch."
+  (-> initial-version parse-version semver-version))

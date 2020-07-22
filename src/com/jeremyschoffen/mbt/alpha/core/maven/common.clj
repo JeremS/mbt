@@ -18,8 +18,8 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deploy utils
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn make-maven-artefact
-  "Constructor org.eclipse.aether.artifact.DefaultArtifact."
+(defn- make-maven-artefact
+  "Construct an instance of `org.eclipse.aether.artifact.DefaultArtifact`."
   [{artefact-name :maven/artefact-name
     group-id :maven/group-id
     classifier :maven/classifier
@@ -42,7 +42,7 @@
 
 
 (defn make-maven-artefacts
-  "Constructs several org.eclipse.aether.artifact.DefaultArtifact."
+  "Construct several `org.eclipse.aether.artifact.DefaultArtifact`."
   [{deploy-artefacts :maven.deploy/artefacts
     :as param}]
   (mapv (fn [a]
@@ -60,8 +60,8 @@
 
 
 (defn sign-artefact!
-  "Signs one maven deployment artefact using gpg, return a map
-  specifiying the resulting signature as instance :maven.deploy/artefact spec."
+  "Sign one maven deployment artefact under the key `:maven.deploy/artefact` using gpg, return a map specifying the
+  resulting signature as instance `:maven.deploy/artefact` spec."
   [{artefact :maven.deploy/artefact
     :as param}]
   (let [{p :maven.deploy.artefact/path
@@ -79,12 +79,14 @@
                          :gpg/home-dir
                          :gpg/key-id
                          :gpg/pass-phrase
+                         :gpg/version
                          :project/working-dir]}
            :ret :maven.deploy/artefact)
 
 
 (defn sign-artefacts!
-  "Signs several maven deployment artefact using gpg."
+  "Sign several maven deployment artefacts using gpg.
+  See [[com.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefact!]]"
   [{artefacts :maven.deploy/artefacts
     :as param}]
   (mapv (fn [a]
@@ -98,5 +100,6 @@
                          :gpg/home-dir
                          :gpg/key-id
                          :gpg/pass-phrase
+                         :gpg/version
                          :project/working-dir]}
            :ret :maven.deploy/artefacts)

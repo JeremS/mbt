@@ -23,9 +23,14 @@
                    :opt [:maven/classifier]})
 
 
-(defn install! [{install-dir :maven.install/dir
-                 :or         {install-dir common/default-local-repo}
-                 :as         param}]
+(defn install!
+  "Locally install maven artefacts. Some key parameters:
+  - `:maven.deploy/artefacts`: sequence of maps respecting the `:maven.deploy/artefact` spec. These represents the
+    artefacts to deploy like jars, pom.xml files, etc...
+  - `:maven.install/dir`: optional parameter allowing the installation dir to be different from the default local repo."
+  [{install-dir :maven.install/dir
+    :or         {install-dir common/default-local-repo}
+    :as         param}]
   (let [system (maven/make-system)
         session (maven/make-session system (str install-dir))
         install-request (make-install-request param)]

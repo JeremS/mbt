@@ -20,7 +20,7 @@
 ;; helpers
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn jar-content [jar-path]
-  (with-open [zfs (mbt-core/open-jar-fs jar-path)]
+  (with-open [zfs (mbt-core/jar-open-fs jar-path)]
     (->> zfs
          fs/walk
          fs/realize
@@ -121,7 +121,7 @@
 
 (defn get-project1-deps [ctxt]
   (-> ctxt
-      (mbt-core/get-deps)
+      (mbt-core/deps-get)
       (assoc-in [:deps 'project2/project2 :local/root] (str project2-path))))
 
 

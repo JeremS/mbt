@@ -8,26 +8,24 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/alias-fn make-manifest-entry jar/make-manifest-entry)
-(u/alias-fn make-deps-entry jar/make-deps-entry)
-(u/alias-fn make-pom-entry jar/make-pom-entry)
-(u/alias-fn make-staples-entries jar/make-staples-entries)
-(u/alias-fn simple-jar-srcs jar/simple-jar-srcs)
-(u/alias-fn uber-jar-srcs jar/uber-jar-srcs)
-
-
-(defn ensure-jar-defaults [p]
+(defn ensure-jar-defaults
+  "Adds to a config map the necessary keys to make a jar. Namely:
+    - :project/deps
+    - :classpath/index
+    - :maven/pom
+    - :jar/manifest"
+  [p]
   (u/ensure-computed p
-    :project/deps mbt-core/get-deps
-    :classpath/index mbt-core/indexed-classpath
-    :maven/pom mbt-core/new-pom
-    :jar/manifest mbt-core/make-manifest))
+                     :project/deps mbt-core/deps-get
+                     :classpath/index mbt-core/classpath-indexed
+                     :maven/pom mbt-core/maven-new-pom
+                     :jar/manifest mbt-core/manifest))
 
 (u/spec-op ensure-jar-defaults
-           :deps [mbt-core/indexed-classpath
-                  mbt-core/make-manifest
-                  mbt-core/new-pom
-                  mbt-core/get-deps]
+           :deps [mbt-core/classpath-indexed
+                  mbt-core/manifest
+                  mbt-core/maven-new-pom
+                  mbt-core/deps-get]
            :param {:req #{:maven/artefact-name
                           :maven/group-id
                           :project/working-dir
@@ -38,9 +36,12 @@
                           :project.deps/aliases},})
 
 
-(defn make-jar&clean! [{out :project/output-dir
-                        jar-out :jar/output
-                        :as param}]
+(defn make-jar&clean!
+  "Create a jar, simplying the process by handling the creation and deletion of the tempout put that will be zipped
+  into the result jar."
+  [{out :project/output-dir
+    jar-out :jar/output
+    :as param}]
   (u/ensure-dir! out)
   (fs/delete-if-exists! jar-out)
   (let [res (atom nil)]
@@ -48,14 +49,14 @@
       (-> param
           (assoc :jar/temp-output temp-out
                  :cleaning/target temp-out)
-          (u/side-effect! #(reset! res (mbt-core/add-srcs! %)))
-          (u/side-effect! mbt-core/make-jar-archive!)
+          (u/side-effect! #(reset! res (mbt-core/jar-add-srcs! %)))
+          (u/side-effect! mbt-core/jar-make-archive!)
           (u/side-effect! mbt-core/clean!))
       @res)))
 
 (u/spec-op make-jar&clean!
-           :deps [mbt-core/add-srcs!
-                  mbt-core/make-jar-archive!
+           :deps [mbt-core/jar-add-srcs!
+                  mbt-core/jar-make-archive!
                   mbt-core/clean!]
            :param {:req [:project/working-dir
                          :jar/output
@@ -63,8 +64,10 @@
                    :opt [:jar/exclude?]})
 
 
-(defn jar-out [{jar-name :build/jar-name
-                out :project/output-dir}]
+(defn jar-out
+  "Make the jar path given the `:project/output-dir` and `:build/jar-name`."
+  [{jar-name :build/jar-name
+    out :project/output-dir}]
   (u/safer-path out jar-name))
 
 (u/spec-op jar-out
@@ -72,7 +75,10 @@
            :ret :jar/output)
 
 
-(defn jar! [param]
+(defn jar!
+  "Create a skinny jar. The jar sources are determined using
+  `com.jeremyschoffen.mbt.alpha.default.building.jar/simple-jar-srcs`, the jar's path name `jar-out`."
+  [param]
   (-> param
       (u/ensure-computed
         :jar/srcs jar/simple-jar-srcs
@@ -93,8 +99,10 @@
                    :opt [:jar/exclude?]})
 
 
-(defn uberjar-out [{jar-name :build/uberjar-name
-                    out :project/output-dir}]
+(defn uberjar-out
+  "Make the uberjar path given the `:project/output-dir` and `:build/jar-name`."
+  [{jar-name :build/uberjar-name
+    out :project/output-dir}]
   (u/safer-path out jar-name))
 
 (u/spec-op uberjar-out
@@ -102,7 +110,10 @@
            :ret :jar/output)
 
 
-(defn uberjar! [param]
+(defn uberjar!
+  "Build an uberjar. The jar sources are determined using
+  `com.jeremyschoffen.mbt.alpha.default.building.jar/uber-jar-srcs`, the uberjar's path `uberjar-out`."
+  [param]
   (-> param
       (u/ensure-computed
         :jar/srcs jar/uber-jar-srcs

@@ -248,13 +248,27 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Potemkin stuff
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn add-alias-notice! [a-var aliased]
+  (if-let [original (-> aliased resolve meta ::aliasing)]
+    (alter-meta! a-var assoc ::aliasing original)
+    (alter-meta! a-var #(-> %
+                            (assoc ::aliasing aliased)
+                            (update :doc str "\n\n  aliasing: " (format "[[%s]]" aliased))))))
+
+
 (defmacro alias-fn [alias aliased-name]
   (let [aliased-name (-> aliased-name resolve symbol)]
     `(do
        (p/import-fn ~aliased-name ~alias)
        (s/def ~alias ~aliased-name)
        (add-spec! '~(ns-qualify alias) (get-spec '~aliased-name))
-       ~alias)))
+       (add-alias-notice! (var ~alias) '~aliased-name)
+       (var ~alias))))
 
-(defmacro alias-def [n sym]
-  (list `p/import-def sym n))
+
+(defmacro alias-def [alias aliased]
+  (let [aliased (-> aliased resolve symbol)]
+    `(do
+       (p/import-def ~aliased ~alias)
+       (add-alias-notice! (var ~alias) '~aliased)
+       (var ~alias))))

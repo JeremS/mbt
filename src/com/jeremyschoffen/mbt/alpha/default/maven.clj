@@ -13,21 +13,33 @@
 (u/alias-fn make-usual-artefacts mc/make-usual-artefacts)
 (u/alias-fn make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 
-(defn ensure-basic-conf [param]
+(defn ensure-basic-conf
+  "Ensure the necessary basic keys needed to install and deploy maven artefact are present in the config. Fill the
+  blanks with: default values. Those keys are:
+    - :jar/output
+    - :project/deps
+    - :project/version"
+  [param]
   (-> param
       (u/ensure-computed
         :jar/output b/jar-out
-        :project/deps mbt-core/get-deps
+        :project/deps mbt-core/deps-get
         :project/version v/current-project-version)))
 
 (u/spec-op ensure-basic-conf
-           :deps [b/jar-out mbt-core/get-deps]
+           :deps [b/jar-out mbt-core/deps-get]
            :param {:req [:build/jar-name
                          :project/output-dir
                          :project/working-dir]})
 
 
-(defn ensure-install-conf [param]
+(defn ensure-install-conf
+  "Ensure that the keys nedded to install a jar are part of the config.
+   The basic ones are taken care of using `ensure-basic-conf`. The key `:maven.deploy/artefacts` is
+   computed specifically.
+
+   In the case of an install, default behavior is to make 2 artefacts, one for the jar, one for a pom.xml."
+  [param]
   (-> param
       ensure-basic-conf
       (u/ensure-computed
@@ -41,8 +53,10 @@
            :ret (s/keys :req [:jar/output :maven.deploy/artefacts]))
 
 
-(defn check-artefacts-exist [{artefacts :maven.deploy/artefacts
-                              :as param}]
+(defn check-artefacts-exist
+  "Check that the artefacts describe under the key `:maven.deploy/artefacts` actually exist."
+  [{artefacts :maven.deploy/artefacts
+    :as param}]
   (let [missing? (into #{}
                        (comp
                          (map :maven.deploy.artefact/path)
@@ -57,25 +71,40 @@
 (u/spec-op check-artefacts-exist
            :param {:req [:maven.deploy/artefacts]})
 
-(defn install! [param]
+(defn install!
+  "Install a jar of the current project into the local maven repo.
+
+  Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the `:maven.pom/dir` location.
+  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate it using `ensure-install-conf`."
+  [param]
   (-> param
       ensure-install-conf
-      (u/side-effect! mbt-core/sync-pom!)
+      (u/side-effect! mbt-core/maven-sync-pom!)
       (u/check check-artefacts-exist)
-      mbt-core/install!))
+      mbt-core/maven-install!))
 
 (u/spec-op install!
-           :deps [mbt-core/sync-pom! b/jar-out make-usual-artefacts mbt-core/install!]
+           :deps [mbt-core/maven-sync-pom! b/jar-out make-usual-artefacts mbt-core/maven-install!]
            :param {:req [:build/jar-name
                          :maven/artefact-name
                          :maven/group-id
                          :maven.pom/dir
                          :project/output-dir]
-                   :opt [:maven/classifier :maven.install/dir]})
+                   :opt [:maven/classifier
+                         :maven.deploy/artefacts
+                         :maven.install/dir]})
 
 
-(defn ensure-deploy-conf [{sign? :maven.deploy/sign-artefacts?
-                           :as param}]
+(defn ensure-deploy-conf
+  "Ensure that the keys nedded to install a jar are part of the config.
+   The basic ones are taken care of using `ensure-basic-conf`. The key `:maven.deploy/artefacts` is
+   computed specifically. In the case of an install, default behavior is to make 2 artefacts,
+   one for the jar, one for a pom.xml.
+
+   In the case of an deployment, default behavior is to make 2 artefacts, one for the jar, one for a pom.xml.
+   Gnupg can be used to sign these artefacts if the parameter under the key `:maven.deploy/sign-artefacts?` is true."
+  [{sign? :maven.deploy/sign-artefacts?
+    :as param}]
   (let [make-deploy-artefacts (if sign?
                                 make-usual-artefacts+signatures!
                                 make-usual-artefacts)]
@@ -89,25 +118,33 @@
            :param {:req [:build/jar-name
                          :maven.pom/dir
                          :project/output-dir]
-                   :opt [:gpg/key-id
+                   :opt [:gpg/command
+                         :gpg/home-dir
+                         :gpg/key-id
+                         :gpg/pass-phrase
+                         :gpg/version
                          :maven.deploy/sign-artefacts?
                          :project/working-dir]
                    :ret (s/keys :req [:jar/output :maven.deploy/artefacts])})
+(u/param-suggestions ensure-deploy-conf)
 
+(defn deploy!
+  "Deploy a jar of the current project to a remote repo..
 
-(defn deploy! [param]
+  Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the `:maven.pom/dir` location.
+  If `:maven.deploy/artefacts` isn't provided the default behavior is to generate it using `ensure-deploy-conf`."
+  [param]
   (-> param
       ensure-deploy-conf
-      (u/side-effect! mbt-core/sync-pom!)
+      (u/side-effect! mbt-core/maven-sync-pom!)
       (u/check check-artefacts-exist)
-      mbt-core/deploy!))
+      mbt-core/maven-deploy!))
 
 (u/spec-op deploy!
-           :deps [mbt-core/sync-pom!
+           :deps [mbt-core/maven-sync-pom!
                   b/jar-out
-                  make-usual-artefacts
-                  make-usual-artefacts+signatures!
-                  mbt-core/deploy!]
+                  ensure-deploy-conf
+                  mbt-core/maven-deploy!]
            :param {:req [:build/jar-name
                          :maven/artefact-name
                          :maven/group-id
@@ -115,7 +152,11 @@
                          :maven.pom/dir
                          :project/deps
                          :project/output-dir]
-                   :opt [:gpg/key-id
+                   :opt [:gpg/command
+                         :gpg/home-dir
+                         :gpg/key-id
+                         :gpg/pass-phrase
+                         :gpg/version
                          :maven.deploy/sign-artefacts?
                          :maven/classifier
                          :maven/credentials
