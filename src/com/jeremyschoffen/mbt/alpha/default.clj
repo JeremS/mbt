@@ -42,5 +42,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default remote repo
 ;;----------------------------------------------------------------------------------------------------------------------
-(def clojars #:maven.server{:id "clojars"
-                            :url "https://repo.clojars.org/"})
+(def clojars
+  "Representation of clojars following the `:maven/server` spec."
+  #:maven.server{:id "clojars"
+                 :url "https://repo.clojars.org/"})
