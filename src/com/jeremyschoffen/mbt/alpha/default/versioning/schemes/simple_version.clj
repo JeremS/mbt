@@ -23,7 +23,8 @@
 
 
 (def simple-scheme
-  "A simple version scheme."
+  "A simple version scheme. There is only one version number. It's starts at 0 on a specific commit then is just the git
+  distance from that initial versioned commit."
   (reify p/VersionScheme
     (current-version [_ desc]
       (current-version* desc))

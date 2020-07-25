@@ -23,7 +23,16 @@
 
 
 (def maven-scheme
-  "A maven version scheme."
+  "A maven version scheme. The versioning starts at the first versioned commit.
+  Supports the following bumps:
+  - `:patch`
+  - `:minor`
+  - `:major`
+  - `:alpha`
+  - `:beta`
+  - `:rc`
+  - `:release`
+  "
   (reify p/VersionScheme
     (current-version [_ desc]
       (-> desc parse-git-descripton mbt-core/version-maven))
@@ -39,7 +48,12 @@
 
 
 (def semver-scheme
-  "A Semver version scheme."
+  "A semver version scheme. The versioning starts at the first versioned commit.
+  Supports the following bumps:
+  - `:patch`
+  - `:minor`
+  - `:major`
+  "
   (reify p/VersionScheme
     (current-version [_ desc]
       (-> desc parse-git-descripton mbt-core/semver-version))
