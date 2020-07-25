@@ -40,6 +40,19 @@
 (s/def :maven/local-repo path?)
 (s/def :maven.settings/file path?)
 
+
+;; Maven pom scm conf
+(s/def :maven.scm/connection string?)
+(s/def :maven.scm/developer-connection string?)
+(s/def :maven.scm/tag string?)
+(s/def :maven.scm/url string?)
+
+(s/def :maven/scm (s/keys :opt [:maven.scm/connection
+                                :maven.scm/developer-connection
+                                :maven.scm/tag
+                                :maven.scm/url]))
+
+
 ;; Maven install conf
 (s/def :maven.install/dir path?)
 

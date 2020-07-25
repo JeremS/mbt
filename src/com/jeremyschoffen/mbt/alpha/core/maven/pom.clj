@@ -60,6 +60,18 @@
   [::pom/dependencies
    (map to-dep deps)])
 
+(defn- gen-scm [maven-scm]
+  (let [{:maven.scm/keys [connection developer-connection tag url]} maven-scm
+        maybe-tag (fn [n v]
+                    (when v [n v]))
+        tags [(maybe-tag ::pom/connection connection)
+              (maybe-tag ::pom/developerConnection developer-connection)
+              (maybe-tag ::pom/tag tag)
+              (maybe-tag ::pom/url url)]]
+    (into [::pom/scm]
+          (keep identity)
+          tags)))
+
 (defn- gen-source-dir
   [path]
   [::pom/sourceDirectory path])
@@ -85,7 +97,8 @@
   [{project-name :maven/artefact-name
     group-id :maven/group-id
     project-version :project/version
-    project-deps :project/deps}]
+    project-deps :project/deps
+    maven-scm :maven/scm}]
   (let [{deps :deps
          [path & paths] :paths
          repos :mvn/repos} project-deps
@@ -100,6 +113,8 @@
        [::pom/artifactId project-name]
        [::pom/version project-version]
        [::pom/name project-name]
+       (when maven-scm
+         (gen-scm maven-scm))
        (gen-deps deps)
        (when path
          (when (seq paths) (apply printerrln "Skipping paths:" paths))
@@ -107,7 +122,11 @@
        (gen-repos repos)])))
 
 (u/spec-op new-pom
-           :param {:req [:maven/artefact-name :maven/group-id :project/version :project/deps]}
+           :param {:req [:maven/artefact-name
+                         :maven/group-id
+                         :project/version
+                         :project/deps]
+                   :opt [:maven/scm]}
            :ret :maven/pom)
 
 
@@ -238,7 +257,12 @@
              :maven/artefact-name 'toto
              :project/version "1"
              :project/deps (deps-reader/slurp-deps "deps.edn")
-             :maven.pom/dir (u/safer-path "target")})
+             :maven.pom/dir (u/safer-path "target")
+
+             :maven/scm #:maven.scm{:connection "scm:svn:http://127.0.0.1/svn/my-project"
+                                    :developer-connection "scm:svn:https://127.0.0.1/svn/my-project"
+                                    :tag "HEAD"
+                                    :url "http://127.0.0.1/websvn/my-project"}})
 
   (def ctxt2 (assoc ctxt :project/version "2"
                          :maven/artefact-name "titi"))
