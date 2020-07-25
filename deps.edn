@@ -16,6 +16,8 @@
 
   :dev {:extra-paths ["dev"]}
 
+  :doc {:extra-paths ["src/doc/"]}
+
   :perf {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}}}
 
   :test {:extra-paths ["test"]
