@@ -1,17 +1,21 @@
 (ns com.jeremyschoffen.mbt.alpha.core.building.deps
   (:require
     [clojure.tools.deps.alpha.specs :as deps-specs]
-    [clojure.tools.deps.alpha.reader :as deps-reader]
+    [clojure.tools.deps.alpha :as deps]
+    [com.jeremyschoffen.java.nio.alpha.file :as fs]
     [com.jeremyschoffen.mbt.alpha.core.specs]
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [clojure.spec.alpha :as s]))
+
 
 
 (defn get-deps
   "Slurp the deps.edn file of a project using [[clojure.tools.deps.alpha.reader/slurp-deps]]. The `deps.edn` file is
   expected to be found directly under the working directory specified under the key `:project/working-dir`."
   [{wd :project/working-dir}]
-  (deps-reader/slurp-deps (u/safer-path wd "deps.edn")))
+  (-> (u/safer-path wd "deps.edn")
+      fs/file
+      deps/slurp-deps))
 
 (u/spec-op get-deps
            :param {:req [:project/working-dir]}
