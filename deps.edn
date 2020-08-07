@@ -6,8 +6,9 @@
         clj-jgit                     {:mvn/version "1.0.0-beta3"}
         com.cognitect/anomalies      {:mvn/version "0.1.12"}
         medley                       {:mvn/version "1.3.0"}
-        potemkin                     {:mvn/version "0.4.5"}
 
+
+        dolly/dolly-alpha {:mvn/version "0"}
         com.jeremyschoffen/clj-nio-alpha {:mvn/version "0"}}
 
 
