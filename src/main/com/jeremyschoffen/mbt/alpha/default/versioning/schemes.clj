@@ -49,6 +49,6 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default version schemes
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-def maven-scheme maven-like/maven-scheme)
-(u/alias-def semver-scheme maven-like/semver-scheme)
-(u/alias-def simple-scheme simple/simple-scheme)
+(u/def-clone maven-scheme maven-like/maven-scheme)
+(u/def-clone semver-scheme maven-like/semver-scheme)
+(u/def-clone simple-scheme simple/simple-scheme)

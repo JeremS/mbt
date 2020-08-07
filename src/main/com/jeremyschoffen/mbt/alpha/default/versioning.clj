@@ -8,23 +8,23 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/alias-def maven-scheme schemes/maven-scheme)
-(u/alias-def semver-scheme schemes/semver-scheme)
-(u/alias-def simple-scheme schemes/simple-scheme)
+(u/def-clone maven-scheme schemes/maven-scheme)
+(u/def-clone semver-scheme schemes/semver-scheme)
+(u/def-clone simple-scheme schemes/simple-scheme)
 
-(u/alias-fn schemes-current-version schemes/current-version)
-(u/alias-fn schemes-initial-version schemes/initial-version)
-(u/alias-fn schemes-bump schemes/bump)
+(u/def-clone schemes-current-version schemes/current-version)
+(u/def-clone schemes-initial-version schemes/initial-version)
+(u/def-clone schemes-bump schemes/bump)
 
-(u/alias-fn most-recent-description git-state/most-recent-description)
-(u/alias-fn current-version git-state/current-version)
-(u/alias-fn next-version git-state/next-version)
-(u/alias-fn next-tag git-state/next-tag)
-(u/alias-fn tag! git-state/tag!)
-(u/alias-fn check-repo-in-order git-state/check-repo-in-order)
-(u/alias-fn bump-tag! git-state/bump-tag!)
+(u/def-clone most-recent-description git-state/most-recent-description)
+(u/def-clone current-version git-state/current-version)
+(u/def-clone next-version git-state/next-version)
+(u/def-clone next-tag git-state/next-tag)
+(u/def-clone tag! git-state/tag!)
+(u/def-clone check-repo-in-order git-state/check-repo-in-order)
+(u/def-clone bump-tag! git-state/bump-tag!)
 
-(u/alias-fn write-version-file! vf/write-version-file!)
+(u/def-clone write-version-file! vf/write-version-file!)
 
 
 (defn current-project-version

@@ -1,9 +1,8 @@
 (ns com.jeremyschoffen.mbt.alpha.utils
   (:require
-    [clojure.set :as set]
     [clojure.spec.alpha :as s]
     [medley.core :as medley]
-    [potemkin :as p]
+    [dolly.core :as dolly]
     [com.jeremyschoffen.java.nio.alpha.file :as fs]))
 
 
@@ -246,29 +245,13 @@
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Potemkin stuff
+;; Dolly stuff.
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn add-alias-notice! [a-var aliased]
-  (if-let [original (-> aliased resolve meta ::aliasing)]
-    (alter-meta! a-var assoc ::aliasing original)
-    (alter-meta! a-var #(-> %
-                            (assoc ::aliasing aliased)
-                            (update :doc str "\n\n  aliasing: " (format "[[%s]]" aliased))))))
-
-
-(defmacro alias-fn [alias aliased-name]
-  (let [aliased-name (-> aliased-name resolve symbol)]
+(defmacro def-clone [new-name cloned]
+  (let [{:keys [type cloned-sym]} (dolly/cloned-info cloned)]
     `(do
-       (p/import-fn ~aliased-name ~alias)
-       (s/def ~alias ~aliased-name)
-       (add-spec! '~(ns-qualify alias) (get-spec '~aliased-name))
-       (add-alias-notice! (var ~alias) '~aliased-name)
-       (var ~alias))))
-
-
-(defmacro alias-def [alias aliased]
-  (let [aliased (-> aliased resolve symbol)]
-    `(do
-       (p/import-def ~aliased ~alias)
-       (add-alias-notice! (var ~alias) '~aliased)
-       (var ~alias))))
+       (dolly/def-clone ~new-name ~cloned-sym)
+       ~@(when (= type :function)
+           `[(s/def ~new-name (clojure.spec.alpha/get-spec '~cloned-sym))
+             (add-spec! '~(ns-qualify new-name) (get-spec '~cloned-sym))])
+       (var ~new-name))))

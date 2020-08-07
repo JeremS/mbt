@@ -11,33 +11,33 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn make-conf defaults/make-context)
+(u/def-clone make-conf defaults/make-context)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning schemes
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-def maven-scheme versioning/maven-scheme)
-(u/alias-def semver-scheme versioning/semver-scheme)
-(u/alias-def simple-scheme versioning/simple-scheme)
+(u/def-clone maven-scheme versioning/maven-scheme)
+(u/def-clone semver-scheme versioning/semver-scheme)
+(u/def-clone simple-scheme versioning/simple-scheme)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning machinery
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn current-project-version v/current-project-version)
+(u/def-clone current-project-version v/current-project-version)
 
 ;; Git versioning
-(u/alias-fn bump-tag! versioning/bump-tag!)
+(u/def-clone bump-tag! versioning/bump-tag!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn anticipated-next-version tasks/anticipated-next-version)
-(u/alias-fn add-version-file! tasks/add-version-file!)
-(u/alias-fn build-jar! tasks/jar!)
-(u/alias-fn build-uberjar! tasks/uberjar!)
-(u/alias-fn install! maven/install!)
-(u/alias-fn deploy! maven/deploy!)
+(u/def-clone anticipated-next-version tasks/anticipated-next-version)
+(u/def-clone add-version-file! tasks/add-version-file!)
+(u/def-clone build-jar! tasks/jar!)
+(u/def-clone build-uberjar! tasks/uberjar!)
+(u/def-clone install! maven/install!)
+(u/def-clone deploy! maven/deploy!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default remote repo

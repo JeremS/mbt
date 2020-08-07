@@ -10,8 +10,8 @@
     [com.jeremyschoffen.mbt.alpha.utils :as u]
     [com.jeremyschoffen.java.nio.alpha.file :as fs]))
 
-(u/alias-fn make-usual-artefacts mc/make-usual-artefacts)
-(u/alias-fn make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
+(u/def-clone make-usual-artefacts mc/make-usual-artefacts)
+(u/def-clone make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 
 (defn ensure-basic-conf
   "Ensure the necessary basic keys needed to install/deploy maven artefacts are present in the config. Fill the

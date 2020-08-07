@@ -21,98 +21,98 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Classpath
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn classpath-raw classpath/raw-classpath)
-(u/alias-fn classpath-indexed classpath/indexed-classpath)
+(u/def-clone classpath-raw classpath/raw-classpath)
+(u/def-clone classpath-indexed classpath/indexed-classpath)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Cleaning
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn clean! cleaning/clean!)
+(u/def-clone clean! cleaning/clean!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn compilation-project-nss compilation/project-nss)
-(u/alias-fn compilation-external-nss compilation/external-nss)
-(u/alias-fn compilation-jar-nss compilation/jar-nss)
-(u/alias-fn compile! compilation/compile!)
+(u/def-clone compilation-project-nss compilation/project-nss)
+(u/def-clone compilation-external-nss compilation/external-nss)
+(u/def-clone compilation-jar-nss compilation/jar-nss)
+(u/def-clone compile! compilation/compile!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn deps-get deps/get-deps)
-(u/alias-fn deps-make-coord deps/make-deps-coords)
+(u/def-clone deps-get deps/get-deps)
+(u/def-clone deps-make-coord deps/make-deps-coords)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn gpg-version gpg/gpg-version)
-(u/alias-fn gpg-sign-file! gpg/sign-file!)
+(u/def-clone gpg-version gpg/gpg-version)
+(u/def-clone gpg-sign-file! gpg/sign-file!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn jar-open-fs jar/open-jar-fs)
-(u/alias-fn jar-add-srcs! jar/add-srcs!)
-(u/alias-fn jar-make-archive! jar/make-jar-archive!)
+(u/def-clone jar-open-fs jar/open-jar-fs)
+(u/def-clone jar-add-srcs! jar/add-srcs!)
+(u/def-clone jar-make-archive! jar/make-jar-archive!)
 
-(u/alias-fn manifest manifest/make-manifest)
+(u/def-clone manifest manifest/make-manifest)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn maven-new-pom pom/new-pom)
-(u/alias-fn maven-sync-pom! pom/sync-pom!)
+(u/def-clone maven-new-pom pom/new-pom)
+(u/def-clone maven-sync-pom! pom/sync-pom!)
 
-(u/alias-def maven-default-local-repo maven-common/default-local-repo)
-(u/alias-def maven-default-settings-file maven-common/maven-default-settings-file)
+(u/def-clone maven-default-local-repo maven-common/default-local-repo)
+(u/def-clone maven-default-settings-file maven-common/maven-default-settings-file)
 
-(u/alias-fn maven-sign-artefact! maven-common/sign-artefact!)
-(u/alias-fn maven-sign-artefacts! maven-common/sign-artefacts!)
+(u/def-clone maven-sign-artefact! maven-common/sign-artefact!)
+(u/def-clone maven-sign-artefacts! maven-common/sign-artefacts!)
 
-(u/alias-fn maven-deploy! deploy/deploy!)
-(u/alias-fn maven-install! install/install!)
+(u/def-clone maven-deploy! deploy/deploy!)
+(u/def-clone maven-install! install/install!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Git
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn git-top-level git/top-level)
-(u/alias-fn git-prefix git/prefix)
-(u/alias-fn git-make-jgit-repo git/make-jgit-repo)
-(u/alias-fn git-status git/status)
-(u/alias-fn git-add! git/add!)
-(u/alias-fn git-add-all! git/add-all!)
-(u/alias-fn git-update-all! git/update-all!)
-(u/alias-fn git-list-all-changed-patterns git/list-all-changed-patterns)
-(u/alias-fn git-commit! git/commit!)
-(u/alias-fn git-git-get-tag git/get-tag)
-(u/alias-fn git-tag! git/tag!)
-(u/alias-fn git-dirty? git/dirty?)
-(u/alias-fn git-describe-raw git/describe-raw)
-(u/alias-fn git-describe git/describe)
-(u/alias-fn git-any-commit? git/any-commit?)
+(u/def-clone git-top-level git/top-level)
+(u/def-clone git-prefix git/prefix)
+(u/def-clone git-make-jgit-repo git/make-jgit-repo)
+(u/def-clone git-status git/status)
+(u/def-clone git-add! git/add!)
+(u/def-clone git-add-all! git/add-all!)
+(u/def-clone git-update-all! git/update-all!)
+(u/def-clone git-list-all-changed-patterns git/list-all-changed-patterns)
+(u/def-clone git-commit! git/commit!)
+(u/def-clone git-git-get-tag git/get-tag)
+(u/def-clone git-tag! git/tag!)
+(u/def-clone git-dirty? git/dirty?)
+(u/def-clone git-describe-raw git/describe-raw)
+(u/def-clone git-describe git/describe)
+(u/def-clone git-any-commit? git/any-commit?)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/alias-fn version-parse-maven-like maven-like/parse-version)
+(u/def-clone version-parse-maven-like maven-like/parse-version)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
-(u/alias-fn version-maven maven-like/maven-version)
-(u/alias-def version-initial-maven maven-like/initial-maven-version)
-(u/alias-fn version-maven-bump maven-like/safer-bump)
+(u/def-clone version-maven maven-like/maven-version)
+(u/def-clone version-initial-maven maven-like/initial-maven-version)
+(u/def-clone version-maven-bump maven-like/safer-bump)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Semver
-(u/alias-fn semver-version maven-like/semver-version)
-(u/alias-def version-initial-semver maven-like/initial-semver-version)
-(u/alias-fn version-semver-bump maven-like/safer-bump)
+(u/def-clone semver-version maven-like/semver-version)
+(u/def-clone version-initial-semver maven-like/initial-semver-version)
+(u/def-clone version-semver-bump maven-like/safer-bump)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simple
-(u/alias-fn version-parse-simple simple-version/parse-version-number)
-(u/alias-fn version-simple simple-version/simple-version)
-(u/alias-def version-initial-simple simple-version/initial-simple-version)
-(u/alias-fn version-simple-bump simple-version/bump)
+(u/def-clone version-parse-simple simple-version/parse-version-number)
+(u/def-clone version-simple simple-version/simple-version)
+(u/def-clone version-initial-simple simple-version/initial-simple-version)
+(u/def-clone version-simple-bump simple-version/bump)
