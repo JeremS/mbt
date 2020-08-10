@@ -5,7 +5,8 @@
     [fr.jeremyschoffen.mbt.alpha.default.building :as b]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]
+    [clojure.spec.alpha :as s]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -33,63 +34,30 @@
            :ret :versioning/version)
 
 
-(defn- write-version-file! [param]
-  (-> param
-      (u/assoc-computed :project/version (comp str anticipated-next-version))
-      (v/write-version-file!)))
+(defn- commit-generated! [conf]
+  (mbt-core/git-commit! (assoc conf
+                          :git/commit! {:git.commit/message "Added generated files."})))
 
-(u/spec-op write-version-file!
-           :deps [anticipated-next-version v/write-version-file!]
-           :param {:req [:git/repo
-                         :version-file/ns
-                         :version-file/path
-                         :versioning/scheme]
-                   :opt [:versioning/bump-level
-                         :versioning/tag-base-name]})
+(u/spec-op commit-generated!
+           :deps [mbt-core/git-commit!]
+           :param {:req [:git/repo :git/commit!]})
 
 
-(defn- git-add-version-file! [{p :version-file/path
-                               repo :git/repo}]
-  (mbt-core/git-add! {:git/repo repo
-                      :git/add! {:git.add!/file-patterns [(->> p
-                                                               (fs/relativize repo)
-                                                               str)]}}))
-
-(u/spec-op git-add-version-file!
-           :param {:req [:git/repo :version-file/path]})
-
-
-
-(defn- git-commit-version-file! [param]
-  (mbt-core/git-commit! (assoc param
-                          :git/commit! {:git.commit/message "Committed version file."})))
-
-(u/spec-op git-commit-version-file!)
-
-
-(defn add-version-file!
-  "Add a version file to the project. Must be used right before tagging a new version.
-  The version used in this file will be computed using
-  [[fr.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]]."
-  [ctxt]
-  (-> ctxt
+(defn generate-before-bump! [conf & fns]
+  (-> conf
       (u/check v/check-repo-in-order)
-      (u/side-effect! write-version-file!)
-      (u/side-effect! git-add-version-file!)
-      (u/side-effect! git-commit-version-file!)))
+      (u/ensure-computed :project/version (comp str anticipated-next-version))
+      (as-> conf (apply u/thread-fns conf fns))
+      (u/side-effect! mbt-core/git-add-all!)
+      (u/side-effect! commit-generated!)))
 
-(u/spec-op add-version-file!
-           :deps [v/check-repo-in-order
-                  write-version-file!
-                  git-add-version-file!
-                  git-commit-version-file!]
-           :param {:req [:git/repo
-                         :project/working-dir
-                         :version-file/ns
-                         :version-file/path
-                         :versioning/scheme]
-                   :opt [:versioning/bump-level
-                         :versioning/tag-base-name]})
+(s/fdef generate-before-bump!
+        :args (s/cat :param (s/keys :req [:git/repo
+                                          :versioning/scheme]
+                                    :opt [:versioning/tag-base-name
+                                          :versioning/bump-level])
+                     :fns (s/* fn?)))
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Building jars

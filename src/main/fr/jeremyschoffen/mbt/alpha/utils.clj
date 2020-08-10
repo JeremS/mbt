@@ -72,14 +72,25 @@
           (partition 2 kfs)))
 
 
-(defn side-effect! [v f!]
-  (f! v)
-  v)
+(defn side-effect!
+  ([f!]
+   (fn [v]
+     (side-effect! v f!)))
+  ([v f!]
+   (f! v)
+   v))
 
 
 (defn check [v f!]
   (f! v)
   v)
+
+
+(defn thread-fns [acc & fns]
+  (reduce (fn [acc f]
+            (f acc))
+          acc
+          fns))
 
 
 (defn strip-keys-nss [m]
