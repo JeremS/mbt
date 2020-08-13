@@ -9,17 +9,17 @@
   "Parse a git description into the current version.`"
   [{tag :git/tag
     :as git-desc}]
-  (let [last-version-number (-> tag
-                                :git.tag/message
-                                clojure.edn/read-string
-                                :version
-                                Integer/parseInt)
+  (let [base (-> tag
+                 :git.tag/message
+                 clojure.edn/read-string
+                 :version
+                 mbt-core/version-parse-simple)
         relevant-part (-> git-desc
                           (select-keys #{:git/sha
                                          :git.describe/distance
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
-    (mbt-core/version-simple (assoc relevant-part :number last-version-number))))
+    (mbt-core/version-simple (merge base relevant-part))))
 
 
 (def simple-scheme
@@ -35,5 +35,5 @@
     (bump [_ version]
       (mbt-core/version-simple-bump version))
 
-    (bump [_ version _]
-      (mbt-core/version-simple-bump version))))
+    (bump [_ version level]
+      (mbt-core/version-simple-bump version level))))

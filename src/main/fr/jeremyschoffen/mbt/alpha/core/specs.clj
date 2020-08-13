@@ -269,3 +269,4 @@
                                               :maven-like.qualifier/n]))
 
 (s/def :simple-version/number integer?)
+(s/def :simple-version/stable boolean?)

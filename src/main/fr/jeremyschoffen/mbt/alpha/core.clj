@@ -112,7 +112,7 @@
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simple
-(u/def-clone version-parse-simple simple-version/parse-version-number)
+(u/def-clone version-parse-simple simple-version/parse-version)
 (u/def-clone version-simple simple-version/simple-version)
 (u/def-clone version-initial-simple simple-version/initial-simple-version)
 (u/def-clone version-simple-bump simple-version/bump)

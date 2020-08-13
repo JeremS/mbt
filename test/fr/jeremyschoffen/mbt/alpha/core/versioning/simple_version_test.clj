@@ -7,8 +7,8 @@
 
     [fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version :as sv]))
 
-(st/instrument [sv/simple-version
-                sv/bump])
+(st/instrument `[sv/simple-version
+                 sv/bump])
 
 (def dumy-sha "AAA123")
 
@@ -16,9 +16,13 @@
   (let [base {:number 0
               :distance 0
               :sha dumy-sha
-              :dirty? true}]
+              :dirty? true
+              :stable true}
+        unstable #(assoc % :stable false)]
     (facts
       (-> base sv/simple-version str) => "0-DIRTY"
+
+      (-> base unstable sv/simple-version str) => "0-unstable-DIRTY"
 
       (-> base
           (assoc :dirty? false)
@@ -28,14 +32,21 @@
       (-> base
           (assoc :distance 5)
           sv/simple-version
-          str) => (str "0-5-g" dumy-sha "-DIRTY"))))
+          str) => (str "0-5-g" dumy-sha "-DIRTY")
+
+      (-> base
+          (assoc :distance 5)
+          unstable
+          sv/simple-version
+          str) => (str "0-unstable-5-g" dumy-sha "-DIRTY"))))
 
 
 (deftest bump
   (let [base {:number 0
               :distance 0
               :sha dumy-sha
-              :dirty? false}]
+              :dirty? false
+              :stable true}]
     (facts
       (-> base sv/simple-version sv/bump str)
       =throws=> (ex-info? "Duplicating tag."
