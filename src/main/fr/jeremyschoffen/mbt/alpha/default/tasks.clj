@@ -1,6 +1,5 @@
 (ns fr.jeremyschoffen.mbt.alpha.default.tasks
   (:require
-    [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.building :as b]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
@@ -43,7 +42,25 @@
            :param {:req [:git/repo :git/commit!]})
 
 
-(defn generate-before-bump! [conf & fns]
+(defn generate-before-bump!
+  "Helper function intended to be used just before tagging a new version. The idea here is that when we want to release
+  a new version, we want to generate some docs or a version file for instance. These files will need to be generated,
+  added and committed to the repo. Also, adding this commit may influence the version number of the realease.
+
+  This function attemps to provide a way to encapsulate this logic. It is performed in several steps:
+
+  1) Checks the repo using [[fr.jeremyschoffen.mbt.alpha.default.versioning/check-repo-in-order]].
+  2) Ensure the the presence of the `:project/version` key of the `conf` using
+     [[fr.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]] if necessary.
+  3) Thread `conf` through `fns` using [[fr.jeremyschoffen.mbt.alpha.utils//thread-fns]].
+  4) Add all the new files to git using [[fr.jeremyschoffen.mbt.alpha.core/git-add-all!]]
+  5) Commit all the generated files.
+
+
+  Args:
+  - `conf`: a map, the build's configuration
+  - `fns`: functions, presumably functions generating docs or a version file."
+  [conf & fns]
   (-> conf
       (u/check v/check-repo-in-order)
       (u/ensure-computed :project/version (comp str anticipated-next-version))

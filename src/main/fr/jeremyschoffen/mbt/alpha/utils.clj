@@ -73,6 +73,23 @@
 
 
 (defn side-effect!
+  "Make *`identity` with side effect* functions when constructing threaded code.
+
+  The 1 argument version is a combinator taking a function `f!` and returning a function. The returned function
+  is of 1 argument `v`, effects `(f! v) and returns `v` as it received it. The result is basically an `identity`
+  function with a side effect inside it. This arity is intended to be used with
+  [[fr.jeremyschoffen.mbt.alpha.utils/thread-fns]].
+
+  The 2 argument version is intended to be used in the macro `->`. It applies `f!` to `v` then returns `v` unchanged.
+  You can for instance:
+  ```clojure
+  (-> 1
+      inc
+      (side-effect! println)
+      dec)
+  ; 2
+  ;=> 1
+  ```"
   ([f!]
    (fn [v]
      (side-effect! v f!)))
@@ -86,10 +103,17 @@
   v)
 
 
-(defn thread-fns [acc & fns]
+(defn thread-fns
+  "Function serving a similar purpose than the `->` macro. It will  thread a value `v` through a sequence of
+  functions `fns` the result of one function application becoming the argument of the next.
+
+  Args:
+  - `v`: the value to be threaded
+  - `fns`: 1 argument functions that will be applied."
+  [v & fns]
   (reduce (fn [acc f]
             (f acc))
-          acc
+          v
           fns))
 
 
