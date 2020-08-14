@@ -2,7 +2,8 @@
   (:require
     [clojure.spec.alpha :as s]
     [clojure.tools.deps.alpha.specs :as deps-specs]
-    [fr.jeremyschoffen.java.nio.alpha.file :as fs])
+    [fr.jeremyschoffen.java.nio.alpha.file :as fs]
+    [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as jar-p])
   (:import (org.eclipse.jgit.api Git)))
 
 (def path? fs/path?)
@@ -125,8 +126,9 @@
 (s/def :jar.clash/strategy #{:merge :concat-lines :noop})
 
 
-(s/def :jar/src (s/or :path path?
-                      :entries (s/coll-of :jar/entry)))
+(s/def :jar/src #(satisfies? jar-p/JarSource %))
+
+
 (s/def :jar/srcs (s/coll-of :jar/src))
 
 

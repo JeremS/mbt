@@ -6,6 +6,8 @@
 
 (def test-repos (u/safer-path "resources-test" "test-repos"))
 
+(def jar (u/safer-path test-repos "jar"))
+
 (def deploy-project (u/safer-path test-repos "deploy"))
 
 (def monorepo (u/safer-path test-repos "monorepo"))

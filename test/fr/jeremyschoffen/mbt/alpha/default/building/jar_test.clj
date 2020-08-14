@@ -5,6 +5,7 @@
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
+    [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
@@ -14,20 +15,8 @@
     [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]))
 
 
-(st/instrument [building/jar! building/uberjar!])
+(st/instrument `[building/jar! building/uberjar!])
 
-;;----------------------------------------------------------------------------------------------------------------------
-;; helpers
-;;----------------------------------------------------------------------------------------------------------------------
-(defn jar-content [jar-path]
-  (with-open [zfs (mbt-core/jar-open-fs jar-path)]
-    (->> zfs
-         fs/walk
-         fs/realize
-         (into {}
-               (comp
-                 (remove fs/directory?)
-                 (map #(vector (str %) (slurp %))))))))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Common values
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -74,12 +63,12 @@
   (let [_ (building/jar! ctxt2)
         content (-> ctxt2
                     building/jar-out
-                    jar-content)
+                    h/jar-content)
 
         _ (building/jar! ctxt2-i)
         content+i (-> ctxt2-i
                       building/jar-out
-                      jar-content)]
+                      h/jar-content)]
 
     (testing "The content that should be there is."
       (facts
@@ -141,7 +130,7 @@
     (let [_ (building/uberjar! ctxt1)
           content (-> ctxt1
                       building/uberjar-out
-                      jar-content)
+                      h/jar-content)
           services-1 (slurp (u/safer-path project1-path services-props-rpath))
           services-2 (slurp (u/safer-path project2-path services-props-rpath))]
 
