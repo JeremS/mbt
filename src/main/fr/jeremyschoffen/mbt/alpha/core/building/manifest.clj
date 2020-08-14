@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.manifest
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing utilities when generating manifest files.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.manifest
   (:require
     [clojure.spec.alpha :as s]
     [clojure.string :as string]

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.deps
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing some utilities working with `clojure.tools.deps`.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.deps
   (:require
     [clojure.tools.deps.alpha.specs :as deps-specs]
     [clojure.tools.deps.alpha :as deps]

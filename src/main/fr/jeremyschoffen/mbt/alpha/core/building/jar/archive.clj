@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.jar.archive
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing the tools to make a jar archive from a directory.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.jar.archive
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]

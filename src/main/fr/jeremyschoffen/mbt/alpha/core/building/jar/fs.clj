@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.jar.fs
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing some jar file system utilies.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.jar.fs
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]

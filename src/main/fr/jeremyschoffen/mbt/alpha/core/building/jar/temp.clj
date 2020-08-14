@@ -1,6 +1,6 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
-Namespace providing facilities to copy files from different sources into a unique directory.
+Api providing facilities to copy files from different sources into a unique directory.
 This directory is intended to be zipped into a jar file.
 
 The function [[fr.jeremyschoffen.mbt.alpha.core.building.jar.temp/add-srcs!]] is the entry point when

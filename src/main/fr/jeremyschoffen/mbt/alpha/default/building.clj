@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.building
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api containing the default logic when building jars.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.building
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
@@ -78,7 +82,10 @@
 (defn jar!
   "Create a skinny jar. The jar sources are determined using
   [[fr.jeremyschoffen.mbt.alpha.default.building.jar/simple-jar-srcs]], the jar's path name
-  [[fr.jeremyschoffen.mbt.alpha.default.building/jar-out]]."
+  [[fr.jeremyschoffen.mbt.alpha.default.building/jar-out]].
+
+  This function takes care of generating a deleting a temporary directory used to group the
+  jar files that end up compressed into the jar archive."
   [param]
   (-> param
       (u/ensure-computed
@@ -114,7 +121,10 @@
 (defn uberjar!
   "Build an uberjar. The jar sources are determined using
   [[fr.jeremyschoffen.mbt.alpha.default.building.jar/uber-jar-srcs]], the uberjar's path
-  [[fr.jeremyschoffen.mbt.alpha.default.building/uberjar-out]]."
+  [[fr.jeremyschoffen.mbt.alpha.default.building/uberjar-out]].
+
+  This function takes care of generating a deleting a temporary directory used to group the
+  jar files that end up compressed into the jar archive."
   [param]
   (-> param
       (u/ensure-computed

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.maven.install
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing a maven install utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.maven.install
   (:require
     [clojure.tools.deps.alpha.util.maven :as maven]
     [fr.jeremyschoffen.mbt.alpha.core.maven.common :as common]

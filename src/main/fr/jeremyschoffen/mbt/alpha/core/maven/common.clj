@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.maven.common
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Utilites common to different maven related tasks.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.maven.common
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.gpg :as gpg]

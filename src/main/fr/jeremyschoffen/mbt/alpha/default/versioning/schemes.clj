@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api used when versioning the project using git state.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like :as maven-like]

@@ -1,14 +1,14 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
-      Default implementations of the protocols found in [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols]].
+Default implementations of the protocols found in [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols]].
 
-      Types implementing [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarSource]]:
-      - `clojure.lang.Sequential`: sequences of `:jar/entry` producing itself as a
-        [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
-      - `java.nio.file.Path`: path to a directory or a jar. A path to a directory will produce a
-        [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. A path to a jar will
-        produce a [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. Both record types
-        implement [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
+Types implementing [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarSource]]:
+- `clojure.lang.Sequential`: sequences of `:jar/entry` producing itself as a
+  [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
+- `java.nio.file.Path`: path to a directory or a jar. A path to a directory will produce a
+  [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. A path to a jar will
+  produce a [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. Both record types
+  implement [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
       "}
   fr.jeremyschoffen.mbt.alpha.core.building.jar.sources
   (:require

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.version-file
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api used to generate version files.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.version-file
   (:require
     [clojure.string :as string]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]

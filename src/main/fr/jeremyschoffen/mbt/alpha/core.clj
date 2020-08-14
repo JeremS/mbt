@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Facade grouping the core apis in one place.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.building.classpath :as classpath]
     [fr.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]

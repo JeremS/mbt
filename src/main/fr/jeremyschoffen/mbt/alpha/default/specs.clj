@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.specs
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Specs used in the default api.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.specs
   (:require
     [clojure.spec.alpha :as s]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]

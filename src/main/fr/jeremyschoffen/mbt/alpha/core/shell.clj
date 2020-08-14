@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.shell
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api wrapping `clojure.java.shell`
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.shell
   (:require
     [clojure.java.shell :as shell]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -15,7 +19,7 @@
 
 
 (defn safer-sh
-  "Wrapper aroungd the `clojure.java.shell/sh function. Position the sh current dir on the
+  "Wrapper around the `clojure.java.shell/sh function. Position the sh current dir on the
   project's working dir if provided.`"
   [{wd :project/working-dir
     cmd :shell/command}]

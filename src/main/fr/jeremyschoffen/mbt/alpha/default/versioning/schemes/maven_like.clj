@@ -1,4 +1,9 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Implementation of versioning schemes using the maven and semver building blocks from the core api
+([[fr.jeremyschoffen.mbt.alpha.core.versioning.maven-like]]).
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like
   (:require
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]

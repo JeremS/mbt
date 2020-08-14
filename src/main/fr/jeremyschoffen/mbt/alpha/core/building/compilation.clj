@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.compilation
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing clojure compilation utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.compilation
   (:require
     [clojure.tools.namespace.find :as ns-find]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
@@ -8,7 +12,7 @@
   (:import
     [java.util.jar JarFile]))
 
-
+;; TODO: provide a story for java files.
 ;; inspired by https://github.com/luchiniatwork/cambada/blob/master/src/cambada/compile.clj
 (defn- dirs->nss [dirs]
   (into []

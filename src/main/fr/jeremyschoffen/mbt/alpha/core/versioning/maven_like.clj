@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.versioning.maven-like
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Building blocks to versioning systems following the maven or semver model.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.versioning.maven-like
   (:require
     [clojure.spec.alpha :as s]
     [clojure.string :as string]

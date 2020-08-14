@@ -1,4 +1,9 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Implementation of versioning schemes using the git disatnce building blocks from the core api
+([[fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version]]).
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version
   (:require
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]

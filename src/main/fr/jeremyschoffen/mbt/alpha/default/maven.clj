@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.maven
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing default behaviour for maven tasks.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.maven
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]

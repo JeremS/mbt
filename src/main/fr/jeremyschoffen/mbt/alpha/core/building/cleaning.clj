@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.cleaning
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+File cleaning api.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.cleaning
   (:require
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
@@ -61,7 +65,7 @@
 (u/spec-op clean!*
            :param {:req [:cleaning/target]})
 
-
+;; TODO: consider having a set of targets
 (defn clean!
   "Delete a file or directory at the path specified by the key `:cleaning/target`. The target can't be the project
   directory specified by the key `:project/working-dir` and must be inside it. You can still delete anything inside

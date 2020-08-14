@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.maven.deploy
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing  maven deployment utilites.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.maven.deploy
   (:require
     [clojure.tools.deps.alpha.extensions.maven]
     [clojure.tools.deps.alpha.util.maven :as maven]

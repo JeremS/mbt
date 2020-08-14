@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.classpath
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing utilities when manipulating classpaths generated using `clojure.tools.deps`.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.classpath
   (:require
     [clojure.string :as string]
     [clojure.tools.deps.alpha :as deps]

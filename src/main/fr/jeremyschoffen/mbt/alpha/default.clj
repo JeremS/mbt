@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Facade grouping the default apis in one place.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default
   (:require
     [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.maven.pom
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing maven pom.xml files generation.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.maven.pom
   (:require
     [clojure.spec.alpha :as s]
     [clojure.java.io :as jio]

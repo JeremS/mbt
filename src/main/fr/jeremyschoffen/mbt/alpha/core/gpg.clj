@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.gpg
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing gpg utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.gpg
   (:require
     [clojure.spec.alpha :as s]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]

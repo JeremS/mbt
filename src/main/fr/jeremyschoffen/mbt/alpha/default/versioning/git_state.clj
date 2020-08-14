@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.git-state
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api containing the default logic for using git state as a versioning mechanism.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.git-state
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]

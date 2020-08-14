@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning
+(ns ^{:author "Jeremy Schoffen"
+      :doc"
+Grouping of the different versioning utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]

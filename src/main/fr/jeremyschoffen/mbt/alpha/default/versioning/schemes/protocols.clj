@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols)
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Protocol used to make version schemes.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols)
 
 (defprotocol VersionScheme
   (initial-version [this])

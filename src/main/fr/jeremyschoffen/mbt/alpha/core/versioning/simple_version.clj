@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Building blocks of a versioning system based on git commit distance.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version
   (:require
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.mbt.alpha.core.specs]

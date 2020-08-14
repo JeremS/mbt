@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.git
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing git utilities. Mostly a wrapper for some functionality from `clj-jgit`.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.git
   (:require
     [clojure.spec.alpha :as s]
     [clojure.core.protocols :as cp]

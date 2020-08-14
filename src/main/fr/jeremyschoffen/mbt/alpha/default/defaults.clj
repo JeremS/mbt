@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.defaults
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api providing the default generation of the build configuration.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.defaults
   (:require
     [clojure.string :as string]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]

@@ -1,4 +1,9 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.jar
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Api grouping the different utilities around building jars provided in
+`fr.jeremyschoffen.mbt.alpha.core.building.jar.XXX` namespaces.
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.jar
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.core.building.jar.archive :as archive]

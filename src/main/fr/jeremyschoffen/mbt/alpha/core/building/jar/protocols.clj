@@ -1,9 +1,9 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
-      Protocols used in to create a flexible way to approach the creation of jar sources.
+Protocols used in to create a flexible way to approach the creation of jar sources.
 
-      See [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources]] to have an example of how to use these
-      protocols.
+See [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources]] to have an example of how to use these
+protocols.
       "}
   fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols)
 

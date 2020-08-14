@@ -1,11 +1,15 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.building.jar
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Apis providing the jar sources used by default.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.building.jar
   (:require
     [clojure.data.xml :as xml]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-
+;;TODO: license stuuf should go there.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar srcs construction
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -68,7 +72,7 @@
                          :maven/group-id
                          :maven/artefact-name]})
 
-
+;; TODO: add the licence file, maybe make spec like :project/license
 ;; Pom + manifest + deps
 (defn make-staples-entries
   "Make a `:jar/src` containing the usual manifest, pom.xml and deps.edn `jar/entry`s."

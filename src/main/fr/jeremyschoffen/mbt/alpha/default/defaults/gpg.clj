@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.defaults.gpg
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default way to use the gpg core apis.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.defaults.gpg
   (:require
     [clojure.java.shell :as shell]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]

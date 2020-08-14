@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.maven.common
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Common maven utilities used in the default apis.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.maven.common
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]

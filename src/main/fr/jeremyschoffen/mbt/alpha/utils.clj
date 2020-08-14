@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.utils
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Utilities used in the whole project.
+      "}
+  fr.jeremyschoffen.mbt.alpha.utils
   (:require
     [clojure.spec.alpha :as s]
     [medley.core :as medley]

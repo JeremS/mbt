@@ -1,11 +1,17 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.tasks
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Higher level apis.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.tasks
   (:require
+    [clojure.spec.alpha :as s]
+
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.building :as b]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [clojure.spec.alpha :as s]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -82,7 +88,8 @@
 (defn jar!
   "Build a skinny jar for the project. Ensure that the `:project/version` is present int the config with
   [[fr.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
-  Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
+  Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]].
+  "
   [param]
   (-> param
       (u/ensure-computed :project/version v/current-project-version)
