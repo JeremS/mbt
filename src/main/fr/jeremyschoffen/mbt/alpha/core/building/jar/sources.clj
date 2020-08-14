@@ -1,4 +1,16 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.jar.sources
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+      Default implementations of the protocols found in [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols]].
+
+      Types implementing [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarSource]]:
+      - `clojure.lang.Sequential`: sequences of `:jar/entry` producing itself as a
+        [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
+      - `java.nio.file.Path`: path to a directory or a jar. A path to a directory will produce a
+        [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. A path to a jar will
+        produce a [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. Both record types
+        implement [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
+      "}
+  fr.jeremyschoffen.mbt.alpha.core.building.jar.sources
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
@@ -33,7 +45,11 @@
                      :this this}))))
 
 
-(defn add-exclusion [conf exclude]
+(defn add-exclusion
+  "Add an exclusion to a context under the key `:jar/exclude`.
+  If the context doesn't have one it just associates the function to the map. If an exclusion function
+  is already there it joins the two using [[clojure.core/some-fn]]."
+  [conf exclude]
   (let [e (:jar/exclude? conf)
         exclude' (cond-> exclude
                          e (some-fn e))]
@@ -66,7 +82,7 @@
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Source directory
+;; Source directory entries
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- src-dir->jar-entries [dir]
   (->> dir
@@ -156,9 +172,9 @@
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; General api
+;; path -> entries
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn path->entries [{path :path :as m}]
+(defn- path->entries [{path :path :as m}]
   (cond
     (specs/dir-path? path) (map->SourceDir m)
     (specs/jar-path? path) (map->SourceJar m)
