@@ -1,16 +1,16 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
 Api grouping the different utilities around building jars provided in
-`fr.jeremyschoffen.mbt.alpha.core.building.jar.XXX` namespaces.
+`fr.jeremyschoffen.mbt.alpha.core.jar.XXX` namespaces.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.jar
+  fr.jeremyschoffen.mbt.alpha.core.jar
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.specs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.archive :as archive]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as p]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.sources]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.temp :as temp]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.archive :as archive]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.fs :as jar-fs]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.protocols :as p]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.sources]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.temp :as temp]
 
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 

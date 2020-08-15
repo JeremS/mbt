@@ -2,10 +2,11 @@
       :doc "
 Api providing the tools to make a jar archive from a directory.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.jar.archive
+  fr.jeremyschoffen.mbt.alpha.core.jar.archive
   (:require
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
+
+    [fr.jeremyschoffen.mbt.alpha.core.jar.fs :as jar-fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
   (:import

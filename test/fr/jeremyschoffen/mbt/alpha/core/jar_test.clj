@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.jar-test
+(ns fr.jeremyschoffen.mbt.alpha.core.jar-test
   (:require
     [clojure.test :refer [deftest testing use-fixtures]]
     [testit.core :refer :all]
@@ -6,7 +6,7 @@
     [clojure.spec.test.alpha :as st]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
+    [fr.jeremyschoffen.mbt.alpha.core.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))

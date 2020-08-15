@@ -2,13 +2,12 @@
   (:require
     [clj-jgit.porcelain :as git-p]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
-    [fr.jeremyschoffen.mbt.alpha.core.git]
+    [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (defn jar-content [jar-path]
-  (with-open [zfs (jar-fs/open-jar-fs jar-path)]
+  (with-open [zfs (mbt-core/jar-open-fs jar-path)]
     (->> zfs
          fs/walk
          fs/realize

@@ -2,7 +2,7 @@
       :doc "
 Api providing some jar file system utilies.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.jar.fs
+  fr.jeremyschoffen.mbt.alpha.core.jar.fs
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]

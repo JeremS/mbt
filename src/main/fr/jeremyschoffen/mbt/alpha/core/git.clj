@@ -179,8 +179,8 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 
 (defn add-all!
-  "Use the git add operation on all patterns listed by [[list-all-changed-patterns]]. In effect stages modified and
-  un-tracked files."
+  "Use the git add operation on all patterns listed by
+  [[fr.jeremyschoffen.mbt.alpha.core.git/list-all-changed-patterns]]. In effect stages modified and un-tracked files."
   [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
@@ -192,7 +192,7 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 
 (defn update-all!
-  "Similar to [[add-all!]] but uses the `:git.add!/update?` option set to `true`."
+  "Similar to [[fr.jeremyschoffen.mbt.alpha.core.git/add-all!]] but uses the `:git.add!/update?` option set to `true`."
   [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
@@ -351,7 +351,8 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 
 (defn describe
-  "Get a git description in a map form. This is an evolved version of [[describe-raw]] with additional data.
+  "Get a git description in a map form. This is an evolved version of
+  [[fr.jeremyschoffen.mbt.alpha.core.git/describe-raw]] with additional data.
 
   See the spec `:git/description`."
   [{repo :git/repo

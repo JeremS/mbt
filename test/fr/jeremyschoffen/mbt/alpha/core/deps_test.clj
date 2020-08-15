@@ -1,11 +1,11 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.deps-test
+(ns fr.jeremyschoffen.mbt.alpha.core.deps-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as stest]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
     [testit.core :refer :all]
 
-    [fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps]))
+    [fr.jeremyschoffen.mbt.alpha.core.deps :as deps]))
 
 (stest/instrument [deps/make-deps-coords])
 

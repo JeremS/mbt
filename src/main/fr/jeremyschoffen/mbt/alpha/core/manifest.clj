@@ -2,7 +2,7 @@
       :doc "
 Api providing utilities when generating manifest files.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.manifest
+  fr.jeremyschoffen.mbt.alpha.core.manifest
   (:require
     [clojure.spec.alpha :as s]
     [clojure.string :as string]

@@ -1,24 +1,24 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
-Default implementations of the protocols found in [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols]].
+Default implementations of the protocols found in [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols]].
 
-Types implementing [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarSource]]:
+Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
 - `clojure.lang.Sequential`: sequences of `:jar/entry` producing itself as a
   [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
 - `java.nio.file.Path`: path to a directory or a jar. A path to a directory will produce a
-  [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. A path to a jar will
-  produce a [[fr.jeremyschoffen.mbt.alpha.core.building.jar.sources/SourceDir]] record. Both record types
-  implement [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarEntries]].
+  [[fr.jeremyschoffen.mbt.alpha.core.jar.sources/SourceDir]] record. A path to a jar will
+  produce a [[fr.jeremyschoffen.mbt.alpha.core.jar.sources/SourceDir]] record. Both record types
+  implement [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarEntries]].
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.jar.sources
+  fr.jeremyschoffen.mbt.alpha.core.jar.sources
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as p]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.temp :as temp]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.fs :as jar-fs]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.protocols :as p]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.temp :as temp]
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
 

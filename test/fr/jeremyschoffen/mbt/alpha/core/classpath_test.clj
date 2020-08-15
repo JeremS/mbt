@@ -1,10 +1,10 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.classpath-test
+(ns fr.jeremyschoffen.mbt.alpha.core.classpath-test
   (:require
     [clojure.test :refer [deftest]]
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.classpath :as cp]
-    [fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
+    [fr.jeremyschoffen.mbt.alpha.core.classpath :as cp]
+    [fr.jeremyschoffen.mbt.alpha.core.deps :as deps]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 

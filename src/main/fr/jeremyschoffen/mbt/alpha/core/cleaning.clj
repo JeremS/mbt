@@ -2,7 +2,7 @@
       :doc "
 File cleaning api.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.cleaning
+  fr.jeremyschoffen.mbt.alpha.core.cleaning
   (:require
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]

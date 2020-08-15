@@ -3,14 +3,15 @@
 Api providing facilities to copy files from different sources into a unique directory.
 This directory is intended to be zipped into a jar file.
 
-The function [[fr.jeremyschoffen.mbt.alpha.core.building.jar.temp/add-srcs!]] is the entry point when
+The function [[fr.jeremyschoffen.mbt.alpha.core.jar.temp/add-srcs!]] is the entry point when
 copying sources to the temp directory.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.jar.temp
+  fr.jeremyschoffen.mbt.alpha.core.jar.temp
   (:require
     [clojure.edn :as edn]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as p]
+
+    [fr.jeremyschoffen.mbt.alpha.core.jar.protocols :as p]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
@@ -152,7 +153,7 @@ copying sources to the temp directory.
 
 
 (defn add-entries!
-  "Use [[fr.jeremyschoffen.mbt.alpha.core.building.jar.temp/add-entry!]] to copy all the entries
+  "Use [[fr.jeremyschoffen.mbt.alpha.core.jar.temp/add-entry!]] to copy all the entries
   under the key `:jar/entries`"
   [{entries :jar/entries
     :as param}]
@@ -172,7 +173,7 @@ copying sources to the temp directory.
   "Copy the files grouped under the key `:jar/srcs` into the temp jar directory specified under the key
   `:jar/temp-output`.
 
-  A source can be is anything that satifies [[fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols/JarSource]]
+  A source can be is anything that satifies [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]
 
   An optional exclusion function can be passed under the key `:jar/exclude`. If this function returns true, the jar
   entry will be excluded from the jar. It must take only one argument which will be a map with the following keys:

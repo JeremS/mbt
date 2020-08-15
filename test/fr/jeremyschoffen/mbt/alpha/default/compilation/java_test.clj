@@ -4,8 +4,6 @@
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
-    [fr.jeremyschoffen.mbt.alpha.core.building.classpath :as classpath]
     [fr.jeremyschoffen.mbt.alpha.default.compilation.java :as compilation]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
@@ -28,9 +26,8 @@
                 :project/working-dir wd
                 :cleaning/target target
                 :compilation.java/output-dir java-out-dir)
-              (u/assoc-computed :project/deps deps/get-deps
-                                :classpath/raw classpath/raw-classpath
-                                :classpath/index classpath/indexed-classpath)))
+              (u/assoc-computed :project/deps mbt-core/deps-get
+                                :classpath/index mbt-core/classpath-indexed)))
 
 
 

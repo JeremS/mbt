@@ -7,7 +7,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
     [clojure.spec.alpha :as s]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.fs :as jar-fs]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.fs :as jar-fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
@@ -32,7 +32,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   "Use an indexed classpath to find all .java files src directories from inside the working directory.
 
   See:
-  - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]"
+  - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]"
   [{ i :classpath/index}]
   (-> i
       :classpath/dir
@@ -50,7 +50,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   "Use an indexed classpath to find all .java files from src directories located outside the working directory.\n  These would be namespaces from local deps or directly from a git repo.
 
   See:
-  - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]."
+  - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]."
   [{ i :classpath/index}]
   (-> i
       :classpath/ext-dep
@@ -66,7 +66,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   "Use an indexed classpath to find all .java files from jars.
 
   See:
-    - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+    - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
   (-> i
       :classpath/jar

@@ -50,13 +50,15 @@
 
   (mbt-core/clean! conf)
 
+  (str (mbt-defaults/anticipated-next-version conf))
+
   (mbt-defaults/build-jar! conf)
   (mbt-defaults/install! conf)
 
   (-> conf
       (assoc :project/version "0")
       (u/side-effect! mbt-defaults/build-jar!)
-      (u/side-effect! mbt-defaults/install!))
+      mbt-defaults/install!)
 
   (-> conf
       (assoc :maven/server mbt-defaults/clojars)

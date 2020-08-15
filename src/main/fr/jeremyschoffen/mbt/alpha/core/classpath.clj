@@ -2,7 +2,7 @@
       :doc "
 Api providing utilities when manipulating classpaths generated using `clojure.tools.deps`.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.classpath
+  fr.jeremyschoffen.mbt.alpha.core.classpath
   (:require
     [clojure.string :as string]
     [clojure.tools.deps.alpha :as deps]
@@ -91,7 +91,7 @@ Api providing utilities when manipulating classpaths generated using `clojure.to
 
 
 (defn absolute-raw-classpath
-  "Similar to [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/raw-classpath]] with all paths being
+  "Similar to [[fr.jeremyschoffen.mbt.alpha.core.classpath/raw-classpath]] with all paths being
   absolute."
   [{c :classpath/index}]
   (->> c

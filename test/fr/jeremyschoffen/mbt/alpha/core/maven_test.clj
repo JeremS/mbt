@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.maven-test
+(ns fr.jeremyschoffen.mbt.alpha.core.maven-test
   (:require
     [clojure.test :refer [deftest testing]]
     [testit.core :refer :all]

@@ -1,6 +1,6 @@
 (ns fr.jeremyschoffen.mbt.alpha.test.repos
   (:require
-    [fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
+    [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
@@ -16,5 +16,5 @@
 
 (def monorepo-project1-deps
   (-> {:project/working-dir monorepo-p1}
-      (deps/get-deps)
+      (mbt-core/deps-get)
       (assoc-in [:deps 'project2/project2 :local/root] (str monorepo-p2))))

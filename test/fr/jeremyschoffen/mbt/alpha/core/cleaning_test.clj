@@ -1,11 +1,11 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.building.cleaning-test
+(ns fr.jeremyschoffen.mbt.alpha.core.cleaning-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as stest]
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]))
+    [fr.jeremyschoffen.mbt.alpha.core.cleaning :as cleaning]))
 
 
 

@@ -7,10 +7,10 @@ Specs used in `mbt's` core apis.
     [clojure.spec.alpha :as s]
     [clojure.tools.deps.alpha.specs :as deps-specs]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as jar-p])
+    [fr.jeremyschoffen.mbt.alpha.core.jar.protocols :as jar-p])
   (:import
     (org.eclipse.jgit.api Git)
-    (javax.tools JavaFileObject DiagnosticListener StandardJavaFileManager JavaCompiler)
+    (javax.tools DiagnosticListener StandardJavaFileManager JavaCompiler)
     (java.io Writer)
     (java.nio.charset Charset)
     (java.util Locale)))

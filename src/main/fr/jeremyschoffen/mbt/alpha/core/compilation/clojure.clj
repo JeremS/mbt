@@ -29,7 +29,7 @@ Api providing clojure compilation utilities.
   "Use an indexed classpath to find all Clojure namespaces from src directories located inside the working directory.
 
   See:
-    - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+    - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
   [{cp :classpath/index}]
   (-> cp :classpath/dir dirs->nss))
@@ -44,7 +44,7 @@ Api providing clojure compilation utilities.
   These would be namespaces from local deps or directly from a git repo.
 
   See:
-    - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+    - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
   [{cp :classpath/index}]
   (-> cp :ext-dep dirs->nss))
@@ -58,7 +58,7 @@ Api providing clojure compilation utilities.
   "Use an indexed classpath to find all Clojure namespaces from jars.
 
   See:
-    - [[fr.jeremyschoffen.mbt.alpha.core.building.classpath/indexed-classpath]]
+    - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
   [{cp :classpath/index}]
   (into []
