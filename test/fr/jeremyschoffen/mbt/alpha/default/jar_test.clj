@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.building.jar-test
+(ns fr.jeremyschoffen.mbt.alpha.default.jar-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.edn :as edn]

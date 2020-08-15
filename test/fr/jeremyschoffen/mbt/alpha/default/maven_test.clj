@@ -1,11 +1,10 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.building.maven-test
+(ns fr.jeremyschoffen.mbt.alpha.default.maven-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as stest]
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    ;[fr.jeremyschoffen.mbt.alpha.default.building :as building]
     [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
