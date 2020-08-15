@@ -6,11 +6,13 @@ Facade grouping the core apis in one place.
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.building.classpath :as classpath]
     [fr.jeremyschoffen.mbt.alpha.core.building.cleaning :as cleaning]
-    [fr.jeremyschoffen.mbt.alpha.core.building.compilation :as compilation]
+    [fr.jeremyschoffen.mbt.alpha.core.compilation.java :as compilation-java]
+    [fr.jeremyschoffen.mbt.alpha.core.compilation.clojure :as compilation-c]
     [fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps]
     [fr.jeremyschoffen.mbt.alpha.core.gpg :as gpg]
     [fr.jeremyschoffen.mbt.alpha.core.building.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.core.building.manifest :as manifest]
+    [fr.jeremyschoffen.mbt.alpha.core.shell :as shell]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.core.git :as git]
     [fr.jeremyschoffen.mbt.alpha.core.maven.common :as maven-common]
@@ -26,6 +28,7 @@ Facade grouping the core apis in one place.
 ;; Classpath
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone classpath-raw classpath/raw-classpath)
+(u/def-clone classpath-raw-absolute classpath/absolute-raw-classpath)
 (u/def-clone classpath-indexed classpath/indexed-classpath)
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -36,10 +39,20 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone compilation-project-nss compilation/project-nss)
-(u/def-clone compilation-external-nss compilation/external-nss)
-(u/def-clone compilation-jar-nss compilation/jar-nss)
-(u/def-clone compile! compilation/compile!)
+(u/def-clone compilation-java-project-files compilation-java/project-files)
+(u/def-clone compilation-java-external-files compilation-java/external-files)
+(u/def-clone compilation-java-jar-files compilation-java/jar-files)
+
+(u/def-clone compilation-java-compiler compilation-java/make-java-compiler)
+(u/def-clone compilation-java-std-file-manager compilation-java/make-standard-file-manager)
+(u/def-clone compilation-java-unit compilation-java/make-compilation-unit)
+(u/def-clone compile-java! compilation-java/compile!)
+
+
+(u/def-clone compilation-clojure-project-nss compilation-c/project-nss)
+(u/def-clone compilation-clojure-external-nss compilation-c/external-nss)
+(u/def-clone compilation-clojure-jar-nss compilation-c/jar-nss)
+(u/def-clone compile-clojure! compilation-c/compile!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps
@@ -52,6 +65,11 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone gpg-version gpg/gpg-version)
 (u/def-clone gpg-sign-file! gpg/sign-file!)
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; GPG
+;;----------------------------------------------------------------------------------------------------------------------
+(u/def-clone sh shell/safer-sh)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar

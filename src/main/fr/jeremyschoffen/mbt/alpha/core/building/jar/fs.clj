@@ -30,7 +30,7 @@ Api providing some jar file system utilies.
     (.put "create" "true")
     (.put "encoding" "UTF-8")))
 
-
+;;TODO: rename to make-write-jar-fs
 (defn make-output-jar-fs
   "Create a jar file system located at the path specified under the key `:jar/output`.
   This file system is created with the purpose of the creation of a fresh jar in mind."
@@ -50,7 +50,7 @@ Api providing some jar file system utilies.
   (doto (HashMap.)
     (.put "encoding" "UTF-8")))
 
-
+;;TODO: rename to read-jar-fs
 (defn open-jar-fs
   "Open a jar (zip) file system at the location passed as a parameter.
   This file system is read only."

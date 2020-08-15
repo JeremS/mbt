@@ -96,8 +96,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Testing uber jar using project 1
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- clojure-entry? [{src :jar.entry/src
-                        :as param}]
+(defn- clojure-entry? [{src :jar.entry/src}]
   (if-not src
     (throw (ex-info ":jar.entry/src can't be nil" {}))
     (->> src

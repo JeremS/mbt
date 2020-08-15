@@ -2,7 +2,7 @@
       :doc "
 Api providing clojure compilation utilities.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.building.compilation
+  fr.jeremyschoffen.mbt.alpha.core.compilation.clojure
   (:require
     [clojure.tools.namespace.find :as ns-find]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
@@ -10,10 +10,14 @@ Api providing clojure compilation utilities.
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
-    [java.util.jar JarFile]))
+    (java.util.jar JarFile)))
 
-;; TODO: provide a story for java files.
+
 ;; inspired by https://github.com/luchiniatwork/cambada/blob/master/src/cambada/compile.clj
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Finding clojure namespace on the classspath
+;;----------------------------------------------------------------------------------------------------------------------
 (defn- dirs->nss [dirs]
   (into []
         (comp
@@ -32,7 +36,7 @@ Api providing clojure compilation utilities.
 
 (u/spec-op project-nss
            :param {:req [:classpath/index]}
-           :ret :clojure.compilation/namespaces)
+           :ret :compilation.clojure/namespaces)
 
 
 (defn external-nss
@@ -47,7 +51,7 @@ Api providing clojure compilation utilities.
 
 (u/spec-op external-nss
            :param {:req [:classpath/index]}
-           :ret :clojure.compilation/namespaces)
+           :ret :compilation.clojure/namespaces)
 
 
 (defn jar-nss
@@ -65,23 +69,27 @@ Api providing clojure compilation utilities.
 
 (u/spec-op jar-nss
            :param {:req [:classpath/index]}
-           :ret :clojure.compilation/namespaces)
+           :ret :compilation.clojure/namespaces)
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Compilation proper
+;;----------------------------------------------------------------------------------------------------------------------
 ;; TODO: would be nice to have something like boot's pods to isolate
 ;; the current environment while compiling.
 (defn compile!
-  "Compile a list of namespaces provided under the key `:clojure.compilation/namespaces`, the results are placed at the
-  location specified under the key `:clojure.compilation/output-dir`."
-  [{output-dir :clojure.compilation/output-dir
-    namespaces :clojure.compilation/namespaces}]
+  "Compile a list of namespaces provided under the key `:compilation.clojure/namespaces`, the results are placed at the
+  location specified under the key `:compilation.clojure/output-dir`."
+  [{output-dir :compilation.clojure/output-dir
+    namespaces :compilation.clojure/namespaces}]
   (fs/create-directories! output-dir)
   (binding [*compile-path* output-dir]
     (doseq [n namespaces]
       (compile n))))
 
 (u/spec-op compile!
-           :param {:req [:clojure.compilation/output-dir
-                         :clojure.compilation/namespaces]})
+           :param {:req [:compilation.clojure/output-dir
+                         :compilation.clojure/namespaces]})
 
 (comment
   (require '[fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps])

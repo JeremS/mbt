@@ -33,14 +33,6 @@ Api providing the default generation of the build configuration.
            :ret :project/output-dir)
 
 
-(defn compilation-dir [{out :project/output-dir}]
-  (fs/path out "classes"))
-
-(u/spec-op compilation-dir
-           :param {:req [:project/output-dir]}
-           :ret :clojure.compilation/output-dir)
-
-
 (defn project-author [_]
   (System/getProperty "user.name"))
 
@@ -68,6 +60,24 @@ Api providing the default generation of the build configuration.
                    :opt [:versioning/major]}
            :ret :project/name)
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Compilation
+;;----------------------------------------------------------------------------------------------------------------------
+(defn compilation-clojure-dir [{out :project/output-dir}]
+  (fs/path out "classes"))
+
+(u/spec-op compilation-clojure-dir
+           :param {:req [:project/output-dir]}
+           :ret :compilation.clojure/output-dir)
+
+
+(defn compilation-java-dir [{out :project/output-dir}]
+  (fs/path out "classes"))
+
+(u/spec-op compilation-java-dir
+           :param {:req [:project/output-dir]}
+           :ret :compilation.java/output-dir)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
@@ -205,14 +215,15 @@ Api providing the default generation of the build configuration.
    :project/author project-author
    :project/name project-name
 
+   :compilation.java/output-dir compilation-java-dir
+   :compilation.clojure/output-dir compilation-clojure-dir
+
    :gpg/command gpg-command
    :gpg/version gpg-version
 
    :git/repo git-repo
 
    :cleaning/target cleaning-target
-
-   :clojure.compilation/output-dir compilation-dir
 
    :maven/artefact-name artefact-name
    :maven/group-id group-id
@@ -236,5 +247,5 @@ Api providing the default generation of the build configuration.
 
 (comment
   (into (sorted-map)
-        (make-context {:project/working-dir (u/safer-path "test-repos" "monorepo" "project1")
+        (make-context {:project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
                        :versioning/major :alpha})))

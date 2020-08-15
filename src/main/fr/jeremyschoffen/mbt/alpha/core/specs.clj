@@ -8,7 +8,12 @@ Specs used in `mbt's` core apis.
     [clojure.tools.deps.alpha.specs :as deps-specs]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.building.jar.protocols :as jar-p])
-  (:import (org.eclipse.jgit.api Git)))
+  (:import
+    (org.eclipse.jgit.api Git)
+    (javax.tools JavaFileObject DiagnosticListener StandardJavaFileManager JavaCompiler)
+    (java.io Writer)
+    (java.nio.charset Charset)
+    (java.util Locale)))
 
 (def path? fs/path?)
 (def path-like? (some-fn path? string?))
@@ -105,6 +110,7 @@ Specs used in `mbt's` core apis.
                                   :classpath/ext-dep
                                   :classpath/file})
 (s/def :classpath/raw string?)
+(s/def :classpath/raw-absolute string?)
 (s/def :classpath/index (s/map-of classpath-index-categories
                                   (s/coll-of string?)))
 
@@ -139,8 +145,31 @@ Specs used in `mbt's` core apis.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
-(s/def :clojure.compilation/namespaces (s/coll-of symbol?))
-(s/def :clojure.compilation/output-dir path?)
+;; Clojure
+(s/def :compilation.clojure/namespaces (s/coll-of symbol?))
+(s/def :compilation.clojure/output-dir path?)
+
+
+;; Java
+(s/def :compilation.java/output-dir path?)
+(s/def :compilation.java/sources (s/coll-of path?))
+
+(s/def :compilation.java/compiler #(instance? JavaCompiler %))
+(s/def :compilation.java/compiler-out #(instance? Writer %))
+(s/def :compilation.java/file-manager #(instance? StandardJavaFileManager %))
+(s/def :compilation.java/diagnostic-listener #(instance? DiagnosticListener %))
+(s/def :compilation.java/options (s/coll-of string? :kind vector?))
+(s/def :compilation.java/compiler-classes (s/coll-of string? :kind vector?))
+(s/def :compilation.java/compilation-unit #(instance? Iterable %))
+
+(s/def :compilation.java.file-manager/diagnostic-listener #(instance? DiagnosticListener %))
+(s/def :compilation.java.file-manager/locale #(instance? Locale %))
+(s/def :compilation.java.file-manager/charset #(instance? Charset %))
+
+(s/def :compilation.java.file-manager/options
+  (s/keys :opt [:compilation.java.file-manager/diagnostic-listener
+                :compilation.java.file-manager/locale
+                :compilation.java.file-manager/charset]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
