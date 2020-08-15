@@ -72,7 +72,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
       :classpath/jar
       (->> (into []
                  (mapcat (fn [src-jar]
-                           (with-open [src (jar-fs/open-jar-fs src-jar)]
+                           (with-open [src (jar-fs/read-only-jar-fs src-jar)]
                              (find-java-files* src))))))))
 
 (u/spec-op jar-files

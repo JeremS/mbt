@@ -15,8 +15,8 @@ Api grouping the different utilities around building jars provided in
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/def-clone open-jar-fs jar-fs/open-jar-fs)
-(u/def-clone make-output-jar-fs jar-fs/make-output-jar-fs)
+(u/def-clone read-only-jar-fs jar-fs/read-only-jar-fs)
+(u/def-clone writable-jar-fs jar-fs/writable-jar-fs)
 
 (u/def-clone to-entries p/to-entries)
 

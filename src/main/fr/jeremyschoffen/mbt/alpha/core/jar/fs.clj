@@ -30,8 +30,8 @@ Api providing some jar file system utilies.
     (.put "create" "true")
     (.put "encoding" "UTF-8")))
 
-;;TODO: rename to make-write-jar-fs
-(defn make-output-jar-fs
+
+(defn writable-jar-fs
   "Create a jar file system located at the path specified under the key `:jar/output`.
   This file system is created with the purpose of the creation of a fresh jar in mind."
   {:tag FileSystem}
@@ -41,7 +41,7 @@ Api providing some jar file system utilies.
       jar-path->uri
       (fs/file-system (jar-create-env))))
 
-(u/spec-op make-output-jar-fs
+(u/spec-op writable-jar-fs
            :param {:req [:jar/output]}
            :ret :jar/file-system)
 
@@ -50,8 +50,8 @@ Api providing some jar file system utilies.
   (doto (HashMap.)
     (.put "encoding" "UTF-8")))
 
-;;TODO: rename to read-jar-fs
-(defn open-jar-fs
+
+(defn read-only-jar-fs
   "Open a jar (zip) file system at the location passed as a parameter.
   This file system is read only."
   {:tag FileSystem}
@@ -60,6 +60,6 @@ Api providing some jar file system utilies.
       jar-path->uri
       (fs/file-system (jar-read-env))))
 
-(u/simple-fdef open-jar-fs
+(u/simple-fdef read-only-jar-fs
                specs/jar-path?
                :jar/file-system)

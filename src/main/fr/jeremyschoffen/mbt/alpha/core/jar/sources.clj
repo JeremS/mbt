@@ -146,7 +146,7 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
 
 
 (defn- add-jar! [conf src-jar]
-  (with-open [source-zfs (jar-fs/open-jar-fs src-jar)]
+  (with-open [source-zfs (jar-fs/read-only-jar-fs src-jar)]
     (-> conf
         (assoc :jar/entries (jar->jar-entries source-zfs))
         temp/add-entries!)))

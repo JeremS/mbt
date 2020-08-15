@@ -43,12 +43,12 @@ Api providing the tools to make a jar archive from a directory.
   [{temp :jar/temp-output
     output :jar/output
     :as param}]
-  (with-open [zfs (jar-fs/make-output-jar-fs param)]
+  (with-open [zfs (jar-fs/writable-jar-fs param)]
     (fs/walk-file-tree temp (make-archive-visitor! zfs temp)))
   output)
 
 
 (u/spec-op make-jar-archive!
-           :deps [jar-fs/make-output-jar-fs]
+           :deps [jar-fs/writable-jar-fs]
            :param {:req [:jar/temp-output :jar/output]})
 

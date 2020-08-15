@@ -74,7 +74,7 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone jar-open-fs jar/open-jar-fs)
+(u/def-clone jar-read-only-jar-fs jar/read-only-jar-fs)
 (u/def-clone jar-add-srcs! jar/add-srcs!)
 (u/def-clone jar-make-archive! jar/make-jar-archive!)
 
