@@ -7,7 +7,7 @@ Api providing default behaviour for maven tasks.
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.building :as b]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven.common :as mc]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
@@ -26,12 +26,12 @@ Api providing default behaviour for maven tasks.
   [param]
   (-> param
       (u/ensure-computed
-        :jar/output b/jar-out
+        :jar/output jar/jar-out
         :project/deps mbt-core/deps-get
         :project/version v/current-project-version)))
 
 (u/spec-op ensure-basic-conf
-           :deps [b/jar-out mbt-core/deps-get]
+           :deps [jar/jar-out mbt-core/deps-get]
            :param {:req [:build/jar-name
                          :project/output-dir
                          :project/working-dir]})
@@ -49,7 +49,7 @@ Api providing default behaviour for maven tasks.
         :maven.deploy/artefacts make-usual-artefacts)))
 
 (u/spec-op ensure-install-conf
-           :deps [b/jar-out make-usual-artefacts]
+           :deps [jar/jar-out make-usual-artefacts]
            :param {:req [:build/jar-name
                          :maven.pom/dir
                          :project/output-dir]}
@@ -88,7 +88,7 @@ Api providing default behaviour for maven tasks.
       mbt-core/maven-install!))
 
 (u/spec-op install!
-           :deps [mbt-core/maven-sync-pom! b/jar-out make-usual-artefacts mbt-core/maven-install!]
+           :deps [mbt-core/maven-sync-pom! jar/jar-out make-usual-artefacts mbt-core/maven-install!]
            :param {:req [:build/jar-name
                          :maven/artefact-name
                          :maven/group-id
@@ -117,7 +117,7 @@ Api providing default behaviour for maven tasks.
           :maven.deploy/artefacts make-deploy-artefacts))))
 
 (u/spec-op ensure-deploy-conf
-           :deps [b/jar-out make-usual-artefacts make-usual-artefacts+signatures!]
+           :deps [jar/jar-out make-usual-artefacts make-usual-artefacts+signatures!]
            :param {:req [:build/jar-name
                          :maven.pom/dir
                          :project/output-dir]
@@ -146,7 +146,7 @@ Api providing default behaviour for maven tasks.
 
 (u/spec-op deploy!
            :deps [mbt-core/maven-sync-pom!
-                  b/jar-out
+                  jar/jar-out
                   ensure-deploy-conf
                   mbt-core/maven-deploy!]
            :param {:req [:build/jar-name

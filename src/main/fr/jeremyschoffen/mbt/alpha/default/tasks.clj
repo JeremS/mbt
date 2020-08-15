@@ -7,7 +7,7 @@ Higher level apis.
     [clojure.spec.alpha :as s]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.building :as b]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
@@ -93,11 +93,11 @@ Higher level apis.
   [param]
   (-> param
       (u/ensure-computed :project/version v/current-project-version)
-      b/ensure-jar-defaults
-      b/jar!))
+      jar/ensure-jar-defaults
+      jar/jar!))
 
 (u/spec-op jar!
-           :deps [v/current-version b/ensure-jar-defaults b/jar!]
+           :deps [v/current-version jar/ensure-jar-defaults jar/jar!]
            :param {:req [:build/jar-name
                          :git/repo
                          :maven/artefact-name
@@ -120,11 +120,11 @@ Higher level apis.
   [param]
   (-> param
       (u/ensure-computed :project/version v/current-project-version)
-      b/ensure-jar-defaults
-      b/uberjar!))
+      jar/ensure-jar-defaults
+      jar/uberjar!))
 
 (u/spec-op uberjar!
-           :deps [v/current-version b/ensure-jar-defaults b/uberjar!]
+           :deps [v/current-version jar/ensure-jar-defaults jar/uberjar!]
            :param {:req [:build/uberjar-name
                          :git/repo
                          :maven/artefact-name

@@ -9,8 +9,7 @@ Facade grouping the default apis in one place.
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.tasks :as tasks]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as versioning]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
@@ -28,7 +27,7 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning machinery
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone current-project-version v/current-project-version)
+(u/def-clone current-project-version versioning/current-project-version)
 
 ;; Git versioning
 (u/def-clone bump-tag! versioning/bump-tag!)

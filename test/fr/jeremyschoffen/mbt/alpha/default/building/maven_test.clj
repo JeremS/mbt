@@ -5,16 +5,17 @@
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.building :as building]
+    ;[fr.jeremyschoffen.mbt.alpha.default.building :as building]
     [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(stest/instrument [building/ensure-jar-defaults
-                   building/jar-out
-                   building/jar!
+(stest/instrument [jar/ensure-jar-defaults
+                   jar/jar-out
+                   jar/jar!
 
                    maven/install!
                    maven/deploy!
@@ -42,9 +43,9 @@
                 :maven.install/dir install-dir
                 :maven/server {:maven.server/url (fs/url deploy-dir)})
               defaults/make-context
-              building/ensure-jar-defaults))
+              jar/ensure-jar-defaults))
 
-(def jar-out (building/jar-out conf))
+(def jar-out (jar/jar-out conf))
 
 (def maven-jar-name (str artefact-name "-" version ".jar"))
 
@@ -69,7 +70,7 @@
 (deftest testing-install-deploy
   (try
     (-> conf
-        (u/side-effect! building/jar!)
+        (u/side-effect! jar/jar!)
         (u/side-effect! maven/install!)
         (u/side-effect! maven/deploy!))
 

@@ -6,6 +6,7 @@ Implementation of versioning schemes using the maven and semver building blocks 
   fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like
   (:require
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
+    [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as p]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 

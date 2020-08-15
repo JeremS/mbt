@@ -5,8 +5,7 @@ Default way to use the gpg core apis.
   fr.jeremyschoffen.mbt.alpha.default.defaults.gpg
   (:require
     [clojure.java.shell :as shell]
-    [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+    [fr.jeremyschoffen.mbt.alpha.default.specs]))
 
 (defn- try-fn [f]
   (try

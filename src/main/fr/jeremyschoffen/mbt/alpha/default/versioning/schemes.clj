@@ -5,10 +5,10 @@ Api used when versioning the project using git state.
   fr.jeremyschoffen.mbt.alpha.default.versioning.schemes
   (:require
     [fr.jeremyschoffen.mbt.alpha.core.specs]
+    [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like :as maven-like]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version :as simple]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
-    [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 ;;----------------------------------------------------------------------------------------------------------------------

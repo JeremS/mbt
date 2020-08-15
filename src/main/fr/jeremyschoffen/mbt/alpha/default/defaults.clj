@@ -7,8 +7,8 @@ Api providing the default generation of the build configuration.
     [clojure.string :as string]
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
     [medley.core :as medley]
-
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
+
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.default.defaults.gpg :as gpg-defaults]

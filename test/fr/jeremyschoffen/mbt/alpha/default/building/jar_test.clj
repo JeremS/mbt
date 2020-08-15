@@ -9,13 +9,13 @@
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.core.specs]
-    [fr.jeremyschoffen.mbt.alpha.default.building :as building]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]))
+    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
+    [fr.jeremyschoffen.mbt.alpha.default.specs]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(st/instrument `[building/jar! building/uberjar!])
+(st/instrument `[jar/jar! jar/uberjar!])
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Common values
@@ -51,7 +51,7 @@
                  :build/jar-name "project2.jar"
                  :jar/exclude? intruder?)
                defaults/make-context
-               building/ensure-jar-defaults))
+               jar/ensure-jar-defaults))
 
 
 (def ctxt2-i (-> ctxt2
@@ -60,14 +60,14 @@
 
 
 (deftest simple-jar
-  (let [_ (building/jar! ctxt2)
+  (let [_ (jar/jar! ctxt2)
         content (-> ctxt2
-                    building/jar-out
+                    jar/jar-out
                     h/jar-content)
 
-        _ (building/jar! ctxt2-i)
+        _ (jar/jar! ctxt2-i)
         content+i (-> ctxt2-i
-                      building/jar-out
+                      jar/jar-out
                       h/jar-content)]
 
     (testing "The content that should be there is."
@@ -122,13 +122,13 @@
                 :jar/exclude? uberjar-exclude?}
                defaults/make-context
                (u/assoc-computed :project/deps get-project1-deps)
-               building/ensure-jar-defaults))
+               jar/ensure-jar-defaults))
 
 (deftest uberjar
   (try
-    (let [_ (building/uberjar! ctxt1)
+    (let [_ (jar/uberjar! ctxt1)
           content (-> ctxt1
-                      building/uberjar-out
+                      jar/uberjar-out
                       h/jar-content)
           services-1 (slurp (u/safer-path project1-path services-props-rpath))
           services-2 (slurp (u/safer-path project2-path services-props-rpath))]
