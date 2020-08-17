@@ -68,6 +68,15 @@ Api providing the default generation of the build configuration.
                    :opt [:versioning/major]}
            :ret :project/name)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Deps
+;;----------------------------------------------------------------------------------------------------------------------
+(defn deps-file [{wd :project/working-dir}]
+  (u/safer-path wd "deps.edn"))
+
+(u/spec-op deps-file
+           :param {:req [:project/working-dir]}
+           :ret :project/deps-file)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
@@ -254,6 +263,8 @@ Api providing the default generation of the build configuration.
    :project/output-dir output-dir
    :project/author project-author
    :project/name project-name
+
+   :project/deps-file deps-file
 
    :compilation.java/output-dir compilation-java-dir
    :compilation.clojure/output-dir compilation-clojure-dir

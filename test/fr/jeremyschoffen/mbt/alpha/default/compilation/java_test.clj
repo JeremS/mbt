@@ -24,6 +24,7 @@
 
 (def conf (-> (sorted-map
                 :project/working-dir wd
+                :project/deps-file (u/safer-path wd "deps.edn")
                 :cleaning/target target
                 :compilation.java/output-dir java-out-dir)
               (u/assoc-computed :project/deps mbt-core/deps-get

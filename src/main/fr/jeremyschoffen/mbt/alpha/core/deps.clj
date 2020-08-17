@@ -14,15 +14,15 @@ Api providing some utilities working with `clojure.tools.deps`.
 
 
 (defn get-deps
-  "Slurp the deps.edn file of a project using [[clojure.tools.deps.alpha.reader/slurp-deps]]. The `deps.edn` file is
-  expected to be found directly under the working directory specified under the key `:project/working-dir`."
-  [{wd :project/working-dir}]
-  (-> (u/safer-path wd "deps.edn")
+  "Slurp the deps.edn file of a project using [[clojure.tools.deps.alpha.reader/slurp-deps]].
+  The deps file's path is passed under the key `:project/deps-file`."
+  [{p :project/deps-file}]
+  (-> p
       fs/file
       deps/slurp-deps))
 
 (u/spec-op get-deps
-           :param {:req [:project/working-dir]}
+           :param {:req [:project/deps-file]}
            :ret :project/deps)
 
 

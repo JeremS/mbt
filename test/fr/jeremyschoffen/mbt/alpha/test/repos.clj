@@ -15,6 +15,7 @@
 (def monorepo-p2 (u/safer-path monorepo "project2"))
 
 (def monorepo-project1-deps
-  (-> {:project/working-dir monorepo-p1}
+  (-> {:project/working-dir monorepo-p1
+       :project/deps-file (u/safer-path monorepo-p1 "deps.edn")}
       (mbt-core/deps-get)
       (assoc-in [:deps 'project2/project2 :local/root] (str monorepo-p2))))

@@ -23,7 +23,8 @@
   (let [state-p1 {:project/working-dir  test-repos/monorepo-p1
                   :project/deps test-repos/monorepo-project1-deps}
 
-        state-p2 (u/assoc-computed {:project/working-dir  test-repos/monorepo-p2}
+        state-p2 (u/assoc-computed {:project/working-dir  test-repos/monorepo-p2
+                                    :project/deps-file (u/safer-path test-repos/monorepo-p2 "deps.edn")}
                                    :project/deps deps/get-deps)
 
         cp1 (cp/indexed-classpath state-p1)
