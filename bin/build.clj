@@ -3,7 +3,8 @@
     [clojure.spec.test.alpha :as spec-test]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]))
 
 
 (spec-test/instrument
@@ -16,17 +17,22 @@
     mbt-defaults/install!])
 
 (def specific-conf
-  {:maven/group-id 'fr.jeremyschoffen
-   :project/author "Jeremy Schoffen"
-   :version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
-   :version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-   :versioning/scheme mbt-defaults/simple-scheme
-   :versioning/major :alpha})
+  (sorted-map
+    :maven/group-id 'fr.jeremyschoffen
+    :project/author "Jeremy Schoffen"
+    :version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
+    :version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
+    :versioning/scheme mbt-defaults/simple-scheme
+    :versioning/major :alpha
+
+    :project/licenses [{:project.licence/name "Eclipse Public License - v 2.0"
+                        :project.licence/url "https://www.eclipse.org/legal/epl-v20.html"
+                        :project.licence/distribution :repo
+                        :project.license/file (u/safer-path "LICENSE")}]))
 
 
-(def conf (->> specific-conf
-               mbt-defaults/make-conf
-               (into (sorted-map))))
+(def conf (mbt-defaults/make-conf specific-conf))
+
 
 
 (defn generate-docs! [conf]

@@ -46,6 +46,10 @@
                  :project/working-dir project2-path
                  :project/version version
                  :project/author author
+                 :project/licenses [{:project.license/name"Test license"
+                                     :project.license/url "www.test-license.com"
+                                     :project.license/distribution :repo
+                                     :project.license/file (u/safer-path project2-path "LICENSE")}]
                  :maven/group-id group-id
                  :maven/artefact-name 'project-2
                  :build/jar-name "project2.jar"
@@ -82,7 +86,10 @@
         => (edn/read-string (slurp (u/safer-path project2-path "src" "data_readers.cljc")))
 
         (get content "/META-INF/services/services.properties")
-        => (slurp (u/safer-path project2-path services-props-rpath))))
+        => (slurp (u/safer-path project2-path services-props-rpath))
+
+        (get content "/META-INF/licenses/group/project-2/LICENSE")
+        => (slurp (u/safer-path project2-path "LICENSE"))))
 
     (testing "Filtered content isn't there"
       (contains? content "/project2/intruder.txt") => false)

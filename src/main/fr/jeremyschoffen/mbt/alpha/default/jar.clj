@@ -11,11 +11,10 @@ Apis providing the jar sources used by default.
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-;;TODO: license stuff should go there.
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar srcs construction
 ;;----------------------------------------------------------------------------------------------------------------------
-
 ;; Manifest
 (def meta-dir "META-INF")
 (def manifest-name "MANIFEST.MF")
@@ -31,7 +30,7 @@ Apis providing the jar sources used by default.
            :param {:req [:jar/manifest]}
            :ret :jar/entry)
 
-
+;;----------------------------------------------------------------------------------------------------------------------
 ;; Pom
 (def maven-dir "maven")
 
@@ -53,6 +52,8 @@ Apis providing the jar sources used by default.
                          :maven/group-id
                          :maven/artefact-name]})
 
+
+;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps.edn
 (def deps-dir "deps")
 
@@ -74,14 +75,34 @@ Apis providing the jar sources used by default.
                          :maven/group-id
                          :maven/artefact-name]})
 
-;; TODO: add the licence file, maybe make spec like :project/license
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; License file
+(defn- license-file->entry [group-id artefact-id p]
+  (let [name (-> p fs/file-name str)]
+    {:jar.entry/src  p
+     :jar.entry/dest (fs/path meta-dir "licenses" (str group-id) (str artefact-id) name)}))
+
+
+(defn make-license-entries [{group-id :maven/group-id
+                             artefect-name :maven/artefact-name
+                             licenses :project/licenses
+                             :as param}]
+  (into []
+        (comp
+          (keep :project.license/file)
+          (map #(license-file->entry group-id artefect-name %)))
+        (or licenses [])))
+
+
 ;; Pom + manifest + deps
 (defn make-staples-entries
   "Make a `:jar/src` containing the usual manifest, pom.xml and deps.edn `jar/entry`s."
   [param]
-  [(-> param make-manifest-entry)
-   (-> param make-pom-entry)
-   (-> param make-deps-entry)])
+  (into [(-> param make-manifest-entry)
+         (-> param make-pom-entry)
+         (-> param make-deps-entry)]
+        (make-license-entries param)))
 
 (u/spec-op make-staples-entries
            :deps [make-manifest-entry make-pom-entry make-deps-entry]
@@ -89,7 +110,8 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
-                         :project/deps]}
+                         :project/deps]
+                   :opt [:project/licenses]}
            :ret :jar/src)
 
 

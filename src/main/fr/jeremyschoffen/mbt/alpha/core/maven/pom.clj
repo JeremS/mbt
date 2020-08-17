@@ -35,7 +35,42 @@ Api providing maven pom.xml files generation.
 
 ;; Rework from tools deps
 ;; https://github.com/clojure/tools.deps.alpha/blob/master/src/main/clojure/clojure/tools/deps/alpha/gen/pom.clj
+
 (xml/alias-uri 'pom "http://maven.apache.org/POM/4.0.0")
+
+
+(defn- maybe-tag
+  ([n v]
+   (maybe-tag n v identity))
+  ([n v f]
+   (when v
+     [n (f v)])))
+
+
+(defn- gen-license [license]
+  (let [{license-name :project.license/name
+         :project.license/keys [url distribution comment]} license]
+    (into [::pom/license]
+          (keep identity)
+          [(maybe-tag ::pom/name license-name)
+           (maybe-tag ::pom/url url)
+           (maybe-tag ::pom/distribution distribution name)
+           (maybe-tag ::pom/comment comment)])))
+
+
+(defn- gen-licenses [licenses]
+  (into [::pom/licenses] (map gen-license) licenses))
+
+
+(defn- gen-scm [maven-scm]
+  (let [{:maven.scm/keys [connection developer-connection tag url]} maven-scm]
+    (into [::pom/scm]
+          (keep identity)
+          [(maybe-tag ::pom/connection connection)
+           (maybe-tag ::pom/developerConnection developer-connection)
+           (maybe-tag ::pom/tag tag)
+           (maybe-tag ::pom/url url)])))
+
 
 (defn- to-dep
   [[lib {:keys [mvn/version exclusions] :as coord}]]
@@ -64,17 +99,6 @@ Api providing maven pom.xml files generation.
   [::pom/dependencies
    (map to-dep deps)])
 
-(defn- gen-scm [maven-scm]
-  (let [{:maven.scm/keys [connection developer-connection tag url]} maven-scm
-        maybe-tag (fn [n v]
-                    (when v [n v]))
-        tags [(maybe-tag ::pom/connection connection)
-              (maybe-tag ::pom/developerConnection developer-connection)
-              (maybe-tag ::pom/tag tag)
-              (maybe-tag ::pom/url url)]]
-    (into [::pom/scm]
-          (keep identity)
-          tags)))
 
 (defn- gen-source-dir
   [path]
@@ -102,7 +126,8 @@ Api providing maven pom.xml files generation.
     group-id :maven/group-id
     project-version :project/version
     project-deps :project/deps
-    maven-scm :maven/scm}]
+    maven-scm :maven/scm
+    licenses :project/licenses}]
   (let [{deps :deps
          [path & paths] :paths
          repos :mvn/repos} project-deps
@@ -117,6 +142,8 @@ Api providing maven pom.xml files generation.
        [::pom/artifactId project-name]
        [::pom/version project-version]
        [::pom/name project-name]
+       (when licenses
+         (gen-licenses licenses))
        (when maven-scm
          (gen-scm maven-scm))
        (gen-deps deps)
@@ -130,7 +157,8 @@ Api providing maven pom.xml files generation.
                          :maven/group-id
                          :project/version
                          :project/deps]
-                   :opt [:maven/scm]}
+                   :opt [:maven/scm
+                         :project/licenses]}
            :ret :maven/pom)
 
 
@@ -157,6 +185,14 @@ Api providing maven pom.xml files generation.
 
 (defn- replace-info [pom i v]
   (xml-update pom [i] (xml/sexp-as-element [i v])))
+
+
+(defn replace-licenses [pom licenses]
+  (replace-info pom ::pom/licenses (gen-licenses licenses)))
+
+
+(defn replace-scm [pom scm]
+  (replace-info pom ::pom/scm (gen-scm scm)))
 
 
 (defn- replace-name  [pom name]
@@ -196,18 +232,28 @@ Api providing maven pom.xml files generation.
                     project-name :maven/artefact-name
                     group-id :maven/group-id
                     project-version :project/version
-                    project-deps :project/deps}]
+                    project-deps :project/deps
+                    scm :maven/scm
+                    licenses :project/licenses}]
   (let [{:keys [deps paths :mvn/repos]} project-deps]
     (-> pom
         (replace-name project-name)
         (replace-group-id group-id)
         (replace-version project-version)
+        (replace-licenses licenses)
+        (replace-scm scm)
         (replace-deps deps)
         (replace-paths paths)
         (replace-repos repos))))
 
 (u/spec-op update-pom
-           :param {:req [:maven/pom :maven/artefact-name :maven/group-id :project/version :project/deps]}
+           :param {:req [:maven/pom
+                         :maven/artefact-name
+                         :maven/group-id
+                         :project/version
+                         :project/deps]
+                   :opt [:maven/scm
+                         :project/licenses]}
            :ret :maven/pom)
 
 
@@ -250,18 +296,24 @@ Api providing maven pom.xml files generation.
                          :maven/artefact-name
                          :maven/group-id
                          :project/version
-                         :project/deps]})
+                         :project/deps]
+                   :opt [:maven/scm
+                         :project/licenses]})
 
 
 
 (comment
-  (require '[clojure.tools.deps.alpha.reader :as deps-reader])
+  (require '[clojure.tools.deps.alpha :as deps-reader])
 
   (def ctxt {:maven/group-id 'group
              :maven/artefact-name 'toto
              :project/version "1"
-             :project/deps (deps-reader/slurp-deps "deps.edn")
+             :project/deps (deps-reader/slurp-deps (fs/file "deps.edn"))
              :maven.pom/dir (u/safer-path "target")
+
+             :project/licenses [{:project.license/name "toto"
+                                 :project.license/url "www.toto.com"
+                                 :project.license/distribution :repo}]
 
              :maven/scm #:maven.scm{:connection "scm:svn:http://127.0.0.1/svn/my-project"
                                     :developer-connection "scm:svn:https://127.0.0.1/svn/my-project"
@@ -276,4 +328,6 @@ Api providing maven pom.xml files generation.
       new-pom
       xml/indent-str)
 
-  (sync-pom! ctxt2))
+  (-> ctxt2
+      new-pom
+      xml/indent-str))
