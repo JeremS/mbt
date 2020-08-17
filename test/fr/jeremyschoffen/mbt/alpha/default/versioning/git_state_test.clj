@@ -120,7 +120,7 @@
         ctxt {:git/repo repo
               :versioning/scheme test-scheme}]
 
-    (testing "When no tag exist, current versin is nil, next version is initial-v."
+    (testing "When no tag exist, current version is nil, next version is initial-v."
       (facts
         (git-state/current-version ctxt) => nil
         (git-state/next-version ctxt) => initial-v))
@@ -137,14 +137,14 @@
 
 (deftest next-tag-simple-repo
   (let [repo (h/make-temp-repo!)
-        ctxt {:git/repo repo
-              :project/working-dir (fs/path repo)
-              :versioning/scheme test-scheme}
+        ctxt (defaults/make-context
+               {:git/repo repo
+                :project/working-dir (fs/path repo)
+                :versioning/scheme test-scheme})
         tag (-> ctxt
-                (u/assoc-computed :versioning/tag-base-name defaults/tag-base-name)
                 (-> git-state/next-tag
                     (update :git.tag/message clojure.edn/read-string)))
-        base-name (-> repo fs/file-name str)
+        base-name (:versioning/tag-base-name ctxt)
         tag-name (str base-name
                       "-v"
                       initial-v)]
@@ -158,20 +158,21 @@
 
 (deftest next-tag-mono-repo
   (let [repo (h/make-temp-repo!)
-        project-dir1 (fs/path "module1" "project1")
+        project-dir1-relative (fs/path "module1" "project1")
+        project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (u/assoc-computed {:git/repo repo
-                                 :project/working-dir (fs/path repo project-dir1)
-                                 :versioning/scheme test-scheme}
-                                :versioning/tag-base-name defaults/tag-base-name)
+        ctxt1 (defaults/make-context
+                {:git/repo            repo
+                 :project/working-dir project-dir1
+                 :versioning/scheme   test-scheme})
         base-name1 (:versioning/tag-base-name ctxt1)
 
 
-        project-dir2 (fs/path "module1" "project2")
-        ctxt2 (u/assoc-computed {:git/repo repo
-                                 :project/working-dir (fs/path repo project-dir2)
-                                 :versioning/scheme test-scheme}
-                                :versioning/tag-base-name defaults/tag-base-name)
+        project-dir2-relative (fs/path "module1" "project2")
+        project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
+        ctxt2 (defaults/make-context {:git/repo            repo
+                                      :project/working-dir project-dir2
+                                      :versioning/scheme   test-scheme})
         base-name2 (:versioning/tag-base-name ctxt2)
 
         next-tag #(-> %
@@ -180,33 +181,37 @@
 
     (facts
       (next-tag ctxt1)
-      =in=> {:git.tag/name (str base-name1 "-v" initial-v)
-             :git.tag/message {:name base-name1
+      =in=> {:git.tag/name    (str base-name1 "-v" initial-v)
+             :git.tag/message {:name    base-name1
                                :version initial-v
-                               :path (str project-dir1)}}
+                               :path    (str project-dir1-relative)}}
 
       (next-tag ctxt2)
-      =in=> {:git.tag/name (str base-name2 "-v" initial-v)
-             :git.tag/message {:name base-name2
+      =in=> {:git.tag/name    (str base-name2 "-v" initial-v)
+             :git.tag/message {:name    base-name2
                                :version initial-v
-                               :path (str project-dir2)}})))
+                               :path    (str project-dir2-relative)}})))
 
 (deftest bump!
   (let [repo (h/make-uncommited-temp-repo!)
-        project-dir1 (fs/path "module1" "project1")
+        project-dir1-relative (fs/path "module1" "project1")
+        project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (u/assoc-computed {:git/repo repo
-                                 :project/working-dir (fs/path repo project-dir1)
-                                 :versioning/scheme test-scheme}
-                                :versioning/tag-base-name defaults/tag-base-name)
+        ctxt1 (defaults/make-context
+                {:git/repo            repo
+                 :project/working-dir project-dir1
+                 :versioning/scheme   test-scheme})
+
         base-name1 (:versioning/tag-base-name ctxt1)
 
 
-        project-dir2 (fs/path "module1" "project2")
-        ctxt2 (u/assoc-computed {:git/repo repo
-                                 :project/working-dir (fs/path repo project-dir2)
-                                 :versioning/scheme test-scheme}
-                                :versioning/tag-base-name defaults/tag-base-name)
+        project-dir2-relative (fs/path "module1" "project2")
+        project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
+        ctxt2 (defaults/make-context
+                {:git/repo            repo
+                 :project/working-dir project-dir2
+                 :versioning/scheme   test-scheme})
+
         base-name2 (:versioning/tag-base-name ctxt2)]
 
     (facts
@@ -232,10 +237,10 @@
       (git-state/bump-tag! ctxt2)
       =throws=> (ex-info? "No build file detected."
                           {::anom/category ::anom/not-found
-                           :mbt/error :no-build-file}))
+                           :mbt/error      :no-build-file}))
 
-    (h/copy-dummy-deps (fs/path repo project-dir1))
-    (h/copy-dummy-deps (fs/path repo project-dir2))
+    (h/copy-dummy-deps (fs/path repo project-dir1-relative))
+    (h/copy-dummy-deps (fs/path repo project-dir2-relative))
 
     (facts
       (git-state/bump-tag! ctxt1)

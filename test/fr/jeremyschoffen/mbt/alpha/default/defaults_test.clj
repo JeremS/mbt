@@ -18,26 +18,50 @@
         wd' (u/safer-path repo "module1" "toto")
         _ (u/ensure-dir! wd')
 
-        group-id (-> repo fs/file-name str symbol)
+        project-name (-> repo fs/file-name str)
+        group-id (symbol project-name)
 
         ctxt (defaults/make-context {:project/working-dir wd})
+        ctxt-alpha (defaults/make-context {:project/working-dir wd
+                                           :versioning/major :alpha})
+
+        a-name "p-name"
+        ctxt-alpha' (defaults/make-context {:project/working-dir wd
+                                            :project-name a-name
+                                            :versioning/major :alpha})
+
         ctxt' (defaults/make-context {:project/working-dir wd'})]
-    (facts
-      (:maven/group-id ctxt)
-      => group-id
+    (testing "Group ids"
+      (facts
+        (:maven/group-id ctxt)
+        => group-id
 
-      (:maven/group-id ctxt')
-      => group-id
+        (:maven/group-id ctxt')
+        => group-id
 
-      (:maven/artefact-name ctxt)
-      => group-id
+        (:maven/group-id ctxt-alpha)
+        => group-id))
 
-      (:maven/artefact-name ctxt')
-      => 'module1-toto
+    (testing "Artefact names"
+      (facts
+        (:maven/artefact-name ctxt)
+        => group-id
 
-      (:versioning/tag-base-name ctxt)
-      => (str group-id)
+        (:maven/artefact-name ctxt')
+        => 'module1-toto
 
+        (:maven/artefact-name ctxt-alpha)
+        => (-> group-id
+               (str "-alpha")
+               symbol)))
 
-      (:versioning/tag-base-name ctxt')
-      => "module1-toto")))
+    (testing "Tag names"
+      (facts
+        (:versioning/tag-base-name ctxt)
+        => (str group-id)
+
+        (:versioning/tag-base-name ctxt-alpha)
+        => (str group-id "-alpha")
+
+        (:versioning/tag-base-name ctxt')
+        => "module1-toto"))))

@@ -46,24 +46,19 @@ Api providing the default generation of the build configuration.
            :ret :project/author)
 
 
-(declare group-id)
-
-
 (defn project-name
-  "The name of the project directory."
-  [{major :versioning/major
-    :as param}]
+  "Based on git prefix if there is one, if not name of the git top-level"
+  [param]
   (let [prefix (mbt-core/git-prefix param)
-        base (if-not (-> prefix str seq)
-               (str (group-id param))
-               (->> prefix
-                    (map str)
-                    (string/join "-")))]
-    (-> base
-        (cond-> major (str "-" (name major))))))
+        top-level (mbt-core/git-top-level param)]
+    (if-not (-> prefix str seq)
+      (-> top-level fs/file-name str)
+      (->> prefix
+           (map str)
+           (string/join "-")))))
 
 (u/spec-op project-name
-           :deps [group-id mbt-core/git-prefix]
+           :deps [mbt-core/git-prefix]
            :param {:req [:project/working-dir]
                    :opt [:versioning/major]}
            :ret :project/name)
@@ -172,13 +167,15 @@ Api providing the default generation of the build configuration.
 
 (defn artefact-name
   "Default maven name: `project/name`."
-  [param]
-  (let [p-name (:project/name param (project-name param))]
-    (symbol p-name)))
+  [{p-name :project/name
+    suffix :versioning/major}]
+  (-> p-name
+      (cond-> suffix (str "-" (name suffix)))
+      symbol))
 
 (u/spec-op artefact-name
            :deps [project-name]
-           :param {:req [:project/working-dir]
+           :param {:req [:project/name]
                    :opt [:versioning/major]}
            :ret :maven/artefact-name)
 
@@ -244,14 +241,15 @@ Api providing the default generation of the build configuration.
 
 
 (defn tag-base-name
-  "Defaults to `:project/name`."
-  [param]
-  (:project/name param (project-name param)))
+  "Defaults to `(str :maven/artefact-name`)."
+  [{artefact-name :maven/artefact-name}]
+  (name artefact-name))
+
+
 
 (u/spec-op tag-base-name
            :deps [project-name]
-           :param {:req [:project/working-dir]
-                   :opt [:versioning/major]}
+           :param {:req [:maven/artefact-name]}
            :ret :versioning/tag-base-name)
 
 
@@ -299,4 +297,5 @@ Api providing the default generation of the build configuration.
 (comment
   (into (sorted-map)
         (make-context {:project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
+                       :project/name "toto"
                        :versioning/major :alpha})))
