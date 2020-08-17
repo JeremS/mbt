@@ -2,7 +2,7 @@
       :doc "
 Building blocks of a versioning system based on git commit distance.
       "}
-  fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version
+  fr.jeremyschoffen.mbt.alpha.core.versioning.git-distance
   (:require
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -74,8 +74,14 @@ Building blocks of a versioning system based on git commit distance.
      (bump v)
 
      (= :stable level)
-     (let [{:keys [number distance sha dirty?]} v]
-       (SimpleVersion. (+ number distance) 0 sha dirty? true))
+     (let [{:keys [number distance sha dirty? stable]} v]
+       (SimpleVersion. (if (= stable false)
+                         0
+                         (+ number distance))
+                       0
+                       sha
+                       dirty?
+                       true))
 
      :else
      (throw-unsupported level))))

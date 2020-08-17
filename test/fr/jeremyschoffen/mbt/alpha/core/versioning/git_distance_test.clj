@@ -1,11 +1,11 @@
-(ns fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version-test
+(ns fr.jeremyschoffen.mbt.alpha.core.versioning.git-distance-test
   (:require
     [clojure.spec.test.alpha :as st]
     [clojure.test :refer [deftest testing]]
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
 
-    [fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version :as sv]))
+    [fr.jeremyschoffen.mbt.alpha.core.versioning.git-distance :as sv]))
 
 (st/instrument `[sv/simple-version
                  sv/bump])
@@ -46,7 +46,7 @@
               :distance 0
               :sha dumy-sha
               :dirty? false
-              :stable true}]
+              :stable false}]
     (facts
       (-> base sv/simple-version sv/bump str)
       =throws=> (ex-info? "Duplicating tag."
@@ -57,4 +57,20 @@
           (assoc :distance 5)
           sv/simple-version
           sv/bump
-          str) => (str "5"))))
+          str)
+      => (str "5-unstable")
+
+      (-> base
+          (assoc :distance 5)
+          sv/simple-version
+          (sv/bump :stable)
+          str)
+      => (str "0")
+
+      (-> base
+          (assoc :distance 5
+                 :stable true)
+          sv/simple-version
+          sv/bump
+          str)
+      => (str "5"))))

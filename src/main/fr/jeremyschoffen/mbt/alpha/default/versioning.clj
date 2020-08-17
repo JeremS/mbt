@@ -14,7 +14,7 @@ Grouping of the different versioning utilities.
 
 (u/def-clone maven-scheme schemes/maven-scheme)
 (u/def-clone semver-scheme schemes/semver-scheme)
-(u/def-clone simple-scheme schemes/simple-scheme)
+(u/def-clone git-distance-scheme schemes/git-distance-scheme)
 
 (u/def-clone schemes-current-version schemes/current-version)
 (u/def-clone schemes-initial-version schemes/initial-version)

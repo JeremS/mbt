@@ -21,7 +21,7 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone maven-scheme versioning/maven-scheme)
 (u/def-clone semver-scheme versioning/semver-scheme)
-(u/def-clone simple-scheme versioning/simple-scheme)
+(u/def-clone git-distance-scheme versioning/git-distance-scheme)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

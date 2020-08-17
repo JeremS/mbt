@@ -20,7 +20,7 @@ Facade grouping the core apis in one place.
     [fr.jeremyschoffen.mbt.alpha.core.shell :as shell]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as maven-like]
-    [fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version :as simple-version]
+    [fr.jeremyschoffen.mbt.alpha.core.versioning.git-distance :as git-distance]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
@@ -124,17 +124,17 @@ Facade grouping the core apis in one place.
 ;; Maven
 (u/def-clone version-maven maven-like/maven-version)
 (u/def-clone version-initial-maven maven-like/initial-maven-version)
-(u/def-clone version-maven-bump maven-like/safer-bump)
+(u/def-clone version-bump-maven maven-like/safer-bump)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Semver
 (u/def-clone semver-version maven-like/semver-version)
 (u/def-clone version-initial-semver maven-like/initial-semver-version)
-(u/def-clone version-semver-bump maven-like/safer-bump)
+(u/def-clone version-bump-semver maven-like/safer-bump)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simple
-(u/def-clone version-parse-simple simple-version/parse-version)
-(u/def-clone version-simple simple-version/simple-version)
-(u/def-clone version-initial-simple simple-version/initial-simple-version)
-(u/def-clone version-simple-bump simple-version/bump)
+(u/def-clone version-parse-git-distance git-distance/parse-version)
+(u/def-clone version-git-distance git-distance/simple-version)
+(u/def-clone version-initial-git-distance git-distance/initial-simple-version)
+(u/def-clone version-bump-git-distance git-distance/bump)

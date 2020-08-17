@@ -14,12 +14,12 @@
 
 (def maven-ctxt {:versioning/scheme vs/maven-scheme})
 (def semver-ctxt {:versioning/scheme vs/semver-scheme})
-(def simple-ctxt {:versioning/scheme vs/simple-scheme})
+(def git-distance-ctxt {:versioning/scheme vs/git-distance-scheme})
 
 
 (def maven-init-str (str (vs/initial-version maven-ctxt)))
 (def semver-init-str (str (vs/initial-version semver-ctxt)))
-(def simple-init-str (str (vs/initial-version simple-ctxt)))
+(def simple-init-str (str (vs/initial-version git-distance-ctxt)))
 
 
 (deftest initial-version
@@ -75,13 +75,13 @@
 
   (testing "Simple"
     (facts
-      (-> simple-ctxt
+      (-> git-distance-ctxt
           (assoc :git/description (make-dumy-desc simple-init-str 0 true))
           vs/current-version
           str)
       => (str simple-init-str "-DIRTY")
 
-      (-> simple-ctxt
+      (-> git-distance-ctxt
           (assoc :git/description (make-dumy-desc simple-init-str dumy-dist true))
           vs/current-version
           str)
@@ -108,7 +108,7 @@
                         {::anom/category ::anom/forbidden
                          :mbt/error :versioning/duplicating-tag})
 
-    (-> simple-ctxt
+    (-> git-distance-ctxt
         (assoc :git/description (make-dumy-desc simple-init-str 0 false))
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump)
@@ -135,18 +135,18 @@
         str)
     => "1.0.0"
 
-    (-> simple-ctxt
+    (-> git-distance-ctxt
         (assoc :git/description (make-dumy-desc simple-init-str dumy-dist false))
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump
         str)
     => (str dumy-dist "-unstable")
 
-    (-> simple-ctxt
+    (-> git-distance-ctxt
         (assoc
           :git/description (make-dumy-desc simple-init-str dumy-dist false)
           :versioning/bump-level :stable)
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump
         str)
-    => (str dumy-dist)))
+    => (str 0)))

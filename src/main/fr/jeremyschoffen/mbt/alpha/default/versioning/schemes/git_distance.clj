@@ -3,7 +3,7 @@
 Implementation of versioning schemes using the git disatnce building blocks from the core api
 ([[fr.jeremyschoffen.mbt.alpha.core.versioning.simple-version]]).
       "}
-  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.simple-version
+  fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.git-distance
   (:require
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
@@ -19,13 +19,13 @@ Implementation of versioning schemes using the git disatnce building blocks from
                  :git.tag/message
                  clojure.edn/read-string
                  :version
-                 mbt-core/version-parse-simple)
+                 mbt-core/version-parse-git-distance)
         relevant-part (-> git-desc
                           (select-keys #{:git/sha
                                          :git.describe/distance
                                          :git.repo/dirty?})
                           u/strip-keys-nss)]
-    (mbt-core/version-simple (merge base relevant-part))))
+    (mbt-core/version-git-distance (merge base relevant-part))))
 
 
 (def simple-scheme
@@ -36,10 +36,10 @@ Implementation of versioning schemes using the git disatnce building blocks from
       (current-version* desc))
 
     (initial-version [_]
-      mbt-core/version-initial-simple)
+      mbt-core/version-initial-git-distance)
 
     (bump [_ version]
-      (mbt-core/version-simple-bump version))
+      (mbt-core/version-bump-git-distance version))
 
     (bump [_ version level]
-      (mbt-core/version-simple-bump version level))))
+      (mbt-core/version-bump-git-distance version level))))

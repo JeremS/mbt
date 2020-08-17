@@ -22,7 +22,7 @@
     :project/author "Jeremy Schoffen"
     :version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
     :version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-    :versioning/scheme mbt-defaults/simple-scheme
+    :versioning/scheme mbt-defaults/git-distance-scheme
     :versioning/major :alpha
 
     :project/licenses [{:project.licence/name "Eclipse Public License - v 2.0"

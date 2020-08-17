@@ -50,7 +50,7 @@ Implementation of versioning schemes using the maven and semver building blocks 
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (mbt-core/version-maven-bump version level))))
+      (mbt-core/version-bump-maven version level))))
 
 
 (def semver-scheme
@@ -71,4 +71,4 @@ Implementation of versioning schemes using the maven and semver building blocks 
       (p/bump this version :patch))
 
     (bump [_ version level]
-      (mbt-core/version-semver-bump version level))))
+      (mbt-core/version-bump-semver version level))))
