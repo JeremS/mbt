@@ -13,7 +13,7 @@ Apis providing the jar sources used by default.
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Jar srcs construction
+;; Jar staple srcs construction
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Manifest
 (def meta-dir "META-INF")
@@ -36,8 +36,12 @@ Apis providing the jar sources used by default.
 
 
 (defn- make-jar-maven-path [group-id artefact-id]
-  (fs/path meta-dir maven-dir (str group-id) (str artefact-id) "pom.xml"))
+  (fs/path meta-dir maven-dir (str group-id) (str artefact-id)))
 
+
+(defn- make-pom-path [group-id artefact-id]
+  (fs/path (make-jar-maven-path group-id artefact-id)
+           "pom.xml"))
 
 (defn make-pom-entry
   "Make a `:jar/entry` for a `pom.xml` file."
@@ -45,10 +49,27 @@ Apis providing the jar sources used by default.
     group-id :maven/group-id
     artefact-id :maven/artefact-name}]
   {:jar.entry/src (xml/indent-str pom)
-   :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
+   :jar.entry/dest (make-pom-path group-id artefact-id)})
 
 (u/spec-op make-pom-entry
            :param {:req [:maven/pom
+                         :maven/group-id
+                         :maven/artefact-name]})
+
+
+(defn- make-pom-props-path [group-id artefact-id]
+  (fs/path (make-jar-maven-path group-id artefact-id)
+           "pom.properties"))
+
+
+(defn make-pom-properties-entry [{pom-props :maven/pom-properties
+                                  group-id :maven/group-id
+                                  artefact-id :maven/artefact-name}]
+  {:jar.entry/src pom-props
+   :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
+
+(u/spec-op make-pom-properties-entry
+           :param {:req [:maven/pom-properties
                          :maven/group-id
                          :maven/artefact-name]})
 
@@ -101,7 +122,9 @@ Apis providing the jar sources used by default.
   [param]
   (into [(-> param make-manifest-entry)
          (-> param make-pom-entry)
+         (-> param make-pom-properties-entry)
          (-> param make-deps-entry)]
+
         (make-license-entries param)))
 
 (u/spec-op make-staples-entries
@@ -110,11 +133,14 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
+                         :maven/pom-properties
                          :project/deps]
                    :opt [:project/licenses]}
            :ret :jar/src)
 
-
+;;----------------------------------------------------------------------------------------------------------------------
+;; Src from classpath
+;;----------------------------------------------------------------------------------------------------------------------
 (defn- warn-wayward-files [{cp :classpath/index}]
   (let [wayward-files (:classpath/file cp)]
     (when-let [files (seq wayward-files)]
@@ -149,6 +175,7 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
+                         :maven/pom-properties
                          :project/deps]
                    :opt [:project/author
                          :jar/main-ns
@@ -174,6 +201,7 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
+                         :maven/pom-properties
                          :project/deps]}
            :ret :jar/srcs)
 
@@ -192,12 +220,14 @@ Apis providing the jar sources used by default.
                      :project/deps mbt-core/deps-get
                      :classpath/index mbt-core/classpath-indexed
                      :maven/pom mbt-core/maven-new-pom
+                     :maven/pom-properties mbt-core/maven-new-pom-properties
                      :jar/manifest mbt-core/manifest))
 
 (u/spec-op ensure-jar-defaults
            :deps [mbt-core/classpath-indexed
                   mbt-core/manifest
                   mbt-core/maven-new-pom
+                  mbt-core/maven-new-pom-properties
                   mbt-core/deps-get]
            :param {:req #{:maven/artefact-name
                           :maven/group-id
@@ -270,6 +300,7 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
+                         :maven/pom-properties
                          :project/deps
                          :project/output-dir
                          :project/working-dir]
@@ -309,6 +340,7 @@ Apis providing the jar sources used by default.
                          :maven/artefact-name
                          :maven/group-id
                          :maven/pom
+                         :maven/pom-properties
                          :project/deps
                          :project/output-dir
                          :project/working-dir]

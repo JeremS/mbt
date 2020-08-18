@@ -74,6 +74,7 @@ Specs used in `mbt's` core apis.
 (s/def :maven/classifier symbol?)
 (s/def :maven.pom/dir path?)
 (s/def :maven/pom map?)
+(s/def :maven/pom-properties string?)
 (s/def :maven/local-repo path?)
 (s/def :maven.settings/file path?)
 

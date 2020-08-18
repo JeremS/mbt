@@ -12,7 +12,7 @@ Facade grouping the core apis in one place.
     [fr.jeremyschoffen.mbt.alpha.core.git :as git]
     [fr.jeremyschoffen.mbt.alpha.core.gpg :as gpg]
     [fr.jeremyschoffen.mbt.alpha.core.jar :as jar]
-    [fr.jeremyschoffen.mbt.alpha.core.manifest :as manifest]
+    [fr.jeremyschoffen.mbt.alpha.core.jar.manifest :as manifest]
     [fr.jeremyschoffen.mbt.alpha.core.maven.common :as maven-common]
     [fr.jeremyschoffen.mbt.alpha.core.maven.deploy :as deploy]
     [fr.jeremyschoffen.mbt.alpha.core.maven.install :as install]
@@ -84,6 +84,7 @@ Facade grouping the core apis in one place.
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone maven-new-pom pom/new-pom)
+(u/def-clone maven-new-pom-properties pom/new-pom-properties)
 (u/def-clone maven-sync-pom! pom/sync-pom!)
 
 (u/def-clone maven-default-local-repo maven-common/default-local-repo)
