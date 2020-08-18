@@ -1,3 +1,3 @@
 (ns fr.jeremyschoffen.mbt.alpha.version)
 
-(def version "6-alpha-unstable")
+(def version "8-alpha-unstable")
