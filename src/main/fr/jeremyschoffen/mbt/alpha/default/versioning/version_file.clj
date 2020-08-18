@@ -14,15 +14,23 @@ Api used to generate version files.
 (defn version-file-content
   "Make the string content of a version file."
   [{v :project/version
-    ns   :version-file/ns}]
-  (string/join "\n" [(format "(ns %s)" ns)
-                     ""
-                     (format "(def version \"%s\")" v)
-                     ""]))
+    ns :version-file/ns
+    stable? :versioning/stable
+    major :versioning/major}]
+  (let [version (cond-> v
+                        major (str "-" (name major))
+                        (not stable?) (str "-unstable"))]
+
+    (string/join "\n" [(format "(ns %s)" ns)
+                       ""
+                       (format "(def version \"%s\")" version)
+                       ""])))
 
 (u/spec-op version-file-content
            :param {:req [:project/version
-                         :version-file/ns]})
+                         :version-file/ns]
+                   :opt [:versioning/stable
+                         :versioning/major]})
 
 
 (defn write-version-file!

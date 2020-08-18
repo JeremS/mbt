@@ -10,6 +10,7 @@ Api providing utilities when generating manifest files.
     [fr.jeremyschoffen.mbt.alpha.version :as v]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj
 (defn  make-base-manifest [{author :project/author}]

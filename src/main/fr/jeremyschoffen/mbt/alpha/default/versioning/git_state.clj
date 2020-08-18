@@ -37,9 +37,13 @@ Api containing the default logic for using git state as a versioning mechanism.
   [{repo :git/repo
     tag-base :versioning/tag-base-name
     :as param}]
+
   (check-some-commit param)
-  (mbt-core/git-describe {:git/repo                 repo
-                          :git.describe/tag-pattern (str tag-base "*")}))
+  (let [pattern (if tag-base
+                  (str tag-base "-v*")
+                  "*")]
+    (mbt-core/git-describe {:git/repo                 repo
+                            :git.describe/tag-pattern pattern})))
 
 (u/spec-op most-recent-description
            :deps [mbt-core/git-describe]
