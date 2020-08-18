@@ -32,6 +32,10 @@ Specs used in `mbt's` core apis.
 (s/def :project/version (s/and string? seq))
 (s/def :project/author string?)
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Licenses
+;;----------------------------------------------------------------------------------------------------------------------
 (def license-distros #{:repo :manual})
 
 (s/def :project.license/name string?)

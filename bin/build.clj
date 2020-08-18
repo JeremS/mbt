@@ -25,9 +25,9 @@
     :versioning/scheme mbt-defaults/git-distance-scheme
     :versioning/major :alpha
 
-    :project/licenses [{:project.licence/name "Eclipse Public License - v 2.0"
-                        :project.licence/url "https://www.eclipse.org/legal/epl-v20.html"
-                        :project.licence/distribution :repo
+    :project/licenses [{:project.license/name "Eclipse Public License - v 2.0"
+                        :project.license/url "https://www.eclipse.org/legal/epl-v20.html"
+                        :project.license/distribution :repo
                         :project.license/file (u/safer-path "LICENSE")}]))
 
 
@@ -46,6 +46,10 @@
       (u/side-effect! mbt-defaults/bump-tag!)))
 
 
+(defn deploy! [conf]
+  (-> conf
+      (assoc :maven/server mbt-defaults/clojars)
+      mbt-defaults/deploy!))
 
 (comment
   (mbt-defaults/generate-before-bump! conf
@@ -64,11 +68,5 @@
   (-> conf
       (assoc :project/version "0")
       (u/side-effect! mbt-defaults/build-jar!)
-      mbt-defaults/install!)
-
-  (-> conf
-      (assoc :maven/server mbt-defaults/clojars)
-      mbt-defaults/deploy!))
-
-
+      mbt-defaults/install!))
 
