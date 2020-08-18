@@ -3,8 +3,7 @@
     [clojure.spec.test.alpha :as spec-test]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
 (spec-test/instrument
