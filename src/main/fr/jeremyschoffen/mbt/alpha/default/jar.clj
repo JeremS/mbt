@@ -66,7 +66,7 @@ Apis providing the jar sources used by default.
                                   group-id :maven/group-id
                                   artefact-id :maven/artefact-name}]
   {:jar.entry/src pom-props
-   :jar.entry/dest (make-jar-maven-path group-id artefact-id)})
+   :jar.entry/dest (make-pom-props-path group-id artefact-id)})
 
 (u/spec-op make-pom-properties-entry
            :param {:req [:maven/pom-properties
