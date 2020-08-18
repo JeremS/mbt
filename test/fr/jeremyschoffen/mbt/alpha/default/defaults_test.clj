@@ -26,9 +26,9 @@
                                            :versioning/major :alpha})
 
         a-name "p-name"
-        ctxt-alpha' (defaults/make-context {:project/working-dir wd
-                                            :project-name a-name
-                                            :versioning/major :alpha})
+        ctxt-unstable (defaults/make-context {:project/working-dir wd
+                                              :project-name a-name
+                                              :versioning/stable false})
 
         ctxt' (defaults/make-context {:project/working-dir wd'})]
     (testing "Group ids"
@@ -40,7 +40,10 @@
         => group-id
 
         (:maven/group-id ctxt-alpha)
-        => group-id))
+        => group-id)
+
+      (:maven/group-id ctxt-unstable)
+      => group-id)
 
     (testing "Artefact names"
       (facts
@@ -53,6 +56,11 @@
         (:maven/artefact-name ctxt-alpha)
         => (-> group-id
                (str "-alpha")
+               symbol)
+
+        (:maven/artefact-name ctxt-unstable)
+        => (-> group-id
+               (str "-unstable")
                symbol)))
 
     (testing "Tag names"
@@ -62,6 +70,9 @@
 
         (:versioning/tag-base-name ctxt-alpha)
         => (str group-id "-alpha")
+
+        (:versioning/tag-base-name ctxt-unstable)
+        => (str group-id "-unstable")
 
         (:versioning/tag-base-name ctxt')
         => "module1-toto"))))

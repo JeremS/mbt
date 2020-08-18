@@ -26,7 +26,7 @@
   (facts
     maven-init-str => "0.1.0"
     semver-init-str => "0.1.0"
-    simple-init-str => "0-unstable"))
+    simple-init-str => "0"))
 
 
 (def dumy-project-name "project1")
@@ -140,13 +140,4 @@
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump
         str)
-    => (str dumy-dist "-unstable")
-
-    (-> git-distance-ctxt
-        (assoc
-          :git/description (make-dumy-desc simple-init-str dumy-dist false)
-          :versioning/bump-level :stable)
-        (u/assoc-computed :versioning/version vs/current-version)
-        vs/bump
-        str)
-    => (str 0)))
+    => (str dumy-dist)))

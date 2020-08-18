@@ -53,7 +53,7 @@ Utilities used in the whole project.
 (defn ensure-computed [m & kfs]
   (check-kfs kfs)
   (reduce (fn [m [k f]]
-            (if (get m k)
+            (if (contains? m k)
               m
               (assoc m k (f m))))
           m

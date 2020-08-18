@@ -146,6 +146,32 @@ Api providing the default generation of the build configuration.
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
+;; Versioning
+;;----------------------------------------------------------------------------------------------------------------------
+(defn stable
+  "True by default, defines whether the project is stable. Influences tag and artefact name."
+  [_]
+  true)
+
+(u/spec-op stable
+           :ret :versioning/stable)
+
+(defn tag-base-name
+  "Defaults to `project/name` + suffixes depending on `:versioning/major` and `:versioning/stable`."
+  [{p-name  :project/name
+    major   :versioning/major
+    stable? :versioning/stable}]
+  (-> p-name
+      (cond-> major   (str "-" (name major))
+              (not stable?) (str "-unstable"))))
+
+(u/spec-op tag-base-name
+           :deps [project-name]
+           :param {:req [:project/name
+                         :versioning/stable]
+                   :opts [:versioning/major]}
+           :ret :versioning/tag-base-name)
+;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn group-id
@@ -167,16 +193,13 @@ Api providing the default generation of the build configuration.
 
 (defn artefact-name
   "Default maven name: `project/name`."
-  [{p-name :project/name
-    suffix :versioning/major}]
-  (-> p-name
-      (cond-> suffix (str "-" (name suffix)))
-      symbol))
+  [{base-name :versioning/tag-base-name}]
+  (symbol base-name))
+
 
 (u/spec-op artefact-name
            :deps [project-name]
-           :param {:req [:project/name]
-                   :opt [:versioning/major]}
+           :param {:req [:versioning/tag-base-name]}
            :ret :maven/artefact-name)
 
 
@@ -240,17 +263,7 @@ Api providing the default generation of the build configuration.
            :ret :build/uberjar-name)
 
 
-(defn tag-base-name
-  "Defaults to `(str :maven/artefact-name`)."
-  [{artefact-name :maven/artefact-name}]
-  (name artefact-name))
 
-
-
-(u/spec-op tag-base-name
-           :deps [project-name]
-           :param {:req [:maven/artefact-name]}
-           :ret :versioning/tag-base-name)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -274,28 +287,34 @@ Api providing the default generation of the build configuration.
 
    :cleaning/target cleaning-target
 
-   :maven/artefact-name artefact-name
+   :versioning/stable stable
+   :versioning/tag-base-name tag-base-name
+
    :maven/group-id group-id
+   :maven/artefact-name artefact-name
    :maven.pom/dir pom-dir
    :maven/local-repo maven-local-repo
    :maven.install/dir maven-install-dir
    :maven.settings/file maven-settings-file
 
    :build/jar-name jar-name
-   :build/uberjar-name uberjar-name
+   :build/uberjar-name uberjar-name])
 
-   :versioning/tag-base-name tag-base-name])
+
 
 
 (defn make-context
   "Make a config usable by mbt's apis. The `user-defined` parameter must be a map of configuration. Any key not present
   in `user-defined` will be set to a default value."
   [user-defined]
-  (->> (apply u/ensure-computed user-defined ctxt-building-scheme)
-       (medley/filter-vals identity)))
+  (apply u/ensure-computed user-defined ctxt-building-scheme))
+
 
 (comment
-  (into (sorted-map)
-        (make-context {:project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
-                       :project/name "toto"
-                       :versioning/major :alpha})))
+  (-> (sorted-map
+        :project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
+        :project/name "toto"
+        :versioning/major :alpha
+        :versioning/stable false)
+      make-context))
+      ;(select-keys #{:versioning/stable :versioning/tag-base-name})))

@@ -135,6 +135,6 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simple
 (u/def-clone version-parse-git-distance git-distance/parse-version)
-(u/def-clone version-git-distance git-distance/simple-version)
+(u/def-clone version-git-distance git-distance/git-distance-version)
 (u/def-clone version-initial-git-distance git-distance/initial-simple-version)
 (u/def-clone version-bump-git-distance git-distance/bump)
