@@ -3,7 +3,8 @@
     [clojure.spec.test.alpha :as spec-test]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]
+    [docs.core :as docs]))
 
 
 (spec-test/instrument
@@ -14,6 +15,7 @@
     mbt-defaults/bump-tag!
     mbt-defaults/build-jar!
     mbt-defaults/install!])
+
 
 (def specific-conf
   (sorted-map
@@ -37,7 +39,9 @@
 
 
 (defn generate-docs! [conf]
-  (println "building the docs!"))
+  (-> conf
+      (u/assoc-computed :project/maven-coords mbt-core/deps-make-coord)
+      (u/side-effect! docs/make-readme!)))
 
 
 (defn new-milestone! [param]
@@ -53,9 +57,12 @@
       mbt-defaults/deploy!))
 
 (comment
-  (mbt-defaults/generate-before-bump! conf
-                                      (u/side-effect! generate-docs!)
-                                      (u/side-effect! mbt-defaults/write-version-file!))
+  (-> conf
+      (u/assoc-computed :project/version (comp str mbt-defaults/anticipated-next-version)
+                        :project/maven-coords mbt-core/deps-make-coord)
+      (u/side-effect! docs/make-readme!)
+      (u/side-effect! docs/make-rationale!)
+      (u/side-effect! docs/make-design-doc!))
 
   (new-milestone! conf)
 

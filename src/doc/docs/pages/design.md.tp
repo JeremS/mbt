@@ -1,0 +1,73 @@
+◊(require '[docs.tags :refer :all] :reload)◊
+◊(require '[fr.jeremyschoffen.textp.alpha.html.tags :refer :all] :reload)◊
+
+# Design
+Here are some design ideas, principles that guided the coding or emerged while coding mbt. They are
+informed by the observations made in the rationale.
+
+## The base api's *shape*
+Mbt's apis try to be as uniform as possible by providing functions of one argument. This argument is a
+context / config map making every effective argument a named one.
+
+This model allows for the following properties:
+- There are no positional semantics in the api's functions. Every datum pertinent to the build process is named
+- We can declare a config map similar to ◊leiningen{Leiningen's} config as a build context
+- A build task is a function of a context
+- We can thread a context through several successive build tasks
+- We could use middleware for some tasks but we don't have to.
+- This model lends itself for use at the repl
+- We can always make a cli in front of build scripts but we don't have to.
+
+
+## Very few assumptions
+Mbt tries to make as few assumptions as possible about the shape of a project:
+
+- When creating jars some files have default names: `deps.edn`, `pom.xml`, `pom.properties`.
+- The cleaning utility will neither delete the project directory nor delete outside of it.
+- Everything else should be parametrised.
+
+
+## Versioning
+The process of building artefacts involves versioning. There is support for different versioning schemes using git tags
+in the default api. Maven and Semver are there.
+
+I also designed a scheme with the ◊spec-ulation-talk\ and the ◊meander{Meander project} in mind.
+This project itself uses it.
+
+## Stratified design
+There is a lot here that seems common wisdom. Still it might be good to state the obvious and see how mbt relates.
+
+### Low level core api
+Mbt comes with a low level core api. The core utilities must be as un-opinionated and orthogonal as possible. This is
+the no assumptions part of the api.
+
+For instance the core api provides:
+  - a function to compute a classpath from edn data (in the `deps.edn` format)
+  - a function that turns a classpath into a sequence of sources to be put inside a jar.
+  - a function taking jar sources and copying them into a temporary directory
+  - a function that zips the temp dir into a jar.
+
+None of these functions depend on one another. The one map argument principle allows a coding model where we can
+thread together several utilities on a config / context map. Several helper functions are provided to make this process
+easier.
+
+### Default higher level api
+Using just the core api can be tedious. The goal here is to provide a gluing of the core api in a sensible default
+fashion. For instance there is a function that encompasses all the steps cited in the
+previous example.
+
+Still any build process that needs more complexity than what the default api provides can use the core api to define
+its own build tool and still use the default api where useful.
+
+## Credits
+This project takes a lot from different projects whether in design ideas or directly in the way to code specific things:
+
+- ◊boot / ◊ring for the threaded context model
+- ◊cambada for the compilation code.
+- ◊depstar for the idea that we can build a jar from a classpath.
+- ◊depstar / ◊cambada / ◊badigeon for the jar building code.
+- ◊boot / ◊badigeon for the gpg code
+- ◊badigeon for the manifest code
+- ◊metav for the git versioning code.
+- ◊meander / ◊tools-deps as a source of inspiration for the versioning scheme
+

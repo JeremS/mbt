@@ -310,6 +310,14 @@ Api providing the default generation of the build configuration.
   (apply u/ensure-computed user-defined ctxt-building-scheme))
 
 
+(defn license-file-path
+  "Default file path -> `:project/working-dir`/LICENSE."
+  [{wd :project/working-dir}]
+  (u/safer-path wd "LICENSE"))
+
+(u/spec-op license-file-path
+           :param {:req [:project/working-dir]}
+           :ret :project.license/file)
 (comment
   (-> (sorted-map
         :project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
