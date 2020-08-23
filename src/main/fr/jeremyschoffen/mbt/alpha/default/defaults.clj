@@ -169,7 +169,7 @@ Api providing the default generation of the build configuration.
            :deps [project-name]
            :param {:req [:project/name
                          :versioning/stable]
-                   :opts [:versioning/major]}
+                   :opt [:versioning/major]}
            :ret :versioning/tag-base-name)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven

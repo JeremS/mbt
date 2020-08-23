@@ -127,9 +127,9 @@ Api providing default behaviour for maven tasks.
                          :gpg/pass-phrase
                          :gpg/version
                          :maven.deploy/sign-artefacts?
-                         :project/working-dir]
-                   :ret (s/keys :req [:jar/output :maven.deploy/artefacts])})
-(u/param-suggestions ensure-deploy-conf)
+                         :project/working-dir]}
+           :ret (s/keys :req [:jar/output :maven.deploy/artefacts]))
+
 
 (defn deploy!
   "Deploy a jar of the current project to a remote repo.

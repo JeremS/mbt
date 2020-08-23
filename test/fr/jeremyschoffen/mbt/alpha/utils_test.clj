@@ -34,22 +34,15 @@
 
 
 (deftest specing-works
-  (let [param-spec #(-> % u/get-spec :param)]
-    (facts
-      (param-spec `foo) => {:req #{::a}
-                            :opt #{::c}
-                            :req-un #{}
-                            :opt-un #{}}
-      (param-spec `bar) => {:req #{::b}
-                            :opt #{::d}
-                            :req-un #{}
-                            :opt-un #{}}
-      (param-spec `baz) => {:req #{}
-                            :opt #{}
-                            :req-un #{}
-                            :opt-un #{}}
+  (facts
+    (:param (u/spec foo)) => {:req #{::a}
+                              :opt #{::c}}
+    (:param (u/spec bar)) => {:req #{::b}
+                              :opt #{::d}}
+    (:param (u/spec baz)) => {}
 
-      (u/param-suggestions baz) => (param-spec `bar))))
+    (u/param-suggestions baz) =in=> (:param (u/spec bar))))
+
 
 (st/instrument)
 (deftest instrumenting-works

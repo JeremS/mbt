@@ -89,5 +89,3 @@ Higher level api to compile java files.
                          :compilation.java/file-manager
                          :compilation.java/options
                          :compilation.java/output-dir]})
-
-(u/param-suggestions compile!)
