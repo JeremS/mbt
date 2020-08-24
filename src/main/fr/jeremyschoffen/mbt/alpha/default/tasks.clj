@@ -71,8 +71,8 @@ Higher level apis.
       (u/check v/check-repo-in-order)
       (u/ensure-computed :project/version (comp str anticipated-next-version))
       (as-> conf (apply u/thread-fns conf fns))
-      (u/side-effect! mbt-core/git-add-all!)
-      (u/side-effect! commit-generated!)))
+      (u/do-side-effect! mbt-core/git-add-all!)
+      (u/do-side-effect! commit-generated!)))
 
 (s/fdef generate-before-bump!
         :args (s/cat :param (s/keys :req [:git/repo

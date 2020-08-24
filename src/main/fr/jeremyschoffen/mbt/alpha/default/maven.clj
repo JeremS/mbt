@@ -83,7 +83,7 @@ Api providing default behaviour for maven tasks.
   [param]
   (-> param
       ensure-install-conf
-      (u/side-effect! mbt-core/maven-sync-pom!)
+      (u/do-side-effect! mbt-core/maven-sync-pom!)
       (u/check check-artefacts-exist)
       mbt-core/maven-install!))
 
@@ -140,7 +140,7 @@ Api providing default behaviour for maven tasks.
   [param]
   (-> param
       ensure-deploy-conf
-      (u/side-effect! mbt-core/maven-sync-pom!)
+      (u/do-side-effect! mbt-core/maven-sync-pom!)
       (u/check check-artefacts-exist)
       mbt-core/maven-deploy!))
 

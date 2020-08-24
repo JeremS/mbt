@@ -253,8 +253,8 @@ Apis providing the jar sources used by default.
           (assoc :jar/temp-output temp-out
                  :cleaning/target temp-out)
           (u/side-effect! #(reset! res (mbt-core/jar-add-srcs! %)))
-          (u/side-effect! mbt-core/jar-make-archive!)
-          (u/side-effect! mbt-core/clean!))
+          (u/do-side-effect! mbt-core/jar-make-archive!)
+          (u/do-side-effect! mbt-core/clean!))
       @res)))
 
 (u/spec-op make-jar&clean!
