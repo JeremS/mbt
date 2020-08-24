@@ -81,7 +81,17 @@
   [[fr.jeremyschoffen.mbt.alpha.default.threading-utils/wrap-record]]."
   [& body]
   `(binding [*recording* (atom [])]
-     (let [res# (do ~@body)]
+     (let [res# (try
+                  (do ~@body)
+                  (catch ExceptionInfo e#
+                    (throw (ex-info (ex-message e#)
+                                    (assoc (ex-data e#)
+                                      :recording @*recording*)
+                                    (ex-cause e#))))
+                  (catch Exception e#
+                    (throw (ex-info (.getMessage e#)
+                                    {:recording @*recording*}
+                                    e#))))]
        {:res res#
         :recording @*recording*})))
 

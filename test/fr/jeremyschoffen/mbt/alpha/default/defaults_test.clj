@@ -60,7 +60,7 @@
 
         (:versioning/tag-base-name ctxt-alpha)
         => (str group-id "-alpha")
-        
+
 
         (:versioning/tag-base-name ctxt')
         => "module1-toto"))))
