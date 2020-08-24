@@ -42,14 +42,18 @@ Utilities used in the whole project.
 (dolly/def-clone assoc-computed mc/assoc-computed)
 (dolly/def-clone ensure-computed mc/ensure-computed)
 (dolly/def-clone augment-computed mc/augment-computed)
-(dolly/def-clone side-effect! mc/side-effect!)
-(dolly/def-clone wrapped-side-effect! mc/wrapped-side-effect!)
-(dolly/def-clone check side-effect!)
-(dolly/def-clone thread-fns mc/thread-fns)
 
 
 (defn strip-keys-nss [m]
   (medley/map-keys #(-> % name keyword) m))
+;;----------------------------------------------------------------------------------------------------------------------
+;; Threading context utils
+;;----------------------------------------------------------------------------------------------------------------------
+
+(dolly/def-clone side-effect! mc/side-effect!)
+(dolly/def-clone wrapped-side-effect! mc/wrapped-side-effect!)
+(dolly/def-clone check side-effect!)
+(dolly/def-clone thread-fns mc/thread-fns)
 
 (dolly/def-clone branch-named! tu/branch-named!)
 (dolly/def-clone branch! tu/branch!)
@@ -58,7 +62,7 @@ Utilities used in the whole project.
 (dolly/def-clone do-side-effect! tu/do-side-effect!)
 
 (dolly/def-clone record-build tu/record)
-
+(dolly/def-clone mark-dry-run tu/make-dry-run)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Specs utils
