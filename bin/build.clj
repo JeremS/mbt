@@ -26,7 +26,6 @@
     :version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
     :versioning/scheme mbt-defaults/git-distance-scheme
     :versioning/major :alpha
-    :versioning/stable false
 
     :project/licenses [{:project.license/name "Eclipse Public License - v 2.0"
                         :project.license/url "https://www.eclipse.org/legal/epl-v20.html"

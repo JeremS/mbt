@@ -38,7 +38,6 @@ Specs used in the default api.
 (s/def :versioning/version any?)
 
 (s/def :versioning/major keyword?)
-(s/def :versioning/stable boolean?) ;;TODO: remove this, it allows for clashes between stable and non stable version to happen.
 
 (s/def :version-file/path fs/path?)
 (s/def :version-file/ns symbol?)

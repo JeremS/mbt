@@ -148,22 +148,13 @@ Api providing the default generation of the build configuration.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn stable
-  "True by default, defines whether the project is stable. Influences tag and artefact name."
-  [_]
-  true)
-
-(u/spec-op stable
-           :ret :versioning/stable)
-
 (defn tag-base-name
   "Defaults to `project/name` + suffixes depending on `:versioning/major` and `:versioning/stable`."
   [{p-name  :project/name
-    major   :versioning/major
-    stable? :versioning/stable}]
+    major   :versioning/major}]
   (-> p-name
-      (cond-> major   (str "-" (name major))
-              (not stable?) (str "-unstable"))))
+      (cond-> major   (str "-" (name major)))))
+
 
 (u/spec-op tag-base-name
            :deps [project-name]
@@ -287,7 +278,6 @@ Api providing the default generation of the build configuration.
 
    :cleaning/target cleaning-target
 
-   :versioning/stable stable
    :versioning/tag-base-name tag-base-name
 
    :maven/group-id group-id
