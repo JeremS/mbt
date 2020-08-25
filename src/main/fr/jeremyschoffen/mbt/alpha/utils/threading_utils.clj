@@ -184,8 +184,7 @@
       wrap-record
       (wrap-name n)))
 
-
-(defmacro branch-named!
+(defn branch-named!
   "In a threaded operation, will execute `f!` to the side
   and return `v` as it got it.
 
@@ -193,9 +192,9 @@
 
   For the middleware used, the operation is named `n`."
   ([f! n]
-   `(mapi-core/side-effect! (wrap-branch* ~f! '~n)))
+   (mapi-core/side-effect! (wrap-branch* f! n)))
   ([v f! n]
-   `(mapi-core/side-effect! ~v (wrap-branch* ~f! '~n))))
+   (mapi-core/side-effect! v (wrap-branch* f! n))))
 
 
 (defn- make-name [s]
@@ -208,9 +207,9 @@
   `f!` is expected to be a symbol that resolves to a function. The name of the branch
   will then be `(resolve f!)`."
   ([f!]
-   `(branch-named! ~f! ~(make-name f!)))
+   `(branch-named! ~f! '~(make-name f!)))
   ([v f!]
-   `(branch-named! ~v ~f! ~(make-name f!))))
+   `(branch-named! ~v ~f! '~(make-name f!))))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -231,21 +230,21 @@
       (wrap-name n)))
 
 
-(defmacro do-side-effect-named!
+(defn do-side-effect-named!
   "Same as [[fr.jeremyschoffen.mbt.alpha.default.threading-utils/branch-named!]] except for the middleware used to wrap
   `f!`.
 
   Here [[fr.jeremyschoffen.mbt.alpha.default.threading-utils/wrap-side-effect*]] is used."
   ([f! n]
-   `(mapi-core/side-effect! (wrap-side-effect* ~f! '~n)))
+   (mapi-core/side-effect! (wrap-side-effect* f! n)))
   ([v f! n]
-   `(mapi-core/side-effect! ~v (wrap-side-effect* ~f! '~n))))
+   (mapi-core/side-effect! v (wrap-side-effect* f! n))))
 
 
 (defmacro do-side-effect!
   " Simmilar to [[fr.jeremyschoffen.mbt.alpha.default.threading-utils/branch!]] but using the
   [[fr.jeremyschoffen.mbt.alpha.default.threading-utils/wrap-side-effect*]] middelware."
   ([f!]
-   `(do-side-effect-named! ~f! ~(make-name f!)))
+   `(do-side-effect-named! ~f! '~(make-name f!)))
   ([v f!]
-   `(do-side-effect-named! ~v ~f! ~(make-name f!))))
+   `(do-side-effect-named! ~v ~f! '~(make-name f!))))
