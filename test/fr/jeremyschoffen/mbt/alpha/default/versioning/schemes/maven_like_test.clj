@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes-test
+(ns fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.maven-like-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
@@ -8,25 +8,24 @@
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+
 (st/instrument [vs/current-version
                 vs/bump
                 vs/bump])
 
 (def maven-ctxt {:versioning/scheme vs/maven-scheme})
 (def semver-ctxt {:versioning/scheme vs/semver-scheme})
-(def git-distance-ctxt {:versioning/scheme vs/git-distance-scheme})
 
 
 (def maven-init-str (str (vs/initial-version maven-ctxt)))
 (def semver-init-str (str (vs/initial-version semver-ctxt)))
-(def simple-init-str (str (vs/initial-version git-distance-ctxt)))
+
 
 
 (deftest initial-version
   (facts
     maven-init-str => "0.1.0"
-    semver-init-str => "0.1.0"
-    simple-init-str => "0"))
+    semver-init-str => "0.1.0"))
 
 
 (def dumy-project-name "project1")
@@ -43,49 +42,33 @@
      :git/sha "AAA123"
      :git.repo/dirty? dirty?}))
 
+(defn current-version [ctxt]
+  (-> ctxt vs/current-version str))
 
-(deftest current-version
+(deftest current-version-test
   (testing "Maven"
     (facts
       (-> maven-ctxt
           (assoc :git/description (make-dumy-desc maven-init-str 0 true))
-          vs/current-version
-          str)
+          current-version)
       => (str maven-init-str "-DIRTY")
 
       (-> maven-ctxt
           (assoc :git/description (make-dumy-desc maven-init-str dumy-dist true))
-          vs/current-version
-          str)
+          current-version)
       => (str maven-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY")))
 
   (testing "Semver"
     (facts
       (-> semver-ctxt
           (assoc :git/description (make-dumy-desc semver-init-str 0 false))
-          vs/current-version
-          str)
+          current-version)
       => semver-init-str
 
       (-> semver-ctxt
           (assoc :git/description (make-dumy-desc semver-init-str dumy-dist true))
-          vs/current-version
-          str)
-      => (str semver-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY")))
-
-  (testing "Simple"
-    (facts
-      (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str 0 true))
-          vs/current-version
-          str)
-      => (str simple-init-str "-DIRTY")
-
-      (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str dumy-dist true))
-          vs/current-version
-          str)
-      => (str simple-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY"))))
+          current-version)
+      => (str semver-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY"))))
 
 
 (deftest error-cases-versioning
@@ -96,20 +79,12 @@
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump)
     =throws=> (ex-info? identity
-                       {::anom/category ::anom/forbidden
-                        :mbt/error :versioning/duplicating-tag})
+                        {::anom/category ::anom/forbidden
+                         :mbt/error :versioning/duplicating-tag})
 
     (-> semver-ctxt
         (assoc :git/description (make-dumy-desc semver-init-str 0 false)
                :versioning/bump-level :patch)
-        (u/assoc-computed :versioning/version vs/current-version)
-        vs/bump)
-    =throws=> (ex-info? identity
-                        {::anom/category ::anom/forbidden
-                         :mbt/error :versioning/duplicating-tag})
-
-    (-> git-distance-ctxt
-        (assoc :git/description (make-dumy-desc simple-init-str 0 false))
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump)
     =throws=> (ex-info? identity
@@ -133,11 +108,5 @@
         (u/assoc-computed :versioning/version vs/current-version)
         vs/bump
         str)
-    => "1.0.0"
+    => "1.0.0"))
 
-    (-> git-distance-ctxt
-        (assoc :git/description (make-dumy-desc simple-init-str dumy-dist false))
-        (u/assoc-computed :versioning/version vs/current-version)
-        vs/bump
-        str)
-    => (str dumy-dist)))

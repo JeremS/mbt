@@ -325,5 +325,8 @@ Specs used in `mbt's` core apis.
 (s/def :maven-like/qualifier (s/keys :req-un [:maven-like.qualifier/label
                                               :maven-like.qualifier/n]))
 
-(s/def :simple-version/number integer?)
-(s/def :simple-version/stable boolean?)
+(def git-distance-qualifiers #{:alpha :beta})
+
+(s/def :git-distance/number integer?)
+(s/def :git-distance/qualifier git-distance-qualifiers)
+

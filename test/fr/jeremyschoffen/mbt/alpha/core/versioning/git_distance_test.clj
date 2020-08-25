@@ -12,40 +12,71 @@
 
 (def dumy-sha "AAA123")
 
+(def dirty-base {:number 0
+                 :distance     0
+                 :sha          dumy-sha
+                 :dirty?       true})
+
 (deftest simple-version
-  (let [base {:number 0
-              :distance 0
-              :sha dumy-sha
-              :dirty? true}]
-    (facts
-      (-> base sv/git-distance-version str) => "0-DIRTY"
+  (facts
+    (-> dirty-base sv/git-distance-version str) => "0-DIRTY"
 
-      (-> base
-          (assoc :dirty? false)
-          sv/git-distance-version
-          str) => (str "0")
+    (-> dirty-base
+        (assoc :dirty? false)
+        sv/git-distance-version
+        str) => (str "0")
 
-      (-> base
-          (assoc :distance 5)
-          sv/git-distance-version
-          str) => (str "0-5-g" dumy-sha "-DIRTY"))))
+    (-> dirty-base
+        (assoc :distance 5)
+        sv/git-distance-version
+        str) => (str "0-5-g" dumy-sha "-DIRTY")
+
+    (-> dirty-base
+        (assoc :distance 5
+               :qualifier :alpha)
+        sv/git-distance-version
+        str) => (str "0-alpha-5-g" dumy-sha "-DIRTY")))
 
 
+(def base {:number 0
+           :distance 0
+           :sha dumy-sha
+           :dirty? false})
 
 (deftest bump
-  (let [base {:number 0
-              :distance 0
-              :sha dumy-sha
-              :dirty? false}]
-    (facts
-      (-> base sv/git-distance-version sv/bump str)
-      =throws=> (ex-info? "Duplicating tag."
-                          {::anom/category ::anom/forbidden
-                           :mbt/error :versioning/duplicating-tag})
+  (facts
+    (-> base sv/git-distance-version sv/bump str)
+    =throws=> (ex-info? "Duplicating tag."
+                        {::anom/category ::anom/forbidden
+                         :mbt/error :versioning/duplicating-tag})
 
-      (-> base
-          (assoc :distance 5)
-          sv/git-distance-version
-          sv/bump
-          str)
-      => (str "5"))))
+    (-> base
+        (assoc :distance 5)
+        sv/git-distance-version
+        sv/bump
+        str)
+    => (str "5")
+
+    (-> base
+        (assoc :distance 5
+               :qualifier :alpha)
+        sv/git-distance-version
+        sv/bump
+        str)
+    => (str "5-alpha")
+
+    (-> base
+        (assoc :distance 5
+               :qualifier :beta)
+        sv/git-distance-version
+        sv/bump
+        str)
+    => (str "5-beta")
+
+    (-> base
+        (assoc :distance 5
+               :qualifier :beta)
+        sv/git-distance-version
+        (sv/bump :stable)
+        str)
+    => (str "5")))

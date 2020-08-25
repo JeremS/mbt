@@ -28,15 +28,29 @@ Implementation of versioning schemes using the git disatnce building blocks from
     (mbt-core/version-git-distance (merge base relevant-part))))
 
 
-(def simple-scheme
-  "A simple version scheme. There is only one version number. It's starts at 0 on a specific commit then is just the git
-  distance from that initial versioned commit."
+(def git-distance-scheme
+  "A simple version scheme based on git-distance. There is only one version number starting at 0 on a specific commit.
+  It then becomes the number of commits from the initial version bumps after bumps.
+
+  This system allows for the use of alpha and beta qualifiers. A version without a qualifier can't go back to alpha nor
+  beta. To use them they need to be specified when the initial version is made conforming to the
+  `:git-distance/qualifier` spec.
+
+  To specify a qualifier:
+  - using [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols/initial-version]] the `level` parameter is
+  used
+  - using [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/initial-version]] the qualifier is passed using
+  the key `:versioning/bump-level` of the config map.
+  ``"
   (reify p/VersionScheme
     (current-version [_ desc]
       (current-version* desc))
 
     (initial-version [_]
-      mbt-core/version-initial-git-distance)
+      (mbt-core/version-initial-git-distance))
+
+    (initial-version [_ level]
+      (mbt-core/version-initial-git-distance level))
 
     (bump [_ version]
       (mbt-core/version-bump-git-distance version))

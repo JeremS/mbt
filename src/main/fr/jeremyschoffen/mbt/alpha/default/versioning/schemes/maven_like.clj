@@ -67,6 +67,9 @@ Implementation of versioning schemes using the maven and semver building blocks 
     (initial-version [_]
       mbt-core/version-initial-semver)
 
+    (initial-version [_ _]
+      mbt-core/version-initial-semver)
+
     (bump [this version]
       (p/bump this version :patch))
 

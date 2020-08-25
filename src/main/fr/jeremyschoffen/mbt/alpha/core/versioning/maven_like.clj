@@ -143,7 +143,7 @@ Building blocks to versioning systems following the maven or semver model.
 (defn- not-supported [level]
   (throw (ex-info (str "Not a supported bump operation: " level)
                   {::anom/category ::anom/unsupported
-                   :version/bump-level level})))
+                   :versioning/bump-level level})))
 
 
 (defn- bump-maven* [v level]

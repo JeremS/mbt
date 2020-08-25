@@ -16,11 +16,15 @@ Api used when versioning the project using git state.
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn initial-version
   "Get the initial version for a version scheme."
-  [{h :versioning/scheme}]
-  (vp/initial-version h))
+  ([{h :versioning/scheme
+     level :versioning/bump-level}]
+   (if level
+     (vp/initial-version h level)
+     (vp/initial-version h))))
 
 (u/spec-op initial-version
-           :param {:req [:versioning/scheme]}
+           :param {:req [:versioning/scheme]
+                   :opt [:versioning/bump-level]}
            :ret :versioning/version)
 
 
@@ -55,4 +59,4 @@ Api used when versioning the project using git state.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone maven-scheme maven-like/maven-scheme)
 (u/def-clone semver-scheme maven-like/semver-scheme)
-(u/def-clone git-distance-scheme git-distance/simple-scheme)
+(u/def-clone git-distance-scheme git-distance/git-distance-scheme)
