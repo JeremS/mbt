@@ -8,6 +8,7 @@ Api providing the default generation of the build configuration.
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
     [medley.core :as medley]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
+    [fr.jeremyschoffen.mapiform.alpha.core :as mapi-core]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -234,6 +235,13 @@ Api providing the default generation of the build configuration.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn jar-out-dir [{general-out :project/output-dir}]
+  general-out)
+
+(u/spec-op jar-out-dir
+           :param {:req [:project/output-dir]}
+           :ret :build.jar/output-dir)
+
 (defn jar-name
   "\"artefact-name.jar\""
   [{artefact-name :maven/artefact-name}]
@@ -287,17 +295,48 @@ Api providing the default generation of the build configuration.
    :maven.install/dir maven-install-dir
    :maven.settings/file maven-settings-file
 
+   :build.jar/output-dir jar-out-dir
    :build/jar-name jar-name
    :build/uberjar-name uberjar-name])
 
 
+(def default-cstrs
+  (apply hash-map ctxt-building-scheme))
+
+(def ctxt-building-order
+  (->> ctxt-building-scheme
+       (partition 2)
+       (mapv first)))
 
 
 (defn make-context
   "Make a config usable by mbt's apis. The `user-defined` parameter must be a map of configuration. Any key not present
-  in `user-defined` will be set to a default value."
-  [user-defined]
-  (apply u/ensure-computed user-defined ctxt-building-scheme))
+  in `user-defined` will be set to a default value. The `alternate-cstrs` parameter can be used to replace
+  the default constructors of the config values. It must be a map from config keys to a function
+  that will construct the config value from the current config.
+
+  The config values that will be constructed can be found in order in the var
+  [[fr.jeremyschoffen.mbt.alpha.default.defaults/ctxt-building-order]].
+
+  example:
+  ```
+  (def my-conf
+    (make-context {:project/name \"a-name\"}
+                  {:maven/artefact-name (fn [{n :project-name}]
+                                          (symbol n))})
+
+  (select-keys my-conf #{:project/name :maven/artefact-name})
+  ;=>{:maven/artefact-name a-name, :project/name \"a-name\"}
+  ```
+  "
+  ([user-defined-val]
+   (make-context user-defined-val {}))
+  ([user-defined alternate-ctrs]
+   (let [cstrs (merge default-cstrs alternate-ctrs)]
+     (reduce (fn [acc k]
+               (mapi-core/ensure-computed-1 acc k (get cstrs k)))
+             user-defined
+             ctxt-building-order))))
 
 
 (defn license-file-path
@@ -308,6 +347,8 @@ Api providing the default generation of the build configuration.
 (u/spec-op license-file-path
            :param {:req [:project/working-dir]}
            :ret :project.license/file)
+
+
 (comment
   (-> (sorted-map
         :project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
@@ -315,4 +356,3 @@ Api providing the default generation of the build configuration.
         :versioning/major :alpha
         :versioning/stable false)
       make-context))
-      ;(select-keys #{:versioning/stable :versioning/tag-base-name})))

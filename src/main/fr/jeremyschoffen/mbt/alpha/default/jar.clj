@@ -242,7 +242,7 @@ Apis providing the jar sources used by default.
 (defn make-jar&clean!
   "Create a jar, simplifying the process by handling the creation and deletion of the temporary output put that will
   be zipped into the resulting jar."
-  [{out :project/output-dir
+  [{out :build.jar/output-dir
     jar-out :jar/output
     :as param}]
   (u/ensure-dir! out)
@@ -263,18 +263,19 @@ Apis providing the jar sources used by default.
                   mbt-core/clean!]
            :param {:req [:project/working-dir
                          :jar/output
-                         :jar/srcs]
+                         :jar/srcs
+                         :build.jar/output-dir]
                    :opt [:jar/exclude?]})
 
 
 (defn jar-out
-  "Make the jar path given the `:project/output-dir` and `:build/jar-name`."
+  "Make the jar path given the `:build.jar/output-dir` and `:build/jar-name`."
   [{jar-name :build/jar-name
-    out :project/output-dir}]
+    out :build.jar/output-dir}]
   (u/safer-path out jar-name))
 
 (u/spec-op jar-out
-           :param {:req [:build/jar-name :project/output-dir]}
+           :param {:req [:build/jar-name :build.jar/output-dir]}
            :ret :jar/output)
 
 
@@ -302,19 +303,19 @@ Apis providing the jar sources used by default.
                          :maven/pom
                          :maven/pom-properties
                          :project/deps
-                         :project/output-dir
+                         :build.jar/output-dir
                          :project/working-dir]
                    :opt [:jar/exclude?]})
 
 
 (defn uberjar-out
-  "Make the uberjar path given the `:project/output-dir` and `:build/jar-name`."
+  "Make the uberjar path given the `:build.jar/output-dir` and `:build/jar-name`."
   [{jar-name :build/uberjar-name
-    out :project/output-dir}]
+    out :build.jar/output-dir}]
   (u/safer-path out jar-name))
 
 (u/spec-op uberjar-out
-           :param {:req [:build/uberjar-name :project/output-dir]}
+           :param {:req [:build/uberjar-name :build.jar/output-dir]}
            :ret :jar/output)
 
 
@@ -335,6 +336,7 @@ Apis providing the jar sources used by default.
 (u/spec-op uberjar!
            :deps [uberjar-out uber-jar-srcs make-jar&clean!]
            :param {:req [:build/uberjar-name
+                         :build.jar/output-dir
                          :classpath/index
                          :jar/manifest
                          :maven/artefact-name
@@ -342,6 +344,5 @@ Apis providing the jar sources used by default.
                          :maven/pom
                          :maven/pom-properties
                          :project/deps
-                         :project/output-dir
                          :project/working-dir]
                    :opt [:jar/exclude?]})
