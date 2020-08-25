@@ -36,17 +36,18 @@
 (def conf (mbt-defaults/make-conf specific-conf))
 
 
-
 (defn generate-docs! [conf]
   (-> conf
       (u/assoc-computed :project/maven-coords mbt-core/deps-make-coord)
-      (u/side-effect! docs/make-readme!)))
+      (u/do-side-effect! docs/make-readme!)
+      (u/do-side-effect! docs/make-rationale!)
+      (u/do-side-effect! docs/make-design-doc!)))
 
 
 (defn new-milestone! [param]
   (-> param
-      (mbt-defaults/generate-before-bump! (u/side-effect! generate-docs!)
-                                          (u/side-effect! mbt-defaults/write-version-file!))
+      (mbt-defaults/generate-before-bump! (u/do-side-effect! generate-docs!)
+                                          (u/do-side-effect! mbt-defaults/write-version-file!))
       (u/side-effect! mbt-defaults/bump-tag!)))
 
 
@@ -57,11 +58,12 @@
 
 (comment
   (-> conf
+      u/mark-dry-run
       (u/assoc-computed :project/version (comp str mbt-defaults/anticipated-next-version)
                         :project/maven-coords mbt-core/deps-make-coord)
-      (u/side-effect! docs/make-readme!)
-      (u/side-effect! docs/make-rationale!)
-      (u/side-effect! docs/make-design-doc!))
+      (u/do-side-effect! docs/make-readme!)
+      (u/do-side-effect! docs/make-rationale!)
+      (u/do-side-effect! docs/make-design-doc!))
 
   (new-milestone! conf)
 
@@ -74,6 +76,7 @@
 
   (-> conf
       (assoc :project/version "0")
-      (u/side-effect! mbt-defaults/build-jar!)
-      mbt-defaults/install!))
+      (u/do-side-effect! mbt-defaults/build-jar!)
+      (u/do-side-effect! mbt-defaults/install!)
+      u/record-build))
 
