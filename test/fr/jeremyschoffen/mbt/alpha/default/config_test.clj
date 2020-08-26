@@ -1,11 +1,11 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.defaults-test
+(ns fr.jeremyschoffen.mbt.alpha.default.config-test
   (:require
     [clojure.test :refer [deftest testing]]
     [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
@@ -15,7 +15,7 @@
   project
   versioning)
 
-(st/instrument [defaults/make-context])
+
 
 (deftest names
   (let [repo (h/make-temp-repo!)
@@ -26,12 +26,12 @@
         project-name (-> repo fs/file-name str)
         group-id (symbol project-name)
 
-        ctxt (defaults/make-context {::project/working-dir wd})
-        ctxt-alpha (defaults/make-context {::project/working-dir wd
-                                           ::versioning/major :alpha})
+        ctxt (config/make-base-config {::project/working-dir wd})
+        ctxt-alpha (config/make-base-config {::project/working-dir wd
+                                             ::versioning/major         :alpha})
 
 
-        ctxt' (defaults/make-context {::project/working-dir wd'})]
+        ctxt' (config/make-base-config {::project/working-dir wd'})]
     (testing "Group ids"
       (facts
         (::maven/group-id ctxt)

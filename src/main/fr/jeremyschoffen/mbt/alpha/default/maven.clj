@@ -43,8 +43,8 @@ Api providing default behaviour for maven tasks.
   [param]
   (-> param
       (u/ensure-computed
-        ::jar/output default-jar/jar-out
-        ::project/deps mbt-core/deps-get
+        ::jar/output default-jar/jar-out ;;FIXME handled by config
+        ::project/deps mbt-core/deps-get ;;FIXME handled by config
         ::project/version v/current-project-version)))
 
 ;;TODO: find out if we could pass these types of spec into :opt and use :fn

@@ -9,7 +9,7 @@
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
@@ -21,7 +21,7 @@
   project
   project.license)
 
-
+(st/unstrument)
 (st/instrument `[jar/jar! jar/uberjar!])
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@
                  ::maven/artefact-name 'project-2
                  ::build/jar-name "project2.jar"
                  ::jar/exclude? intruder?)
-               defaults/make-context
+               config/make-base-config
                jar/ensure-jar-defaults))
 
 
@@ -134,7 +134,7 @@
                 ::maven/artefact-name 'project-1
                 ::build/uberjar-name "project1-standalone.jar"
                 ::jar/exclude? uberjar-exclude?}
-               defaults/make-context
+               config/make-base-config
                (u/assoc-computed ::project/deps get-project1-deps)
                jar/ensure-jar-defaults))
 

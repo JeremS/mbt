@@ -24,22 +24,21 @@
 
 
 (def specific-conf
-  (sorted-map
-    ::maven/group-id 'fr.jeremyschoffen
-    ::project/author "Jeremy Schoffen"
+  {::maven/group-id 'fr.jeremyschoffen
+   ::project/author "Jeremy Schoffen"
 
-    ::version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
-    ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-    ::versioning/scheme mbt-defaults/git-distance-scheme
-    ::versioning/major :alpha
+   ::version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
+   ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
+   ::versioning/scheme mbt-defaults/git-distance-scheme
+   ::versioning/major :alpha
 
-    ::project/licenses [{::project.license/name "Eclipse Public License - v 2.0"
-                         ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
-                         ::project.license/distribution :repo
-                         ::project.license/file (u/safer-path "LICENSE")}]))
+   ::project/licenses [{::project.license/name "Eclipse Public License - v 2.0"
+                        ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
+                        ::project.license/distribution :repo
+                        ::project.license/file (u/safer-path "LICENSE")}]})
 
 
-(def conf (mbt-defaults/make-conf specific-conf))
+(def conf (mbt-defaults/config-make specific-conf))
 
 
 (defn generate-docs! [conf]

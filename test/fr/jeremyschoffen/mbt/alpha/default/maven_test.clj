@@ -1,11 +1,12 @@
 (ns fr.jeremyschoffen.mbt.alpha.default.maven-test
   (:require
     [clojure.test :refer [deftest testing]]
-    [clojure.spec.test.alpha :as stest]
+    [clojure.spec.test.alpha :as st]
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    ;[fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as default-maven]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
@@ -18,14 +19,14 @@
   project)
 
 
-(stest/instrument `[jar/ensure-jar-defaults
-                    jar/jar-out
-                    jar/jar!
+(st/instrument `[jar/ensure-jar-defaults
+                 jar/jar-out
+                 jar/jar!
 
-                    default-maven/install!
-                    default-maven/deploy!
+                 default-maven/install!
+                 default-maven/deploy!
 
-                    mbt-core/clean!])
+                 mbt-core/clean!])
 
 
 (def project-path test-repos/deploy-project)
@@ -47,7 +48,7 @@
 
                 ::maven.install/dir install-dir
                 ::maven/server {::maven.server/url (fs/url deploy-dir)})
-              defaults/make-context
+              config/make-base-config
               jar/ensure-jar-defaults))
 
 (def jar-out (jar/jar-out conf))

@@ -44,7 +44,7 @@
     (u/param-suggestions baz) =in=> (:param (u/spec bar))))
 
 
-(st/instrument)
+(st/instrument `[foo])
 (deftest instrumenting-works
   (let [e (try (foo {})
                (catch Exception e e))]

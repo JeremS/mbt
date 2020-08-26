@@ -4,7 +4,7 @@ Facade grouping the default apis in one place.
       "}
   fr.jeremyschoffen.mbt.alpha.default
   (:require
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.tasks :as tasks]
@@ -14,7 +14,11 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone make-conf defaults/make-context)
+(u/def-clone config-make config/make-base-config)
+(u/def-clone config-calc config/calc)
+(u/def-clone config-compute config/compute-conf)
+(u/def-clone config-print-deps config/pprint-deps)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning schemes

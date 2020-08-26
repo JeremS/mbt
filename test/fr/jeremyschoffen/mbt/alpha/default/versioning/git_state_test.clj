@@ -9,7 +9,8 @@
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]
-    [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    ;[fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
+    [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
     [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]
 
@@ -24,16 +25,17 @@
   project
   versioning)
 
-(st/instrument [mbt-core/git-add!
-                mbt-core/git-add-all!
-                mbt-core/git-commit!
-                mbt-core/git-tag!
+(st/unstrument)
+(st/instrument `[mbt-core/git-add!
+                 mbt-core/git-add-all!
+                 mbt-core/git-commit!
+                 mbt-core/git-tag!
 
-                git-state/most-recent-description
-                git-state/current-version
-                git-state/next-version
-                git-state/next-tag
-                git-state/bump-tag!])
+                 git-state/most-recent-description
+                 git-state/current-version
+                 git-state/next-version
+                 git-state/next-tag
+                 git-state/bump-tag!])
 
 
 
@@ -145,7 +147,7 @@
 
 (deftest next-tag-simple-repo
   (let [repo (h/make-temp-repo!)
-        ctxt (defaults/make-context
+        ctxt (config/make-base-config
                {::git/repo repo
                 ::project/working-dir (fs/path repo)
                 ::versioning/scheme test-scheme})
@@ -169,7 +171,7 @@
         project-dir1-relative (fs/path "module1" "project1")
         project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (defaults/make-context
+        ctxt1 (config/make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir1
                  ::versioning/scheme   test-scheme})
@@ -178,9 +180,10 @@
 
         project-dir2-relative (fs/path "module1" "project2")
         project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
-        ctxt2 (defaults/make-context {::git/repo            repo
-                                      ::project/working-dir project-dir2
-                                      ::versioning/scheme   test-scheme})
+        ctxt2 (config/make-base-config
+                {::git/repo            repo
+                 ::project/working-dir project-dir2
+                 ::versioning/scheme   test-scheme})
         base-name2 (::versioning/tag-base-name ctxt2)
 
         next-tag #(-> %
@@ -205,7 +208,7 @@
         project-dir1-relative (fs/path "module1" "project1")
         project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (defaults/make-context
+        ctxt1 (config/make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir1
                  ::versioning/scheme   test-scheme})
@@ -215,7 +218,7 @@
 
         project-dir2-relative (fs/path "module1" "project2")
         project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
-        ctxt2 (defaults/make-context
+        ctxt2 (config/make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir2
                  ::versioning/scheme   test-scheme})
