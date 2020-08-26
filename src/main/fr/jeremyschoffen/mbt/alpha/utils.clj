@@ -15,6 +15,36 @@ Utilities used in the whole project.
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
+;; Namespaces machinery
+;;----------------------------------------------------------------------------------------------------------------------
+;;TODO rename these, its obvious via ns that we are in mbtalpha...
+(defmacro alias-root-mbt-alpha [a]
+  `(do
+     (create-ns 'fr.jeremyschoffen.mbt.alpha)
+     (alias '~a 'fr.jeremyschoffen.mbt.alpha)))
+
+
+(defmacro pseudo-ns
+  ""
+  {:arglists '([prefix alias])}
+  [prefix a]
+  (let [full-ns (symbol (str prefix "." a))]
+    `(do
+       (create-ns '~full-ns)
+       (alias '~a '~full-ns))))
+
+
+(defmacro mbt-alpha-pseudo-nss [& aliases]
+  `(do ~@(for [alias aliases]
+           `(pseudo-ns fr.jeremyschoffen.mbt.alpha ~alias))))
+
+
+
+
+
+
+
+;;----------------------------------------------------------------------------------------------------------------------
 ;; Some fs utils
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn safer-path
@@ -107,3 +137,4 @@ Utilities used in the whole project.
            `[(s/def ~new-name (clojure.spec.alpha/get-spec '~cloned-sym))
              (spec-db/add-spec! '~(ns-qualify new-name) (spec ~cloned-sym))])
        (var ~new-name))))
+

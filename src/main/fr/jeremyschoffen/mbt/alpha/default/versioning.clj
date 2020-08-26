@@ -12,6 +12,11 @@ Grouping of the different versioning utilities.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  git
+  versioning)
+
+
 (u/def-clone maven-scheme schemes/maven-scheme)
 (u/def-clone semver-scheme schemes/semver-scheme)
 (u/def-clone git-distance-scheme schemes/git-distance-scheme)
@@ -41,7 +46,7 @@ Grouping of the different versioning utilities.
 
 (u/spec-op current-project-version
            :deps [current-version]
-           :param {:req [:git/repo
-                         :versioning/scheme]
-                   :opt [:versioning/tag-base-name]}
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [::versioning/tag-base-name]}
            :ret string?)

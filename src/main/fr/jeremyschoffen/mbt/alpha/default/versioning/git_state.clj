@@ -15,6 +15,13 @@ Api containing the default logic for using git state as a versioning mechanism.
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.tag
+  project
+  versioning)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
@@ -29,27 +36,27 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op check-some-commit
            :deps [mbt-core/git-any-commit?]
-           :param {:req [:git/repo]})
+           :param {:req [::git/repo]})
 
 
 (defn most-recent-description
   "Get the most recent description for the tags named with the base `:versioning/tag-base-name`."
-  [{repo :git/repo
-    tag-base :versioning/tag-base-name
+  [{repo ::git/repo
+    tag-base ::versioning/tag-base-name
     :as param}]
 
   (check-some-commit param)
   (let [pattern (if tag-base
                   (str tag-base "-v*")
                   "*")]
-    (mbt-core/git-describe {:git/repo                 repo
-                            :git.describe/tag-pattern pattern})))
+    (mbt-core/git-describe {::git/repo                 repo
+                            ::git.describe/tag-pattern pattern})))
 
 (u/spec-op most-recent-description
            :deps [mbt-core/git-describe]
-           :param {:req [:git/repo]
-                   :opt [:versioning/tag-base-name]}
-           :ret (s/nilable :git/description))
+           :param {:req [::git/repo]
+                   :opt [::versioning/tag-base-name]}
+           :ret (s/nilable ::git/description))
 
 
 (defn current-version
@@ -57,14 +64,15 @@ Api containing the default logic for using git state as a versioning mechanism.
   [param]
   (when-let [desc (most-recent-description param)]
     (-> param
-        (assoc :git/description desc)
+        (assoc ::git/description desc)
         (vs/current-version))))
 
 (u/spec-op current-version
            :deps [most-recent-description vs/current-version]
-           :param {:req [:git/repo :versioning/scheme]
-                   :opt [:versioning/tag-base-name]}
-           :ret (s/nilable :versioning/version))
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [::versioning/tag-base-name]}
+           :ret (s/nilable ::versioning/version))
 
 
 (defn next-version
@@ -72,31 +80,31 @@ Api containing the default logic for using git state as a versioning mechanism.
   [param]
   (if-let [desc (most-recent-description param)]
     (-> param
-        (assoc :git/description desc)
-        (u/assoc-computed :versioning/version vs/current-version)
+        (assoc ::git/description desc)
+        (u/assoc-computed ::versioning/version vs/current-version)
         vs/bump)
     (vs/initial-version param)))
 
 (u/spec-op next-version
            :deps [most-recent-description vs/initial-version vs/bump]
-           :param {:req [:git/repo
-                         :versioning/scheme]
-                   :opt [:versioning/tag-base-name
-                         :versioning/bump-level]}
-           :ret :versioning/version)
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [::versioning/tag-base-name
+                         ::versioning/bump-level]}
+           :ret ::versioning/version)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Buidling tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- tag-name [{base :versioning/tag-base-name
-                  v    :versioning/version}]
+(defn- tag-name [{base ::versioning/tag-base-name
+                  v    ::versioning/version}]
   (str base "-v" v))
 
 (u/spec-op tag-name
-           :param {:req [:versioning/tag-base-name
-                         :versioning/version]}
-           :ret :git.tag/name)
+           :param {:req [::versioning/tag-base-name
+                         ::versioning/version]}
+           :ret ::git.tag/name)
 
 ;; taken from https://github.com/jgrodziski/metav/blob/master/src/metav/domain/metadata.clj#L8
 (defn- iso-now []
@@ -107,9 +115,9 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 
 ;; inspired by https://github.com/jgrodziski/metav/blob/master/src/metav/domain/metadata.clj#L15
-(defn- make-tag-data [{base :versioning/tag-base-name
-                       v :versioning/version
-                       git-prefix :git/prefix
+(defn- make-tag-data [{base ::versioning/tag-base-name
+                       v ::versioning/version
+                       git-prefix ::git/prefix
                        :as param}]
   (let [prefix (str git-prefix)
         path (if (empty? prefix)
@@ -123,9 +131,9 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op make-tag-data
            :deps [tag-name]
-           :param {:req [:versioning/tag-base-name
-                         :versioning/version
-                         :git/prefix]}
+           :param {:req [::versioning/tag-base-name
+                         ::versioning/version
+                         ::git/prefix]}
            :ret map?)
 
 
@@ -133,15 +141,15 @@ Api containing the default logic for using git state as a versioning mechanism.
   "Create tag data usable by our git wrapper."
   [param]
   (let [m (make-tag-data param)]
-    {:git.tag/name (:tag-name m)
-     :git.tag/message (pr-str m)}))
+    {::git.tag/name (:tag-name m)
+     ::git.tag/message (pr-str m)}))
 
 (u/spec-op make-tag
            :deps [make-tag-data]
-           :param {:req [:versioning/tag-base-name
-                         :versioning/version
-                         :git/prefix]}
-           :ret :git/tag)
+           :param {:req [::versioning/tag-base-name
+                         ::versioning/version
+                         ::git/prefix]}
+           :ret ::git/tag)
 
 
 (defn next-tag
@@ -149,18 +157,18 @@ Api containing the default logic for using git state as a versioning mechanism.
   [param]
   (-> param
       (u/assoc-computed
-        :git/prefix mbt-core/git-prefix
-        :versioning/version next-version)
+        ::git/prefix mbt-core/git-prefix
+        ::versioning/version next-version)
       make-tag))
 
 (u/spec-op next-tag
            :deps [mbt-core/git-prefix make-tag next-version]
-           :param {:req #{:git/repo
-                          :project/working-dir
-                          :versioning/tag-base-name
-                          :versioning/scheme}
-                   :opt #{:versioning/bump-level}}
-           :ret :git/tag)
+           :param {:req #{::git/repo
+                          ::project/working-dir
+                          ::versioning/tag-base-name
+                          ::versioning/scheme}
+                   :opt #{::versioning/bump-level}}
+           :ret ::git/tag)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -171,12 +179,12 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (defn has-build-file?
   "Checking that the working dir contains a `deps.edn` file."
-  [{wd :project/working-dir}]
+  [{wd ::project/working-dir}]
   (let [build-file (u/safer-path wd module-build-file)]
     (fs/exists? build-file)))
 
 (u/spec-op has-build-file?
-           :param {:req [:project/working-dir]}
+           :param {:req [::project/working-dir]}
            :ret boolean?)
 
 
@@ -190,7 +198,7 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op check-build-file
            :deps [has-build-file?]
-           :param {:req [:project/working-dir]})
+           :param {:req [::project/working-dir]})
 
 
 (defn check-not-dirty
@@ -203,7 +211,7 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op check-not-dirty
            :deps [mbt-core/git-dirty?]
-           :param {:req [:git/repo]})
+           :param {:req [::git/repo]})
 
 
 (defn check-repo-in-order
@@ -219,8 +227,8 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op check-repo-in-order
            :deps [check-build-file check-some-commit check-not-dirty]
-           :param {:req [:project/working-dir
-                         :git/repo]})
+           :param {:req [::project/working-dir
+                         ::git/repo]})
 
 
 (defn tag!
@@ -233,8 +241,8 @@ Api containing the default logic for using git state as a versioning mechanism.
 
 (u/spec-op tag!
            :deps [check-repo-in-order mbt-core/git-tag!]
-           :param {:req [:git/repo
-                         :git/tag!]})
+           :param {:req [::git/repo
+                         ::git/tag!]})
 
 
 (defn bump-tag!
@@ -243,13 +251,13 @@ Api containing the default logic for using git state as a versioning mechanism.
   version scheme will be selected."
   [param]
   (-> param
-      (u/augment-computed :git/tag! next-tag)
+      (u/augment-computed ::git/tag! next-tag)
       tag!))
 
 (u/spec-op bump-tag!
            :deps [next-tag tag!]
-           :param {:req [:project/working-dir
-                         :git/repo
-                         :versioning/scheme
-                         :versioning/tag-base-name]
-                   :opt [:versioning/bump-level]})
+           :param {:req [::project/working-dir
+                         ::git/repo
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::versioning/bump-level]})

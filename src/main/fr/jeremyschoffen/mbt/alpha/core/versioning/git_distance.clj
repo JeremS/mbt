@@ -9,6 +9,13 @@ Building blocks of a versioning system based on git commit distance.
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.repo
+  git-distance
+  versioning)
+
 
 (defrecord GitDistanceVersion [number qualifier distance sha dirty?]
   Object
@@ -29,8 +36,8 @@ Building blocks of a versioning system based on git commit distance.
 
 (u/simple-fdef parse-version
                string?
-               (s/keys :req-un [:git-distance/number]
-                       :opt-un [:git-distance/qualifier]))
+               (s/keys :req-un [::git-distance/number]
+                       :opt-un [::git-distance/qualifier]))
 
 
 (defn git-distance-version
@@ -45,11 +52,11 @@ Building blocks of a versioning system based on git commit distance.
   (map->GitDistanceVersion x))
 
 (u/spec-op git-distance-version
-           :param {:req-un [:git-distance/number
-                            :git.describe/distance
-                            :git/sha
-                            :git.repo/dirty?]
-                   :opt-un [:git-distance/qualifier]})
+           :param {:req-un [::git-distance/number
+                            ::git.describe/distance
+                            ::git/sha
+                            ::git.repo/dirty?]
+                   :opt-un [::git-distance/qualifier]})
 
 
 (defn- throw-duplicating []
@@ -84,7 +91,7 @@ Building blocks of a versioning system based on git commit distance.
   (throw (ex-info (str "Unsuported bump: " level)
                   {::anom/category ::anom/forbidden
                    :mbt/error :versioning/duplicating-tag
-                   :versioning/bump-level level})))
+                   ::versioning/bump-level level})))
 
 
 (defn bump

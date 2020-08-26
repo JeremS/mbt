@@ -10,7 +10,7 @@ Api providing maven pom.xml files generation.
     [clojure.data.xml.tree :as tree]
     [clojure.data.xml.event :as event]
     [clojure.zip :as zip]
-    [clojure.tools.deps.alpha.util.maven :as maven]
+    [clojure.tools.deps.alpha.util.maven :as tools-maven]
     [clojure.tools.deps.alpha.util.io :refer [printerrln]]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -20,9 +20,19 @@ Api providing maven pom.xml files generation.
     [clojure.data.xml.node Element]))
 
 
+(u/mbt-alpha-pseudo-nss
+  project
+  project.license
+  maven
+  maven.pom
+  maven.scm)
+
+
+
+;;TODO: maybe throw exception when deps aren't maven compatible
 (defn non-maven-deps
   "Utility signaling non maven deps. These deps can't go into a pom file."
-  [{deps-map :project/deps}]
+  [{deps-map ::project/deps}]
   (into #{}
         (keep (fn [[k v]]
                 (when-not (contains? v :mvn/version)
@@ -30,7 +40,7 @@ Api providing maven pom.xml files generation.
         (:deps deps-map)))
 
 (u/spec-op non-maven-deps
-           :param {:req [:project/deps]}
+           :param {:req [::project/deps]}
            :ret (s/coll-of symbol? :kind set?))
 
 ;; Rework from tools deps
@@ -48,8 +58,8 @@ Api providing maven pom.xml files generation.
 
 
 (defn- gen-license [license]
-  (let [{license-name :project.license/name
-         :project.license/keys [url distribution comment]} license]
+  (let [{license-name ::project.license/name
+         ::project.license/keys [url distribution comment]} license]
     (into [::pom/license]
           (keep identity)
           [(maybe-tag ::pom/name license-name)
@@ -63,7 +73,7 @@ Api providing maven pom.xml files generation.
 
 
 (defn- gen-scm [maven-scm]
-  (let [{:maven.scm/keys [connection developer-connection tag url]} maven-scm]
+  (let [{::maven.scm/keys [connection developer-connection tag url]} maven-scm]
     (into [::pom/scm]
           (keep identity)
           [(maybe-tag ::pom/connection connection)
@@ -74,7 +84,7 @@ Api providing maven pom.xml files generation.
 
 (defn- to-dep
   [[lib {:keys [mvn/version exclusions] :as coord}]]
-  (let [[group-id artifact-id classifier] (maven/lib->names lib)]
+  (let [[group-id artifact-id classifier] (tools-maven/lib->names lib)]
     (if version
       (cond->
         [::pom/dependency
@@ -122,12 +132,12 @@ Api providing maven pom.xml files generation.
 
 (defn new-pom
   "Make a fresh pom using the tree of maps representation used in the `clojure.data.xml` library."
-  [{project-name :maven/artefact-name
-    group-id :maven/group-id
-    project-version :project/version
-    project-deps :project/deps
-    maven-scm :maven/scm
-    licenses :project/licenses}]
+  [{project-name ::maven/artefact-name
+    group-id ::maven/group-id
+    project-version ::project/version
+    project-deps ::project/deps
+    maven-scm ::maven/scm
+    licenses ::project/licenses}]
   (let [{deps :deps
          [path & paths] :paths
          repos :mvn/repos} project-deps
@@ -153,13 +163,13 @@ Api providing maven pom.xml files generation.
        (gen-repos repos)])))
 
 (u/spec-op new-pom
-           :param {:req [:maven/artefact-name
-                         :maven/group-id
-                         :project/version
-                         :project/deps]
-                   :opt [:maven/scm
-                         :project/licenses]}
-           :ret :maven/pom)
+           :param {:req [::maven/artefact-name
+                         ::maven/group-id
+                         ::project/version
+                         ::project/deps]
+                   :opt [::maven/scm
+                         ::project/licenses]}
+           :ret ::maven.pom/xml)
 
 
 (defn- make-xml-element
@@ -228,13 +238,13 @@ Api providing maven pom.xml files generation.
     pom))
 
 
-(defn- update-pom [{pom :maven/pom
-                    project-name :maven/artefact-name
-                    group-id :maven/group-id
-                    project-version :project/version
-                    project-deps :project/deps
-                    scm :maven/scm
-                    licenses :project/licenses}]
+(defn- update-pom [{pom ::maven.pom/xml
+                    project-name ::maven/artefact-name
+                    group-id ::maven/group-id
+                    project-version ::project/version
+                    project-deps ::project/deps
+                    scm ::maven/scm
+                    licenses ::project/licenses}]
   (let [{:keys [deps paths :mvn/repos]} project-deps]
     (-> pom
         (replace-name project-name)
@@ -247,14 +257,14 @@ Api providing maven pom.xml files generation.
         (replace-repos repos))))
 
 (u/spec-op update-pom
-           :param {:req [:maven/pom
-                         :maven/artefact-name
-                         :maven/group-id
-                         :project/version
-                         :project/deps]
-                   :opt [:maven/scm
-                         :project/licenses]}
-           :ret :maven/pom)
+           :param {:req [::maven.pom/xml
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::project/version
+                         ::project/deps]
+                   :opt [::maven/scm
+                         ::project/licenses]}
+           :ret ::maven.pom/xml)
 
 
 (defn- parse-xml
@@ -277,13 +287,13 @@ Api providing maven pom.xml files generation.
 (defn sync-pom!
   "Function similar to `clojure.tools.deps.alpha.gen.pom/sync-pom` with added behaviour. Fills the
   maven coordinates for the project in addition to tools deps operation."
-  [{pom-dir :maven.pom/dir
+  [{pom-dir ::maven.pom/dir
     :as      param}]
   (let [p (pom-path pom-dir)
         current-pom (when (fs/exists? p)
                       (read-xml p))]
     (if current-pom
-      (spit p (-> (assoc param :maven/pom current-pom)
+      (spit p (-> (assoc param ::maven.pom/xml current-pom)
                   update-pom
                   xml/indent-str))
       (do
@@ -292,18 +302,18 @@ Api providing maven pom.xml files generation.
 
 (u/spec-op sync-pom!
            :deps [new-pom]
-           :param {:req [:maven.pom/dir
-                         :maven/artefact-name
-                         :maven/group-id
-                         :project/version
-                         :project/deps]
-                   :opt [:maven/scm
-                         :project/licenses]})
+           :param {:req [::maven.pom/dir
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::project/version
+                         ::project/deps]
+                   :opt [::maven/scm
+                         ::project/licenses]})
 
 ;; inspired by https://github.com/seancorfield/depstar/blob/develop/src/hf/depstar/uberjar.clj#L322
-(defn new-pom-properties [{group-id :maven/group-id
-                           artefact-name :maven/artefact-name
-                           v :project/version}]
+(defn new-pom-properties [{group-id ::maven/group-id
+                           artefact-name ::maven/artefact-name
+                           v ::project/version}]
   (let [now (java.util.Date.)]
     (str "#Generated by Mbt\n"
          "#" now "\n"
@@ -312,18 +322,18 @@ Api providing maven pom.xml files generation.
          "artifactId: " artefact-name "\n")))
 
 (u/spec-op new-pom-properties
-           :param {:req [:maven/group-id
-                         :maven/artefact-name
-                         :project/version]}
-           :ret :maven/pom-properties)
+           :param {:req [::maven/group-id
+                         ::maven/artefact-name
+                         ::project/version]}
+           :ret ::maven.pom/properties)
 (comment
   (require '[clojure.tools.deps.alpha :as deps-reader])
 
-  (def ctxt {:maven/group-id 'group
-             :maven/artefact-name 'toto
-             :project/version "1"
-             :project/deps (deps-reader/slurp-deps (fs/file "deps.edn"))
-             :maven.pom/dir (u/safer-path "target")
+  (def ctxt {::maven/group-id 'group
+             ::maven/artefact-name 'toto
+             ::project/version "1"
+             ::project/deps (deps-reader/slurp-deps (fs/file "deps.edn"))
+             ::maven.pom/dir (u/safer-path "target")
 
              :project/licenses [{:project.license/name "toto"
                                  :project.license/url "www.toto.com"

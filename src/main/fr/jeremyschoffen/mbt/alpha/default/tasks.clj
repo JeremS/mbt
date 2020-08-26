@@ -13,6 +13,16 @@ Higher level apis.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  build
+  git
+  git.commit
+  jar.manifest
+  maven
+  project
+  project.deps
+  versioning)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Version file
@@ -26,26 +36,27 @@ Higher level apis.
     (if-not current-version
       (v/schemes-initial-version param)
       (-> param
-          (assoc :versioning/version
+          (assoc ::versioning/version
                  (update current-version :distance inc))
           v/schemes-bump))))
 
 (u/spec-op anticipated-next-version
            :deps [v/current-version v/schemes-initial-version v/schemes-bump]
-           :param {:req [:git/repo
-                         :versioning/scheme]
-                   :opt [:versioning/bump-level
-                         :versioning/tag-base-name]}
-           :ret :versioning/version)
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [::versioning/bump-level
+                         ::versioning/tag-base-name]}
+           :ret ::versioning/version)
 
 
 (defn- commit-generated! [conf]
   (mbt-core/git-commit! (assoc conf
-                          :git/commit! {:git.commit/message "Added generated files."})))
+                          ::git/commit! {::git.commit/message "Added generated files."})))
 
 (u/spec-op commit-generated!
            :deps [mbt-core/git-commit!]
-           :param {:req [:git/repo :git/commit!]})
+           :param {:req [::git/repo
+                         ::git/commit!]})
 
 
 (defn generate-before-bump!
@@ -56,7 +67,7 @@ Higher level apis.
   This function attemps to provide a way to encapsulate this logic. It is performed in several steps:
 
   1) Checks the repo using [[fr.jeremyschoffen.mbt.alpha.default.versioning/check-repo-in-order]].
-  2) Ensure the the presence of the `:project/version` key of the `conf` using
+  2) Ensure the the presence of the `:fr...mbt.alpha.project/version` key of the `conf` using
      [[fr.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]] if necessary.
   3) Thread `conf` through `fns` using [[fr.jeremyschoffen.mbt.alpha.utils//thread-fns]].
   4) Add all the new files to git using [[fr.jeremyschoffen.mbt.alpha.core/git-add-all!]]
@@ -69,16 +80,16 @@ Higher level apis.
   [conf & fns]
   (-> conf
       (u/check v/check-repo-in-order)
-      (u/ensure-computed :project/version (comp str anticipated-next-version))
+      (u/ensure-computed ::project/version (comp str anticipated-next-version))
       (as-> conf (apply u/thread-fns conf fns))
       (u/do-side-effect! mbt-core/git-add-all!)
       (u/do-side-effect! commit-generated!)))
 
 (s/fdef generate-before-bump!
-        :args (s/cat :param (s/keys :req [:git/repo
-                                          :versioning/scheme]
-                                    :opt [:versioning/tag-base-name
-                                          :versioning/bump-level])
+        :args (s/cat :param (s/keys :req [::git/repo
+                                          ::versioning/scheme]
+                                    :opt [::versioning/tag-base-name
+                                          ::versioning/bump-level])
                      :fns (s/* fn?)))
 
 
@@ -86,55 +97,55 @@ Higher level apis.
 ;; Building jars
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn jar!
-  "Build a skinny jar for the project. Ensure that the `:project/version` is present int the config with
+  "Build a skinny jar for the project. Ensure that the `:fr...mbt.alpha.project/version` is present int the config with
   [[fr.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
   Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]].
   "
   [param]
   (-> param
-      (u/ensure-computed :project/version v/current-project-version)
+      (u/ensure-computed ::project/version v/current-project-version)
       jar/ensure-jar-defaults
       jar/jar!))
 
 (u/spec-op jar!
            :deps [v/current-version jar/ensure-jar-defaults jar/jar!]
-           :param {:req [:build/jar-name
-                         :git/repo
-                         :maven/artefact-name
-                         :maven/group-id
-                         :project/output-dir
-                         :project/working-dir
-                         :versioning/scheme]
-                   :opt [:jar/exclude?
-                         :jar/main-ns
-                         :jar.manifest/overrides
-                         :project/author
-                         :project.deps/aliases
-                         :versioning/tag-base-name]})
+           :param {:req [::build/jar-name
+                         ::git/repo
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::project/output-dir
+                         ::project/working-dir
+                         ::versioning/scheme]
+                   :opt [::jar/exclude?
+                         ::jar/main-ns
+                         ::jar.manifest/overrides
+                         ::project/author
+                         ::project.deps/aliases
+                         ::versioning/tag-base-name]})
 
 
 (defn uberjar!
-  "Build an uberjar for the project. Ensure that the `:project/version` is present int the config with
+  "Build an uberjar for the project. Ensure that the `:fr...mbt.alpha.project/version` is present int the config with
   [[fr.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
   Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
-      (u/ensure-computed :project/version v/current-project-version)
+      (u/ensure-computed ::project/version v/current-project-version)
       jar/ensure-jar-defaults
       jar/uberjar!))
 
 (u/spec-op uberjar!
            :deps [v/current-version jar/ensure-jar-defaults jar/uberjar!]
-           :param {:req [:build/uberjar-name
-                         :git/repo
-                         :maven/artefact-name
-                         :maven/group-id
-                         :project/output-dir
-                         :project/working-dir
-                         :versioning/scheme]
-                   :opt [:jar/exclude?
-                         :jar/main-ns
-                         :jar.manifest/overrides
-                         :project/author
-                         :project.deps/aliases
-                         :versioning/tag-base-name]})
+           :param {:req [::build/uberjar-name
+                         ::git/repo
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::project/output-dir
+                         ::project/working-dir
+                         ::versioning/scheme]
+                   :opt [::jar/exclude?
+                         ::jar/main-ns
+                         ::jar.manifest/overrides
+                         ::project/author
+                         ::project.deps/aliases
+                         ::versioning/tag-base-name]})

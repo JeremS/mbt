@@ -11,6 +11,11 @@ File cleaning api.
   (:import
     [java.nio.file FileVisitResult FileVisitor]))
 
+(u/mbt-alpha-pseudo-nss
+  project
+  cleaning)
+
+
 (defn- make-delete-all-visitor []
   (reify FileVisitor
     (postVisitDirectory [_ dir exception]
@@ -27,7 +32,7 @@ File cleaning api.
     (visitFileFailed [_ file exception]
       (throw exception))))
 
-(defn- check-wd [{wd :project/working-dir
+(defn- check-wd [{wd ::project/working-dir
                   :as param}]
   (when-not wd
     (throw (ex-info "Can't clean without a project directory for reference."
@@ -36,11 +41,11 @@ File cleaning api.
                       :mbt/error :no-project-directory)))))
 
 (u/spec-op check-wd
-           :param {:req [:project/working-dir]})
+           :param {:req [::project/working-dir]})
 
 
-(defn- check-proper-ancestry [{wd :project/working-dir
-                               file :cleaning/target
+(defn- check-proper-ancestry [{wd ::project/working-dir
+                               file ::cleaning/target
                                :as param}]
   (when-not (fs/ancestor? wd file)
     (throw (ex-info "Can't clean file outside of the project directory"
@@ -55,15 +60,15 @@ File cleaning api.
 
 
 (u/spec-op check-proper-ancestry
-           :param {:req [:project/working-dir
-                         :cleaning/target]})
+           :param {:req [::project/working-dir
+                         ::cleaning/target]})
 
 
-(defn- clean!* [{file :cleaning/target}]
+(defn- clean!* [{file ::cleaning/target}]
   (fs/walk-file-tree file (make-delete-all-visitor)))
 
 (u/spec-op clean!*
-           :param {:req [:cleaning/target]})
+           :param {:req [::cleaning/target]})
 
 ;; TODO: consider having a set of targets
 (defn clean!
@@ -72,7 +77,7 @@ File cleaning api.
   your project dir with this function, src dir included.
 
   Returns the cleaning target."
-  [{t :cleaning/target
+  [{t ::cleaning/target
     :as param}]
   (when-not (fs/exists? t)
     (throw (ex-info "File to clean doesn't exist."
@@ -86,5 +91,5 @@ File cleaning api.
 
 (u/spec-op clean!
            :deps [check-wd check-proper-ancestry]
-           :param {:req [:cleaning/target
-                         :project/working-dir]})
+           :param {:req [::cleaning/target
+                         ::project/working-dir]})

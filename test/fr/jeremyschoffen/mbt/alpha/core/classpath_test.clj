@@ -9,6 +9,12 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  classpath
+  project
+  project.deps)
+
+
 (def clojure-jar? #(re-matches #".*/clojure-.*\.jar$" %))
 (def spec-jar? #(re-matches #".*/core\.specs\.alpha-.*\.jar$" %))
 (def specs-jar? #(re-matches #".*/spec\.alpha-.*\.jar$" %))
@@ -19,20 +25,23 @@
               (partial some specs-jar?)))
 
 
+(def state-p1 {::project/working-dir  test-repos/monorepo-p1
+               ::project/deps test-repos/monorepo-project1-deps})
+
+(def state-p2 (u/assoc-computed {::project/working-dir  test-repos/monorepo-p2
+                                 ::project.deps/file (u/safer-path test-repos/monorepo-p2 "deps.edn")}
+                                ::project/deps deps/get-deps))
+
+(def cp1 (cp/indexed-classpath state-p1))
+(def cp2 (cp/indexed-classpath state-p2))
+
+
 (deftest classpath-test
-  (let [state-p1 {:project/working-dir  test-repos/monorepo-p1
-                  :project/deps test-repos/monorepo-project1-deps}
-
-        state-p2 (u/assoc-computed {:project/working-dir  test-repos/monorepo-p2
-                                    :project/deps-file (u/safer-path test-repos/monorepo-p2 "deps.edn")}
-                                   :project/deps deps/get-deps)
-
-        cp1 (cp/indexed-classpath state-p1)
-        cp2 (cp/indexed-classpath state-p2)]
+  (let []
 
     (facts
-      (-> cp1 :classpath/jar clojure-jars-present?) => true
-      (-> cp2 :classpath/jar clojure-jars-present?) => false
+      (-> cp1 ::classpath/jar clojure-jars-present?) => true
+      (-> cp2 ::classpath/jar clojure-jars-present?) => false
 
-      (-> cp1 :classpath/ext-dep set) => #{(str (fs/path test-repos/monorepo-p2  "src"))
-                                           (str (fs/path test-repos/monorepo-p2  "resources"))})))
+      (-> cp1 ::classpath/ext-dep set) => #{(str (fs/path test-repos/monorepo-p2  "src"))
+                                            (str (fs/path test-repos/monorepo-p2  "resources"))})))

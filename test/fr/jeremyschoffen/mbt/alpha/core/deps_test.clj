@@ -5,7 +5,13 @@
     [clojure.tools.deps.alpha.util.maven :as deps-maven]
     [testit.core :refer :all]
 
-    [fr.jeremyschoffen.mbt.alpha.core.deps :as deps]))
+    [fr.jeremyschoffen.mbt.alpha.core.deps :as deps]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
+(u/mbt-alpha-pseudo-nss
+  maven
+  project)
+
 
 (stest/instrument [deps/make-deps-coords])
 
@@ -15,10 +21,10 @@
 (def version "0.4.3-beta")
 
 (def conf
-  {:maven/group-id      group-id
-   :maven/artefact-name project-name
-   :maven/classifier    classifier
-   :project/version     version})
+  {::maven/group-id      group-id
+   ::maven/artefact-name project-name
+   ::maven/classifier    classifier
+   ::project/version     version})
 
 
 (def ex (deps/make-deps-coords conf))

@@ -11,17 +11,24 @@ Implementation of versioning schemes using the maven and semver building blocks 
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.repo
+  git.tag)
+
+
 (defn- parse-git-descripton
   "Parse a git description into a map usable by a maven-like version cstr."
   [git-desc]
   (let [current-str (-> git-desc
-                        (get-in  [:git/tag :git.tag/message])
+                        (get-in  [::git/tag ::git.tag/message])
                         clojure.edn/read-string
                         :version)
         relevant-part (-> git-desc
-                          (select-keys #{:git/sha
-                                         :git.describe/distance
-                                         :git.repo/dirty?})
+                          (select-keys #{::git/sha
+                                         ::git.describe/distance
+                                         ::git.repo/dirty?})
                           u/strip-keys-nss)]
     (-> current-str
         mbt-core/version-parse-maven-like

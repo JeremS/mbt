@@ -17,6 +17,25 @@ Api providing the default generation of the build configuration.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [clojure.spec.alpha :as s]))
 
+
+(u/mbt-alpha-pseudo-nss
+  build
+  build.jar
+  cleaning
+  compilation.clojure
+  compilation.java
+  git
+  gpg
+  maven
+  maven.install
+  maven.pom
+  maven.settings
+  project
+  project.deps
+  project.license
+  versioning)
+
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; General project values
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -25,17 +44,17 @@ Api providing the default generation of the build configuration.
   (constantly (u/safer-path)))
 
 (u/spec-op working-dir
-           :ret :project/working-dir)
+           :ret ::project/working-dir)
 
 
 (defn output-dir
   "Default output dir \"working-dir/target\""
-  [{wd :project/working-dir}]
+  [{wd ::project/working-dir}]
   (u/safer-path wd "target"))
 
 (u/spec-op output-dir
            :param {}
-           :ret :project/output-dir)
+           :ret ::project/output-dir)
 
 
 (defn project-author
@@ -44,7 +63,7 @@ Api providing the default generation of the build configuration.
   (System/getProperty "user.name"))
 
 (u/spec-op project-author
-           :ret :project/author)
+           :ret ::project/author)
 
 
 (defn project-name
@@ -60,41 +79,41 @@ Api providing the default generation of the build configuration.
 
 (u/spec-op project-name
            :deps [mbt-core/git-prefix]
-           :param {:req [:project/working-dir]
-                   :opt [:versioning/major]}
-           :ret :project/name)
+           :param {:req [::project/working-dir]
+                   :opt [::versioning/major]}
+           :ret ::project/name)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn deps-file [{wd :project/working-dir}]
+(defn deps-file [{wd ::project/working-dir}]
   (u/safer-path wd "deps.edn"))
 
 (u/spec-op deps-file
-           :param {:req [:project/working-dir]}
-           :ret :project/deps-file)
+           :param {:req [::project/working-dir]}
+           :ret ::project.deps/file)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn compilation-clojure-dir
   "The default clojure compilation directory: \"output-dir/classes\""
-  [{out :project/output-dir}]
+  [{out ::project/output-dir}]
   (fs/path out "classes"))
 
 (u/spec-op compilation-clojure-dir
-           :param {:req [:project/output-dir]}
-           :ret :compilation.clojure/output-dir)
+           :param {:req [::project/output-dir]}
+           :ret ::compilation.clojure/output-dir)
 
 
 (defn compilation-java-dir
   "The default java compilation directory: \"output-dir/classes\""
-  [{out :project/output-dir}]
+  [{out ::project/output-dir}]
   (fs/path out "classes"))
 
 (u/spec-op compilation-java-dir
-           :param {:req [:project/output-dir]}
-           :ret :compilation.java/output-dir)
+           :param {:req [::project/output-dir]}
+           :ret ::compilation.java/output-dir)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
@@ -105,18 +124,18 @@ Api providing the default generation of the build configuration.
   (gpg-defaults/default-gpg-command))
 
 (u/spec-op gpg-command
-           :ret (s/nilable :gpg/command))
+           :ret (s/nilable ::gpg/command))
 
 
 (defn gpg-version
   "Look up the gpg version currently installed. See [[fr.jeremyschoffen.mbt.alpha.core/gpg-version]]."
   [param]
-  (when (:gpg/command param)
+  (when (::gpg/command param)
     (mbt-core/gpg-version param)))
 
 (u/spec-op gpg-version
-           :param {:opt [:gpg/command]}
-           :ret (s/nilable :gpg/version))
+           :param {:opt [::gpg/command]}
+           :ret (s/nilable ::gpg/version))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -129,8 +148,8 @@ Api providing the default generation of the build configuration.
 
 (u/spec-op git-repo
            :deps [mbt-core/git-make-jgit-repo]
-           :param {:req [:project/working-dir]}
-           :ret :git/repo)
+           :param {:req [::project/working-dir]}
+           :ret ::git/repo)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -139,11 +158,11 @@ Api providing the default generation of the build configuration.
 (defn cleaning-target
   "Default cleaning dir -> default output-dir."
   [param]
-  (:project/output-dir param))
+  (::project/output-dir param))
 
 (u/spec-op cleaning-target
-           :param {:req [:project/output-dir]}
-           :ret :cleaning/target)
+           :param {:req [::project/output-dir]}
+           :ret ::cleaning/target)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -151,18 +170,17 @@ Api providing the default generation of the build configuration.
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn tag-base-name
   "Defaults to `project/name` + suffixes depending on `:versioning/major` and `:versioning/stable`."
-  [{p-name  :project/name
-    major   :versioning/major}]
+  [{p-name  ::project/name
+    major   ::versioning/major}]
   (-> p-name
       (cond-> major   (str "-" (name major)))))
 
-
 (u/spec-op tag-base-name
            :deps [project-name]
-           :param {:req [:project/name
-                         :versioning/stable]
-                   :opt [:versioning/major]}
-           :ret :versioning/tag-base-name)
+           :param {:req [::project/name
+                         ::versioning/stable]
+                   :opt [::versioning/major]}
+           :ret ::versioning/tag-base-name)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -179,30 +197,30 @@ Api providing the default generation of the build configuration.
 
 (u/spec-op group-id
            :deps [mbt-core/git-top-level]
-           :param {:req [:project/working-dir]}
-           :ret :maven/group-id)
+           :param {:req [::project/working-dir]}
+           :ret ::maven/group-id)
 
 
 (defn artefact-name
   "Default maven name: `project/name`."
-  [{base-name :versioning/tag-base-name}]
+  [{base-name ::versioning/tag-base-name}]
   (symbol base-name))
 
 
 (u/spec-op artefact-name
            :deps [project-name]
-           :param {:req [:versioning/tag-base-name]}
-           :ret :maven/artefact-name)
+           :param {:req [::versioning/tag-base-name]}
+           :ret ::maven/artefact-name)
 
 
 (defn pom-dir
   "Defaults to `:project/output-dir`."
-  [{wd :project/output-dir}]
+  [{wd ::project/output-dir}]
   wd)
 
 (u/spec-op pom-dir
-           :param {:req [:project/output-dir]}
-           :ret :maven.pom/dir)
+           :param {:req [::project/output-dir]}
+           :ret ::maven.pom/dir)
 
 
 (defn maven-local-repo
@@ -211,7 +229,7 @@ Api providing the default generation of the build configuration.
   (fs/path deps-maven/default-local-repo))
 
 (u/spec-op maven-local-repo
-           :ret :maven/local-repo)
+           :ret ::maven/local-repo)
 
 
 (defn maven-install-dir
@@ -220,7 +238,7 @@ Api providing the default generation of the build configuration.
   (fs/path deps-maven/default-local-repo))
 
 (u/spec-op maven-install-dir
-           :ret :maven.install/dir)
+           :ret ::maven.install/dir)
 
 
 (defn maven-settings-file
@@ -229,75 +247,72 @@ Api providing the default generation of the build configuration.
   (fs/path mbt-core/maven-default-settings-file))
 
 (u/spec-op maven-settings-file
-           :ret :maven.settings/file)
+           :ret ::maven.settings/file)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn jar-out-dir [{general-out :project/output-dir}]
+(defn jar-out-dir [{general-out ::project/output-dir}]
   general-out)
 
 (u/spec-op jar-out-dir
-           :param {:req [:project/output-dir]}
-           :ret :build.jar/output-dir)
+           :param {:req [::project/output-dir]}
+           :ret ::build.jar/output-dir)
 
 (defn jar-name
   "\"artefact-name.jar\""
-  [{artefact-name :maven/artefact-name}]
+  [{artefact-name ::maven/artefact-name}]
   (str artefact-name ".jar"))
 
 (u/spec-op jar-name
-           :param {:req [:maven/artefact-name]}
-           :ret :build/jar-name)
+           :param {:req [::maven/artefact-name]}
+           :ret ::build/jar-name)
 
 
 (defn uberjar-name
   "\"artefact-name-standalone.jar\""
-  [{artefact-name :maven/artefact-name}]
+  [{artefact-name ::maven/artefact-name}]
   (str artefact-name "-standalone.jar"))
 
 (u/spec-op uberjar-name
-           :param {:req [:maven/artefact-name]}
-           :ret :build/uberjar-name)
-
-
-
+           :param {:req [::maven/artefact-name]}
+           :ret ::build/uberjar-name)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Putting it all together
 ;;----------------------------------------------------------------------------------------------------------------------
 (def ^:private ctxt-building-scheme
-  [:project/working-dir working-dir
-   :project/output-dir output-dir
-   :project/author project-author
-   :project/name project-name
+  [::project/working-dir working-dir
+   ::project/output-dir output-dir
+   ::project/author project-author
+   ::project/name project-name
 
-   :project/deps-file deps-file
+   ::project.deps/file deps-file
 
-   :compilation.java/output-dir compilation-java-dir
-   :compilation.clojure/output-dir compilation-clojure-dir
+   ::compilation.java/output-dir compilation-java-dir
+   ::compilation.clojure/output-dir compilation-clojure-dir
 
-   :gpg/command gpg-command
-   :gpg/version gpg-version
+   ::gpg/command gpg-command
+   ::gpg/version gpg-version
 
-   :git/repo git-repo
+   ::git/repo git-repo
 
-   :cleaning/target cleaning-target
+   ::cleaning/target cleaning-target
 
-   :versioning/tag-base-name tag-base-name
+   ::versioning/tag-base-name tag-base-name
 
-   :maven/group-id group-id
-   :maven/artefact-name artefact-name
-   :maven.pom/dir pom-dir
-   :maven/local-repo maven-local-repo
-   :maven.install/dir maven-install-dir
-   :maven.settings/file maven-settings-file
+   ::maven/group-id group-id
+   ::maven/artefact-name artefact-name
+   ::maven.pom/dir pom-dir
+   ::maven/local-repo maven-local-repo
+   ::maven.install/dir maven-install-dir
+   ::maven.settings/file maven-settings-file
 
-   :build.jar/output-dir jar-out-dir
-   :build/jar-name jar-name
-   :build/uberjar-name uberjar-name])
+   ::build.jar/output-dir jar-out-dir
+   ::build/jar-name jar-name
+   ::build/uberjar-name uberjar-name])
 
 
 (def default-cstrs
@@ -321,38 +336,38 @@ Api providing the default generation of the build configuration.
   example:
   ```
   (def my-conf
-    (make-context {:project/name \"a-name\"}
-                  {:maven/artefact-name (fn [{n :project-name}]
-                                          (symbol n))})
+    (make-context {::fr...mbt.alpha.project/name \"a-name\"}
+                  {::fr...mbt.alpha.maven/artefact-name (fn [{n :project-name}]
+                                                          (symbol n))})
 
-  (select-keys my-conf #{:project/name :maven/artefact-name})
-  ;=>{:maven/artefact-name a-name, :project/name \"a-name\"}
+  (select-keys my-conf #{::fr...mbt.alpha.project/name ::fr...mbt.alpha.maven/artefact-name})
+  ;=> {::fr...mbt.alpha.maven/artefact-name a-name ::fr...mbt.alpha.project/name \"a-name\"}
   ```
   "
   ([user-defined-val]
    (make-context user-defined-val {}))
   ([user-defined alternate-ctrs]
    (let [cstrs (merge default-cstrs alternate-ctrs)]
-     (reduce (fn [acc k]
-               (mapi-core/ensure-computed-1 acc k (get cstrs k)))
-             user-defined
-             ctxt-building-order))))
+     (medley/filter-vals identity
+       (reduce (fn [acc k]
+                 (mapi-core/ensure-computed-1 acc k (get cstrs k)))
+               user-defined
+               ctxt-building-order)))))
 
 
 (defn license-file-path
   "Default file path -> `:project/working-dir`/LICENSE."
-  [{wd :project/working-dir}]
+  [{wd ::project/working-dir}]
   (u/safer-path wd "LICENSE"))
 
 (u/spec-op license-file-path
-           :param {:req [:project/working-dir]}
-           :ret :project.license/file)
+           :param {:req [::project/working-dir]}
+           :ret ::project.license/file)
 
 
 (comment
   (-> (sorted-map
-        :project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
-        :project/name "toto"
-        :versioning/major :alpha
-        :versioning/stable false)
+        ::project/working-dir (u/safer-path "resources-test" "test-repos" "monorepo" "project1")
+        ::project/name "toto"
+        ::versioning/major :alpha)
       make-context))

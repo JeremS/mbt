@@ -14,6 +14,13 @@
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  build
+  jar.entry
+  maven
+  project
+  project.license)
+
 
 (st/instrument `[jar/jar! jar/uberjar!])
 
@@ -31,9 +38,9 @@
 (def project2-path test-repos/monorepo-p2)
 
 
-(defn intruder? [{src :jar.entry/src}]
+(defn intruder? [{src ::jar.entry/src}]
   (when-not src
-    (throw (ex-info ":jar.entry/src can't be nil" {})))
+    (throw (ex-info ":fr.jeremyschoffen.mbt.alpha.jar.entry/src can't be nil" {})))
   (->> src
        str
        (re-matches #".*intruder.txt")))
@@ -43,24 +50,24 @@
 ;; Test skinny jar using project 2
 ;;----------------------------------------------------------------------------------------------------------------------
 (def ctxt2 (-> (sorted-map
-                 :project/working-dir project2-path
-                 :project/version version
-                 :project/author author
-                 :project/licenses [{:project.license/name"Test license"
-                                     :project.license/url "www.test-license.com"
-                                     :project.license/distribution :repo
-                                     :project.license/file (u/safer-path project2-path "LICENSE")}]
-                 :maven/group-id group-id
-                 :maven/artefact-name 'project-2
-                 :build/jar-name "project2.jar"
-                 :jar/exclude? intruder?)
+                 ::project/working-dir project2-path
+                 ::project/version version
+                 ::project/author author
+                 ::project/licenses [{::project.license/name"Test license"
+                                      ::project.license/url "www.test-license.com"
+                                      ::project.license/distribution :repo
+                                      ::project.license/file (u/safer-path project2-path "LICENSE")}]
+                 ::maven/group-id group-id
+                 ::maven/artefact-name 'project-2
+                 ::build/jar-name "project2.jar"
+                 ::jar/exclude? intruder?)
                defaults/make-context
                jar/ensure-jar-defaults))
 
 
 (def ctxt2-i (-> ctxt2
-                 (dissoc :jar/exclude?)
-                 (assoc :build/jar-name "project2-i.jar")))
+                 (dissoc ::jar/exclude?)
+                 (assoc ::build/jar-name "project2-i.jar")))
 
 
 (deftest simple-jar
@@ -103,7 +110,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Testing uber jar using project 1
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- clojure-entry? [{src :jar.entry/src}]
+(defn- clojure-entry? [{src ::jar.entry/src}]
   (if-not src
     (throw (ex-info ":jar.entry/src can't be nil" {}))
     (->> src
@@ -120,15 +127,15 @@
       (assoc-in [:deps 'project2/project2 :local/root] (str project2-path))))
 
 
-(def ctxt1 (-> {:project/working-dir project1-path
-                :project/version version
-                :project/author author
-                :maven/group-id group-id
-                :maven/artefact-name 'project-1
-                :build/uberjar-name "project1-standalone.jar"
-                :jar/exclude? uberjar-exclude?}
+(def ctxt1 (-> {::project/working-dir project1-path
+                ::project/version version
+                ::project/author author
+                ::maven/group-id group-id
+                ::maven/artefact-name 'project-1
+                ::build/uberjar-name "project1-standalone.jar"
+                ::jar/exclude? uberjar-exclude?}
                defaults/make-context
-               (u/assoc-computed :project/deps get-project1-deps)
+               (u/assoc-computed ::project/deps get-project1-deps)
                jar/ensure-jar-defaults))
 
 (deftest uberjar

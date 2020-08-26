@@ -8,16 +8,24 @@
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes :as vs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.repo
+  git.tag
+  versioning)
+
+
 (st/instrument [vs/current-version
                 vs/bump
                 vs/bump])
 
 
-(def git-distance-ctxt {:versioning/scheme vs/git-distance-scheme})
-(def git-distance-ctxt-alpha {:versioning/scheme vs/git-distance-scheme
-                              :versioning/bump-level :alpha})
-(def git-distance-ctxt-beta {:versioning/scheme vs/git-distance-scheme
-                             :versioning/bump-level :beta})
+(def git-distance-ctxt {::versioning/scheme vs/git-distance-scheme})
+(def git-distance-ctxt-alpha {::versioning/scheme vs/git-distance-scheme
+                              ::versioning/bump-level :alpha})
+(def git-distance-ctxt-beta {::versioning/scheme vs/git-distance-scheme
+                             ::versioning/bump-level :beta})
 
 
 (def simple-init-str (str (vs/initial-version git-distance-ctxt)))
@@ -38,13 +46,13 @@
 
 (defn make-dumy-desc [v distance dirty?]
   (let [tag-name (str dumy-project-name "-v" v)]
-    {:git/raw-description "dumy raw desc"
-     :git/tag {:git.tag/name tag-name
-               :git.tag/message (pr-str {:name dumy-project-name
-                                         :version v})}
-     :git.describe/distance distance
-     :git/sha "AAA123"
-     :git.repo/dirty? dirty?}))
+    {::git/raw-description "dumy raw desc"
+     ::git/tag {::git.tag/name tag-name
+                ::git.tag/message (pr-str {:name dumy-project-name
+                                           :version v})}
+     ::git.describe/distance distance
+     ::git/sha "AAA123"
+     ::git.repo/dirty? dirty?}))
 
 
 (defn current-version [ctxt]
@@ -54,25 +62,25 @@
   (testing "Basic"
     (facts
       (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str 0 true))
+          (assoc ::git/description (make-dumy-desc simple-init-str 0 true))
           current-version)
 
       => (str simple-init-str "-DIRTY")
 
       (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str dumy-dist true))
+          (assoc ::git/description (make-dumy-desc simple-init-str dumy-dist true))
           current-version)
       => (str simple-init-str "-" dumy-dist "-g" dumy-sha "-DIRTY")))
 
   (testing "alpha"
     (facts
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str 0 true))
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str 0 true))
           current-version)
       => (str simple-init-str "-alpha-DIRTY")
 
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str dumy-dist true))
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str dumy-dist true))
           current-version)
       => (str simple-init-str "-alpha-" dumy-dist "-g" dumy-sha "-DIRTY"))))
 
@@ -82,16 +90,16 @@
   (testing "Duplicating"
     (facts
       (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str 0 false))
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-str 0 false))
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump)
       =throws=> (ex-info? identity
                           {::anom/category ::anom/forbidden
                            :mbt/error :versioning/duplicating-tag})
 
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str 0 false))
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str 0 false))
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump)
       =throws=> (ex-info? identity
                           {::anom/category ::anom/forbidden
@@ -100,18 +108,18 @@
   (testing "Going backward"
     (facts
       (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str dumy-dist false)
-                 :versioning/bump-level :beta)
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-str dumy-dist false)
+                 ::versioning/bump-level :beta)
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump)
       =throws=> (ex-info? identity
                           {::anom/category ::anom/forbidden
                            :mbt/error :versioning/going-backward})
 
       (-> git-distance-ctxt-beta
-          (assoc :git/description (make-dumy-desc simple-init-beta-str dumy-dist false)
-                 :versioning/bump-level :alpha)
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-beta-str dumy-dist false)
+                 ::versioning/bump-level :alpha)
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump)
       =throws=> (ex-info? identity
                           {::anom/category ::anom/forbidden
@@ -121,8 +129,8 @@
   (testing "stable -> stable"
     (facts
       (-> git-distance-ctxt
-          (assoc :git/description (make-dumy-desc simple-init-str dumy-dist false))
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-str dumy-dist false))
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump
           str)
       => (str dumy-dist)))
@@ -130,8 +138,8 @@
   (testing "alpha -> alpha"
     (facts
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str dumy-dist false))
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str dumy-dist false))
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump
           str)
       => (str dumy-dist "-alpha")))
@@ -139,9 +147,9 @@
   (testing "alpha -> stable"
     (facts
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str dumy-dist false)
-                 :versioning/bump-level :stable)
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str dumy-dist false)
+                 ::versioning/bump-level :stable)
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump
           str)
       => (str dumy-dist)))
@@ -149,9 +157,9 @@
   (testing "alpha -> beta"
     (facts
       (-> git-distance-ctxt-alpha
-          (assoc :git/description (make-dumy-desc simple-init-alpha-str dumy-dist false)
-                 :versioning/bump-level :beta)
-          (u/assoc-computed :versioning/version vs/current-version)
+          (assoc ::git/description (make-dumy-desc simple-init-alpha-str dumy-dist false)
+                 ::versioning/bump-level :beta)
+          (u/assoc-computed ::versioning/version vs/current-version)
           vs/bump
           str)
       => (str dumy-dist "-beta"))))

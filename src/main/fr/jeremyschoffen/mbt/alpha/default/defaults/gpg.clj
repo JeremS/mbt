@@ -11,10 +11,13 @@ Default way to use the gpg core apis.
   (try
     (f)
     (catch Exception _
-      ::error)))
+      nil)))
 
 (defn default-gpg-command
   "Determine which gnupg command can be called if any. Favours gpg2."
   [& _]
   (or (try-fn #(do (shell/sh "gpg2" "--version") "gpg2"))
-      (try-fn #(do (shell/sh "gpg" "--version") "gpg"))))
+      (try-fn #(do (shell/sh "gpg" "--version") "gpg"))
+      nil))
+
+

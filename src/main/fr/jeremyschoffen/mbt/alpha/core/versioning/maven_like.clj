@@ -13,6 +13,12 @@ Building blocks to versioning systems following the maven or semver model.
     [java.lang Comparable]
     [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.repo
+  maven-like)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Parsing versions
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -50,8 +56,8 @@ Building blocks to versioning systems following the maven or semver model.
 
 (u/simple-fdef parse-version
                string?
-               (s/keys :req-un [:maven-like/subversions]
-                       :opt-un [:maven-like/qualifier]))
+               (s/keys :req-un [::maven-like/subversions]
+                       :opt-un [::maven-like/qualifier]))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -239,11 +245,11 @@ Building blocks to versioning systems following the maven or semver model.
       v)))
 
 (u/spec-op maven-version
-           :param {:req-un [:maven-like/subversions]
-                   :opt-un [:maven-like/qualifier
-                            :git.describe/distance
-                            :git/sha
-                            :git.repo/dirty?]})
+           :param {:req-un [::maven-like/subversions]
+                   :opt-un [::maven-like/qualifier
+                            ::git.describe/distance
+                            ::git/sha
+                            ::git.repo/dirty?]})
 
 (def initial-maven-version
   "Initial value to use when starting the versioning process from scratch."
@@ -272,10 +278,10 @@ Building blocks to versioning systems following the maven or semver model.
       map->SemverVersion))
 
 (u/spec-op semver-version
-           :param {:req-un [:maven-like/subversions]
-                   :opt-un [:git.describe/distance
-                            :git/sha
-                            :git.repo/dirty?]})
+           :param {:req-un [::maven-like/subversions]
+                   :opt-un [::git.describe/distance
+                            ::git/sha
+                            ::git.repo/dirty?]})
 
 
 (def initial-semver-version

@@ -6,10 +6,14 @@
     [clojure.spec.test.alpha :as st]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
-    [fr.jeremyschoffen.mbt.alpha.core.jar :as jar]
+    [fr.jeremyschoffen.mbt.alpha.core.jar :as core-jar]
     [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
+(u/mbt-alpha-pseudo-nss
+  jar
+  jar.entry)
 
 (st/instrument
   `[jar/make-jar-archive!
@@ -51,10 +55,10 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar sources
 ;;----------------------------------------------------------------------------------------------------------------------
-(def text-entries [{:jar.entry/src "some text."
-                    :jar.entry/dest (fs/path "example.txt")}
-                   {:jar.entry/src "some text 2."
-                    :jar.entry/dest (fs/path "example2.txt")}])
+(def text-entries [{::jar.entry/src "some text."
+                    ::jar.entry/dest (fs/path "example.txt")}
+                   {::jar.entry/src "some text 2."
+                    ::jar.entry/dest (fs/path "example2.txt")}])
 
 
 (def text-entries-representation
@@ -65,7 +69,7 @@
 (defn exclude-text-entries [entry]
   (= "example2.txt"
      (-> entry
-         :jar.entry/dest
+         ::jar.entry/dest
          fs/file-name
          str)))
 
@@ -73,31 +77,31 @@
 (defn jar-exclude [entry]
   (= "jarfile-1.txt"
      (-> entry
-         :jar.entry/src
+         ::jar.entry/src
          fs/file-name
          str)))
 
 
 (def jar-sources
-  [(jar/to-entries text-entries exclude-text-entries)
+  [(core-jar/to-entries text-entries exclude-text-entries)
    srcs
-   (jar/to-entries input-jar-dest jar-exclude)])
+   (core-jar/to-entries input-jar-dest jar-exclude)])
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Fixtures
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn make-input-jar! []
-  (jar/make-jar-archive! {:jar/temp-output input-jar-src
-                          :jar/output      input-jar-dest}))
+  (core-jar/make-jar-archive! {::jar/temp-output input-jar-src
+                               ::jar/output      input-jar-dest}))
 
 (defn clean-input-jar! []
   (fs/delete-if-exists! input-jar-dest))
 
 
 (defn make-temp-out! []
-  (jar/add-srcs! {:jar/srcs       jar-sources
-                  :jar/temp-output temp-out}))
+  (core-jar/add-srcs! {::jar/srcs       jar-sources
+                       ::jar/temp-output temp-out}))
 
 
 (defn clean-temp-out! []
@@ -105,8 +109,8 @@
 
 
 (defn make-jar! []
-  (jar/make-jar-archive! {:jar/temp-output temp-out
-                          :jar/output jar-out}))
+  (core-jar/make-jar-archive! {::jar/temp-output temp-out
+                               ::jar/output jar-out}))
 
 (defn clean-jar! []
   (fs/delete-if-exists! jar-out))

@@ -5,7 +5,7 @@ Api providing  maven deployment utilites.
   fr.jeremyschoffen.mbt.alpha.core.maven.deploy
   (:require
     [clojure.tools.deps.alpha.extensions.maven]
-    [clojure.tools.deps.alpha.util.maven :as maven]
+    [clojure.tools.deps.alpha.util.maven :as tools-maven]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.maven.common :as common]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -18,13 +18,20 @@ Api providing  maven deployment utilites.
     [org.eclipse.aether.repository RemoteRepository$Builder]
     [org.eclipse.aether.util.repository AuthenticationBuilder]))
 
+(u/mbt-alpha-pseudo-nss
+  maven
+  maven.credentials
+  maven.deploy
+  maven.settings
+  maven.server
+  project)
 
 ;; Inspired mostly by https://github.com/EwenG/badigeon/blob/master/src/badigeon/deploy.clj
 
 
 ;; remake of org.apache.maven.settings.DefaultMavenSettingsBuilder method buildSettings
 ;; TODO: Find a way to get the global maven settings.
-(defn- ^Settings get-maven-settings [{maven-settings-file :maven.settings/file
+(defn- ^Settings get-maven-settings [{maven-settings-file ::maven.settings/file
                                       :or {maven-settings-file common/maven-default-settings-file}}]
   (let [settings-builder (.newInstance (DefaultSettingsBuilderFactory.))
         settings-building-request (-> (DefaultSettingsBuildingRequest.)
@@ -34,12 +41,13 @@ Api providing  maven deployment utilites.
     (.getEffectiveSettings settings-building-result)))
 
 (u/spec-op get-maven-settings
-           :param {:opt [:maven.settings/file]})
+           :param {:opt [::maven.settings/file]})
 
 
-(defn- ^Server settings-for-server [{server :maven/server
+(defn- ^Server settings-for-server [{server ::maven/server
                                      :as param}]
-  (when-let [server-id (:maven.server/id server)]
+  (when-let [server-id (::maven.server/id server)]
+
     (->> (get-maven-settings param)
          .getServers
          (filter (fn [^Server server]
@@ -48,17 +56,17 @@ Api providing  maven deployment utilites.
 
 (u/spec-op settings-for-server
            :deps [get-maven-settings]
-           :param {:req [:maven/server]
-                   :opt [:maven.settings/file]})
+           :param {:req [::maven/server]
+                   :opt [::maven.settings/file]})
 
 
-(defn- make-maven-authentication [{credentials    :maven/credentials
+(defn- make-maven-authentication [{credentials ::maven/credentials
                                    :as param}]
   (let [server-settings (settings-for-server param)
-        {user-name :maven.credentials/user-name
-         password :maven.credentials/password
-         private-key :maven.credentials/private-key
-         passphrase :maven.credentials/passphrase
+        {user-name ::maven.credentials/user-name
+         password ::maven.credentials/password
+         private-key ::maven.credentials/private-key
+         passphrase ::maven.credentials/passphrase
          :or {user-name (some-> server-settings .getUsername)
               password (some-> server-settings .getPassword)
               private-key (some-> server-settings .getPrivateKey)
@@ -73,15 +81,15 @@ Api providing  maven deployment utilites.
 
 (u/spec-op make-maven-authentication
            :deps [settings-for-server]
-           :param {:req [:maven/server]
-                   :opt [:maven/credentials
-                         :maven.settings/file]})
+           :param {:req [::maven/server]
+                   :opt [::maven/credentials
+                         ::maven.settings/file]})
 
 
-(defn- make-remote-repo [{server :maven/server
-                          cred   :maven/credentials
+(defn- make-remote-repo [{server ::maven/server
+                          cred   ::maven/credentials
                           :as param}]
-  (let [{:maven.server/keys [id url]} server]
+  (let [{::maven.server/keys [id url]} server]
     (-> (RemoteRepository$Builder. id "default" (str url))
         (cond-> cred
                 (.setAuthentication (make-maven-authentication param)))
@@ -89,8 +97,9 @@ Api providing  maven deployment utilites.
 
 (u/spec-op make-remote-repo
            :deps [make-maven-authentication]
-           :param {:req [:maven/server]
-                   :opt [:maven/credentials]})
+           :param {:req [::maven/server]
+                   :opt [::maven/credentials
+                         ::maven.settings/file]})
 
 
 (defn- make-deploy-request [param]
@@ -106,14 +115,14 @@ Api providing  maven deployment utilites.
 
 (u/spec-op make-deploy-request
            :deps [make-remote-repo common/make-maven-artefacts]
-           :param {:req [:maven/artefact-name
-                         :maven/group-id
-                         :project/version
-                         :maven/server
-                         :maven.deploy/artefacts]
-                   :opt [:maven/classifier
-                         :maven/credentials
-                         :maven.settings/file]})
+           :param {:req [::maven/artefact-name
+                         ::maven/group-id
+                         ::project/version
+                         ::maven/server
+                         ::maven.deploy/artefacts]
+                   :opt [::maven/classifier
+                         ::maven/credentials
+                         ::maven.settings/file]})
 
 
 (defn deploy!
@@ -125,23 +134,23 @@ Api providing  maven deployment utilites.
       to a particular repo. The user's maven setting.xml is consulted to fill blanks in this parameter. Note that the
       values specified here take priority over the ones in the settings file.
     - `:maven.settings/file`: optional parameter allowing to change the location of the maven `setting.xml` file."
-  [{local-repo :maven/local-repo
+  [{local-repo ::maven/local-repo
     :as param
     :or {local-repo common/default-local-repo}}]
   (System/setProperty "aether.checksums.forSignature" "true")
-  (let [system (maven/make-system)
-        session (maven/make-session system (str local-repo))
+  (let [system (tools-maven/make-system)
+        session (tools-maven/make-session system (str local-repo))
         deploy-request (make-deploy-request param)]
     (.deploy system session deploy-request)))
 
 (u/spec-op deploy!
            :deps [make-deploy-request]
-           :param {:req [:maven/artefact-name
-                         :maven/group-id
-                         :project/version
-                         :maven/server
-                         :maven.deploy/artefacts]
-                   :opt [:maven/classifier
-                         :maven/credentials
-                         :maven.settings/file
-                         :maven/local-repo]})
+           :param {:req [::maven/artefact-name
+                         ::maven/group-id
+                         ::project/version
+                         ::maven/server
+                         ::maven.deploy/artefacts]
+                   :opt [::maven/classifier
+                         ::maven/credentials
+                         ::maven.settings/file
+                         ::maven/local-repo]})

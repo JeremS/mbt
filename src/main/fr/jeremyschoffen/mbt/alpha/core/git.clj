@@ -8,7 +8,7 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
     [clojure.core.protocols :as cp]
     [clojure.datafy :as datafy]
     [cognitect.anomalies :as anom]
-    [clj-jgit.porcelain :as git]
+    [clj-jgit.porcelain :as git-porcelain]
     [clj-jgit.internal :as git-i]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.java.nio.alpha.internal.coercions :as coercions]
@@ -19,6 +19,17 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
     (org.eclipse.jgit.lib Ref PersonIdent)
     (org.eclipse.jgit.api Status Git)
     (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
+
+
+(u/mbt-alpha-pseudo-nss
+  git
+  git.add!
+  git.commit
+  git.describe
+  git.identity
+  git.repo
+  git.tag
+  project)
 
 
 (defn- get-dir [^Git repo]
@@ -38,24 +49,24 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 (defn- datafy-jgit-obj [o]
   (vary-meta (datafy/datafy o) assoc :jgit/object o))
 
-
+;; TODO: don't use datafy, no control over protocol nor datatypes
 (extend-protocol cp/Datafiable
   PersonIdent
-  (datafy [this] {:git.identity/name (.getName this)
-                  :git.identity/email (.getEmailAddress this)
+  (datafy [this] {::git.identity/name (.getName this)
+                  ::git.identity/email (.getEmailAddress this)
                   :date (.getWhen this)
                   :time (.getTimeZone this)})
   RevTag
   (datafy [this]
-    {:git.tag/name (.getTagName this)
-     :git.tag/message (.getFullMessage this)
-     :git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
+    {::git.tag/name (.getTagName this)
+     ::git.tag/message (.getFullMessage this)
+     ::git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
 
   RevCommit
-  (datafy [this] {:git.commit/name (.getName this)
-                  :git.commit/message (.getFullMessage this)
-                  :git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
-                  :git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
+  (datafy [this] {::git.commit/name (.getName this)
+                  ::git.commit/message (.getFullMessage this)
+                  ::git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
+                  ::git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
@@ -80,12 +91,12 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
   git -C wd/ rev-parse --show-toplevel
   ```
   "
-  [{wd :project/working-dir}]
+  [{wd ::project/working-dir}]
   (first (parent-repos wd)))
 
 (u/spec-op top-level
-           :param {:req [:project/working-dir]}
-           :ret :git/top-level)
+           :param {:req [::project/working-dir]}
+           :ret ::git/top-level)
 
 
 (defn prefix
@@ -96,7 +107,7 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
   git -C wd/ rev-parse --show-prefix
   ```
   "
-  [{wd :project/working-dir :as context}]
+  [{wd ::project/working-dir :as context}]
   (let [repo (top-level context)]
     (if (= wd repo)
       (fs/path "")
@@ -104,8 +115,8 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 (u/spec-op prefix
            :deps [top-level]
-           :param {:req [:project/working-dir]}
-           :ret :git/prefix)
+           :param {:req [::project/working-dir]}
+           :ret ::git/prefix)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -114,12 +125,12 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 (defn make-jgit-repo
   "Builds a `org.eclipse.jgit.api.Git` object."
   [param]
-  (-> param top-level str git/load-repo))
+  (-> param top-level str git-porcelain/load-repo))
 
 (u/spec-op make-jgit-repo
            :deps [top-level]
-           :param {:req [:project/working-dir]}
-           :ret :git/repo)
+           :param {:req [::project/working-dir]}
+           :ret ::git/repo)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -127,39 +138,38 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn status
   "Get the status of the current repo via [[clj-jgit.porcelain/git-status]]."
-  [{repo :git/repo}]
-  (git/git-status repo))
+  [{repo ::git/repo}]
+  (git-porcelain/git-status repo))
 
 (u/spec-op status
-           :param {:req [:git/repo]}
+           :param {:req [::git/repo]}
            :ret map?)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git add
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- format-opts
+(defn- extract-clj-jgit-opts
   "Format an options map used in mbt into a sequence of  k v options used in clj-jgit api.
   Removes the parts that aren't actually options in the clj-jgit api."
-  [m keys]
-  (-> (apply dissoc m keys)
+  [m main-params]
+  (-> (apply dissoc m main-params)
       u/strip-keys-nss
-      seq
-      flatten))
+      (->> (apply concat))))
 
 
 (defn add!
   "Git add operation using [[clj-jgit.porcelain/git-add]]. The parameter and options are specified under the key
-  `:git/add!`."
-  [{repo     :git/repo
-    addition :git/add!}]
-  (let [{patterns :git.add!/file-patterns} addition
-        opts (format-opts addition #{:git.add!/file-patterns})]
-    (apply git/git-add repo patterns opts)))
+  `::fr...mbt.alpha.git/add!`."
+  [{repo     ::git/repo
+    addition ::git/add!}]
+  (let [{patterns ::git.add!/file-patterns} addition
+        opts (extract-clj-jgit-opts addition #{::git.add!/file-patterns})]
+    (apply git-porcelain/git-add repo patterns opts)))
 
 (u/spec-op add!
-           :param {:req [:git/repo
-                         :git/add!]})
+           :param {:req [::git/repo
+                         ::git/add!]})
 
 
 (defn list-all-changed-patterns
@@ -175,7 +185,7 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 (u/spec-op list-all-changed-patterns
            :deps [status]
-           :param {:req [:git/repo]})
+           :param {:req [::git/repo]})
 
 
 (defn add-all!
@@ -184,24 +194,25 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
   [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
-            :git/add! {:git.add!/file-patterns patterns}))))
+            ::git/add! {::git.add!/file-patterns patterns}))))
 
 (u/spec-op add-all!
            :deps [status]
-           :param {:req [:git/repo]})
+           :param {:req [::git/repo]})
 
 
 (defn update-all!
-  "Similar to [[fr.jeremyschoffen.mbt.alpha.core.git/add-all!]] but uses the `:git.add!/update?` option set to `true`."
+  "Similar to [[fr.jeremyschoffen.mbt.alpha.core.git/add-all!]] but uses the `:fr...mbt.alpha.git.add!/update?`
+  option set to `true`."
   [param]
   (let [patterns (list-all-changed-patterns param)]
     (add! (assoc param
-            :git/add! {:git.add!/file-patterns patterns
-                       :git.add!/update? true}))))
+            ::git/add! {::git.add!/file-patterns patterns
+                        ::git.add!/update? true}))))
 
 (u/spec-op update-all!
            :deps [status]
-           :param {:req [:git/repo]})
+           :param {:req [::git/repo]})
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -209,28 +220,29 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- commit->commit-opts [commit]
   (-> commit
-      (cond-> (contains? commit :git.commit/author)
-              (update :git.commit/author u/strip-keys-nss)
+      (cond-> (contains? commit ::git.commit/author)
+              (update ::git.commit/author u/strip-keys-nss)
 
-              (contains? commit :git.commit/committer)
-              (update :git.commit/committer u/strip-keys-nss))
+              (contains? commit ::git.commit/committer)
+              (update ::git.commit/committer u/strip-keys-nss))
 
-      (format-opts #{:git.commit/message})))
+      (extract-clj-jgit-opts #{::git.commit/message})))
 
 
 (defn commit!
   "Commit to a git repo using [[clj-jgit.porcelain/git-commit]].
   The options to the porcelain function are passed in the git/commit map,
-  see the `:git/commit!` spec."
+  see the `:fr...mbt.alpha.git/commit!` spec."
   {:tag RevCommit}
-  [{repo :git/repo
-    commit :git/commit!}]
-  (let [{message :git.commit/message} commit
+  [{repo ::git/repo
+    commit ::git/commit!}]
+  (let [{message ::git.commit/message} commit
         opts (commit->commit-opts commit)]
-    (datafy-jgit-obj (apply git/git-commit repo message opts))))
+    (datafy-jgit-obj (apply git-porcelain/git-commit repo message opts))))
 
 (u/spec-op commit!
-           :param {:req [:git/repo :git/commit!]})
+           :param {:req [::git/repo
+                         ::git/commit!]})
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -244,31 +256,32 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 (defn get-tag
   "Get a git tag using its name. The original jgit object is accessible via metadata under the key `:jgit/object`."
-  [{repo :git/repo
-    tag-name :git.tag/name}]
+  [{repo ::git/repo
+    tag-name ::git.tag/name}]
   (get-tag* repo tag-name))
 
 (u/spec-op get-tag
            :deps [get-tag*]
-           :param {:req [:git/repo :git.tag/name]}
-           :ret :git/tag)
+           :param {:req [::git/repo
+                         ::git.tag/name]}
+           :ret ::git/tag)
 
 
 (defn- tag->tag-opts [tag]
   (-> tag
-      (cond-> (contains? tag :git.tag/tagger)
-              (update :git.tag/tagger u/strip-keys-nss))
+      (cond-> (contains? tag ::git.tag/tagger)
+              (update ::git.tag/tagger u/strip-keys-nss))
 
-      (format-opts #{:git.tag/name})))
+      (extract-clj-jgit-opts #{::git.tag/name})))
 
 (defn- create-tag!*
   {:tag Ref}
-  [{repo :git/repo
-    tag :git/tag!}]
-  (let [{name :git.tag/name} tag
+  [{repo ::git/repo
+    tag ::git/tag!}]
+  (let [{name ::git.tag/name} tag
         opts (tag->tag-opts tag)]
     (try
-      (apply git/git-tag-create repo name opts)
+      (apply git-porcelain/git-tag-create repo name opts)
 
       (catch RefAlreadyExistsException e
         (throw (ex-info (format "The tag %s already exists." name)
@@ -283,33 +296,35 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
                         e))))))
 
 (u/spec-op create-tag!*
-           :param {:req [:git/repo :git/tag!]}
+           :param {:req [::git/repo
+                         ::git/tag!]}
            :ret #(instance? Ref %))
 
 
 (defn tag!
   "Create a new git tag using [[clj-jgit.porcelain/git-tag-create]].
 
-  See the `:git/tag!` specs for all the options."
-  [{repo :git/repo :as param}]
+  See the `:fr...mbt.alpha.git/tag!` specs for all the options."
+  [{repo ::git/repo :as param}]
   (let [tag-ref (create-tag!* param)]
     (get-tag* repo (-> tag-ref .getObjectId))))
 
 (u/spec-op tag!
            :deps [create-tag!*]
-           :param {:req [:git/repo :git/tag!]}
-           :ret :git/tag)
+           :param {:req [::git/repo
+                         ::git/tag!]}
+           :ret ::git/tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; git describe
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn dirty?
   "Test whether the git repo is dirty or not."
-  [{repo :git/repo}]
-  (not (.isClean ^Status (git/git-status repo :jgit? true))))
+  [{repo ::git/repo}]
+  (not (.isClean ^Status (git-porcelain/git-status repo :jgit? true))))
 
 (u/spec-op dirty?
-           :param {:req [:git/repo]}
+           :param {:req [::git/repo]}
            :ret boolean?)
 
 
@@ -320,12 +335,12 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
   ```
   git describe --long --match tag-pattern
   ```
-  `tag-pattern` being the value passed under the key `:git.describe/tag-pattern`.
+  `tag-pattern` being the value passed under the key `:fr...mbt.alpha.git.describe/tag-pattern`.
 
   Can return nil if there are no tag matching the pattern or no tags at all.
   "
-  [{repo        :git/repo
-    tag-pattern :git.describe/tag-pattern}]
+  [{repo        ::git/repo
+    tag-pattern ::git.describe/tag-pattern}]
   (-> ^Git repo
       .describe
       (.setLong true)
@@ -333,9 +348,9 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
       .call))
 
 (u/spec-op describe-raw
-           :param {:req [:git/repo]
-                   :opt [:git.describe/tag-pattern]}
-           :ret (s/nilable :git/raw-description))
+           :param {:req [::git/repo]
+                   :opt [::git.describe/tag-pattern]}
+           :ret (s/nilable ::git/raw-description))
 
 
 (def raw-description-regex
@@ -345,33 +360,33 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 (defn- parse-description [desc]
   (let [[_ tag distance sha] (re-matches raw-description-regex desc)]
-    {:git.tag/name tag
-     :git.describe/distance (Integer/parseInt distance)
-     :git/sha sha}))
+    {::git.tag/name tag
+     ::git.describe/distance (Integer/parseInt distance)
+     ::git/sha sha}))
 
 
 (defn describe
   "Get a git description in a map form. This is an evolved version of
   [[fr.jeremyschoffen.mbt.alpha.core.git/describe-raw]] with additional data.
 
-  See the spec `:git/description`."
-  [{repo :git/repo
+  See the spec `:fr...mbt.alpha.git/description`."
+  [{repo ::git/repo
     :as param}]
   (when-let [raw-desc (describe-raw param)]
-    (let [{tag-name :git.tag/name
+    (let [{tag-name ::git.tag/name
            :as desc} (parse-description raw-desc)]
       (-> param
           (merge desc)
-          (assoc :git/raw-description raw-desc
-                 :git/tag (get-tag* repo tag-name))
-          (u/assoc-computed :git.repo/dirty? dirty?)
+          (assoc ::git/raw-description raw-desc
+                 ::git/tag (get-tag* repo tag-name))
+          (u/assoc-computed ::git.repo/dirty? dirty?)
           (select-keys specs/description-keys)))))
 
 (u/spec-op describe
            :deps [describe-raw parse-description get-tag dirty?]
-           :param {:req [:git/repo]
-                   :opt [:git.describe/tag-pattern]}
-           :ret (s/nilable :git/description))
+           :param {:req [::git/repo]
+                   :opt [::git.describe/tag-pattern]}
+           :ret (s/nilable ::git/description))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -379,12 +394,12 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn any-commit?
   "Test whether the git repo has any commits or not."
-  [{repo :git/repo}]
+  [{repo ::git/repo}]
   (try
-    (-> repo git/git-log seq)
+    (-> repo git-porcelain/git-log seq)
     (catch Exception _
       false)))
 
 (u/spec-op any-commit?
-           :param {:req [:git/repo]}
+           :param {:req [::git/repo]}
            :ret boolean?)

@@ -6,11 +6,13 @@
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
     [fr.jeremyschoffen.mbt.alpha.core.compilation.java :as compilation]
-    [fr.jeremyschoffen.mbt.alpha.core.shell :as shell]
-    [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [clojure.spec.alpha :as s]))
-
-
+    [fr.jeremyschoffen.mbt.alpha.core.shell :as core-shell]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+(ns-unalias *ns* 'shell)
+(u/mbt-alpha-pseudo-nss
+  compilation.java
+  project
+  shell)
 
 (st/instrument `[compilation/make-java-compiler
                  compilation/make-standard-file-manager
@@ -25,17 +27,17 @@
 (def compiled-example (u/safer-path wd "Example.class"))
 
 (def compiler (compilation/make-java-compiler {}))
-(def file-manager (compilation/make-standard-file-manager {:compilation.java/compiler compiler}))
-(def compilation-unit (compilation/make-compilation-unit {:compilation.java/file-manager file-manager
-                                                          :compilation.java/sources [example]}))
+(def file-manager (compilation/make-standard-file-manager {::compilation.java/compiler compiler}))
+(def compilation-unit (compilation/make-compilation-unit {::compilation.java/file-manager file-manager
+                                                          ::compilation.java/sources [example]}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Fixtures
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn compile-example! []
-  (compilation/compile! #:compilation.java{:compiler compiler
-                                           :file-manager file-manager
-                                           :compilation-unit compilation-unit}))
+  (compilation/compile! #::compilation.java{:compiler compiler
+                                            :file-manager file-manager
+                                            :compilation-unit compilation-unit}))
 
 
 (defn clean! []
@@ -46,9 +48,9 @@
 ;; Tests
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn run-program! []
-  (-> {:project/working-dir wd
-       :shell/command ["java" "Example"]}
-      shell/safer-sh
+  (-> {::project/working-dir wd
+       ::shell/command ["java" "Example"]}
+      core-shell/safer-sh
       :out))
 
 

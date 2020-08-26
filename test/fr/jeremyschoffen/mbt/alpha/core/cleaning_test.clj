@@ -5,11 +5,16 @@
     [testit.core :refer :all]
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
-    [fr.jeremyschoffen.mbt.alpha.core.cleaning :as cleaning]))
+    [fr.jeremyschoffen.mbt.alpha.core.cleaning :as mbt-cleaning]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  cleaning
+  project)
 
-(stest/instrument [cleaning/clean!])
+
+(stest/instrument [mbt-cleaning/clean!])
 
 
 (deftest cleaning
@@ -29,11 +34,11 @@
 
     (testing "Throws when the target doesn't exist."
       (fact
-        (cleaning/clean! {:project/working-dir wd
-                          :cleaning/target target-dir})
+        (mbt-cleaning/clean! {::project/working-dir wd
+                              ::cleaning/target target-dir})
         =throws=> (ex-info? "File to clean doesn't exist."
                             {::anom/category ::anom/not-found
-                             :cleaning/target target-dir})))
+                             ::cleaning/target target-dir})))
 
     (testing "All the files are created."
       (make-all)
@@ -42,19 +47,19 @@
 
     (testing "We catch errors."
       (facts
-        (cleaning/clean! {:project/working-dir wd
-                          :cleaning/target wd})
+        (mbt-cleaning/clean! {::project/working-dir wd
+                              ::cleaning/target wd})
         =throws=> (ex-info? identity {::anom/category ::anom/forbidden
                                       :mbt/error :deleting-project-directory})
 
-        (cleaning/clean! {:project/working-dir target-dir
-                          :cleaning/target wd})
+        (mbt-cleaning/clean! {::project/working-dir target-dir
+                              ::cleaning/target wd})
         =throws=> (ex-info? identity {::anom/category ::anom/forbidden
                                       :mbt/error :deletion-outside-working-dir})))
 
     (testing "Nothing remains after deletion."
-      (cleaning/clean! {:project/working-dir wd
-                        :cleaning/target target-dir})
+      (mbt-cleaning/clean! {::project/working-dir wd
+                            ::cleaning/target target-dir})
 
       (fact
         (every? (complement fs/exists?) all-files) => true))))

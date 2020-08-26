@@ -12,6 +12,9 @@ Api providing the tools to make a jar archive from a directory.
   (:import
     (java.nio.file FileVisitResult FileVisitor)))
 
+(u/mbt-alpha-pseudo-nss
+  jar)
+
 
 (defn- make-archive-visitor! [zfs temp-out]
   (reify FileVisitor
@@ -40,8 +43,8 @@ Api providing the tools to make a jar archive from a directory.
 (defn make-jar-archive!
   "Zips the dir specified by under the key `:jar/temp-output` into a .jar archive file at the location provided under
   the key `:jar/output`."
-  [{temp :jar/temp-output
-    output :jar/output
+  [{temp ::jar/temp-output
+    output ::jar/output
     :as param}]
   (with-open [zfs (jar-fs/writable-jar-fs param)]
     (fs/walk-file-tree temp (make-archive-visitor! zfs temp)))
@@ -50,5 +53,6 @@ Api providing the tools to make a jar archive from a directory.
 
 (u/spec-op make-jar-archive!
            :deps [jar-fs/writable-jar-fs]
-           :param {:req [:jar/temp-output :jar/output]})
+           :param {:req [::jar/temp-output
+                         ::jar/output]})
 

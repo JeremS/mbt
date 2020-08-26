@@ -9,6 +9,11 @@ Higher level api to compile java files.
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  classpath
+  compilation.java
+  project)
+
 
 (defn default-options
   "Make a vector of options to be used when making a compilation task.
@@ -17,16 +22,16 @@ Higher level api to compile java files.
   - `:classpath/raw-absolute`: used to fill the `-cp` option of the compiler
   - `:compilation.java/output-dir`: used to fill the `-d` option of the compiler allowing to choose
     where the compiler outputs .class files."
-  [{classpath-abs :classpath/raw-absolute
-    dest-dir  :compilation.java/output-dir}]
+  [{classpath-abs ::classpath/raw-absolute
+    dest-dir  ::compilation.java/output-dir}]
   (cond-> []
           classpath-abs (conj "-cp" (str classpath-abs))
           dest-dir (conj "-d" (str dest-dir))))
 
 (u/spec-op default-options
-           :param {:opt [:classpath/raw-absolute
-                         :compilation.java/output-dir]}
-           :ret :compilation.java/options)
+           :param {:opt [::classpath/raw-absolute
+                         ::compilation.java/output-dir]}
+           :ret ::compilation.java/options)
 
 
 (defn ensure-compilation-args
@@ -44,12 +49,12 @@ Higher level api to compile java files.
     [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-unit]]"
   [param]
   (u/ensure-computed param
-                     :classpath/raw-absolute mbt-core/classpath-raw-absolute
-                     :compilation.java/compiler mbt-core/compilation-java-compiler
-                     :compilation.java/file-manager mbt-core/compilation-java-std-file-manager
-                     :compilation.java/options default-options
-                     :compilation.java/sources mbt-core/compilation-java-project-files
-                     :compilation.java/compilation-unit mbt-core/compilation-java-unit))
+                     ::classpath/raw-absolute mbt-core/classpath-raw-absolute
+                     ::compilation.java/compiler mbt-core/compilation-java-compiler
+                     ::compilation.java/file-manager mbt-core/compilation-java-std-file-manager
+                     ::compilation.java/options default-options
+                     ::compilation.java/sources mbt-core/compilation-java-project-files
+                     ::compilation.java/compilation-unit mbt-core/compilation-java-unit))
 
 (u/spec-op ensure-compilation-args
            :deps [mbt-core/compilation-java-compiler
@@ -57,16 +62,16 @@ Higher level api to compile java files.
                   default-options
                   mbt-core/compilation-java-project-files
                   mbt-core/compilation-java-unit]
-           :param {:opt [:compilation.java/compiler
-                         :compilation.java/file-manager
-                         :compilation.java/output-dir
-                         :compilation.java/options
-                         :classpath/index]}
-           :ret (s/keys :req [:compilation.java/compiler
-                              :compilation.java/file-manager
-                              :compilation.java/options
-                              :compilation.java/sources
-                              :compilation.java/compilation-unit]))
+           :param {:opt [::compilation.java/compiler
+                         ::compilation.java/file-manager
+                         ::compilation.java/output-dir
+                         ::compilation.java/options
+                         ::classpath/index]}
+           :ret (s/keys :req [::compilation.java/compiler
+                              ::compilation.java/file-manager
+                              ::compilation.java/options
+                              ::compilation.java/sources
+                              ::compilation.java/compilation-unit]))
 
 
 (defn compile!
@@ -79,13 +84,13 @@ Higher level api to compile java files.
 
 (u/spec-op compile!
            :deps [ensure-compilation-args mbt-core/compile-java!]
-           :param {:opt [:classpath/index
-                         :classpath/raw-absolute
-                         :compilation.java/compilation-unit
-                         :compilation.java/compiler
-                         :compilation.java/compiler-classes
-                         :compilation.java/compiler-out
-                         :compilation.java/diagnostic-listener
-                         :compilation.java/file-manager
-                         :compilation.java/options
-                         :compilation.java/output-dir]})
+           :param {:opt [::classpath/index
+                         ::classpath/raw-absolute
+                         ::compilation.java/compilation-unit
+                         ::compilation.java/compiler
+                         ::compilation.java/compiler-classes
+                         ::compilation.java/compiler-out
+                         ::compilation.java/diagnostic-listener
+                         ::compilation.java/file-manager
+                         ::compilation.java/options
+                         ::compilation.java/output-dir]})

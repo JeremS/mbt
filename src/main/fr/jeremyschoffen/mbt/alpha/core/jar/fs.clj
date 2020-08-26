@@ -12,7 +12,8 @@ Api providing some jar file system utilies.
     (java.net URI)
     (java.util HashMap)))
 
-
+(u/mbt-alpha-pseudo-nss
+  jar)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar FileSystem cstr
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -35,15 +36,15 @@ Api providing some jar file system utilies.
   "Create a jar file system located at the path specified under the key `:jar/output`.
   This file system is created with the purpose of the creation of a fresh jar in mind."
   {:tag FileSystem}
-  [{output :jar/output}]
+  [{output ::jar/output}]
   (u/ensure-parent! output)
   (-> output
       jar-path->uri
       (fs/file-system (jar-create-env))))
 
 (u/spec-op writable-jar-fs
-           :param {:req [:jar/output]}
-           :ret :jar/file-system)
+           :param {:req [::jar/output]}
+           :ret ::jar/file-system)
 
 
 (defn- jar-read-env []
@@ -62,4 +63,4 @@ Api providing some jar file system utilies.
 
 (u/simple-fdef read-only-jar-fs
                specs/jar-path?
-               :jar/file-system)
+               ::jar/file-system)

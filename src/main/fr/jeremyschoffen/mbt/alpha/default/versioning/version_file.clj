@@ -11,12 +11,18 @@ Api used to generate version files.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  project
+  versioning
+  version-file)
+
+
 (defn version-file-content
   "Make the string content of a version file."
-  [{v :project/version
-    ns :version-file/ns
-    stable? :versioning/stable
-    major :versioning/major}]
+  [{v ::project/version
+    ns ::version-file/ns
+    stable? ::versioning/stable
+    major ::versioning/major}]
   (let [version (cond-> v
                         major (str "-" (name major))
                         (not stable?) (str "-unstable"))]
@@ -27,22 +33,22 @@ Api used to generate version files.
                        ""])))
 
 (u/spec-op version-file-content
-           :param {:req [:project/version
-                         :version-file/ns]
-                   :opt [:versioning/stable
-                         :versioning/major]})
+           :param {:req [::project/version
+                         ::version-file/ns]
+                   :opt [::versioning/stable
+                         ::versioning/major]})
 
 
 (defn write-version-file!
   "Make the string content of a version file and spit it at the destination specified under the key
   `:version-file/path`."
-  [{dest :version-file/path
+  [{dest ::version-file/path
     :as   param}]
   (spit dest (version-file-content param))
   dest)
 
 (u/spec-op write-version-file!
-           :param {:req [:project/version
-                         :version-file/path
-                         :version-file/ns]}
+           :param {:req [::project/version
+                         ::version-file/path
+                         ::version-file/ns]}
            :ret fs/path?)

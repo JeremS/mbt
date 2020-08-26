@@ -10,16 +10,20 @@ Api providing utilities when generating manifest files.
     [fr.jeremyschoffen.mbt.alpha.version :as v]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  project
+  jar
+  jar.manifest)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; adapted from https://github.com/EwenG/badigeon/blob/master/src/badigeon/jar.clj
-(defn  make-base-manifest [{author :project/author}]
+(defn  make-base-manifest [{author ::project/author}]
   {"Created-By" (str "Mbt v" v/version)
    "Built-By"   (or author (System/getProperty "user.name"))
    "Build-Jdk"  (System/getProperty "java.version")})
 
 (u/spec-op make-base-manifest
-           :param {:opt [:project/author]}
+           :param {:opt [::project/author]}
            :ret (s/map-of string? string?))
 
 (defn- place-sections-last
@@ -53,8 +57,8 @@ Api providing utilities when generating manifest files.
   - `:jar/main-ns`: A namespace to be added to the \"Main\" entry to the manifest. Default to nil.
   - `:jar.manifest/overrides`: A map of additional entries to the manifest. Values of the manifest map can be maps to represent
    manifest sections. By default, the manifest contains the \"Created-by\", \"Built-By\" and \"Build-Jdk\" entries."
-  [{main :jar/main-ns
-    manifest-overrides :jar.manifest/overrides
+  [{main ::jar/main-ns
+    manifest-overrides ::jar.manifest/overrides
     :as param}]
   (let [base-manifest (make-base-manifest param)
         manifest (if main
@@ -68,7 +72,7 @@ Api providing utilities when generating manifest files.
 
 (u/spec-op make-manifest
            :deps [make-base-manifest]
-           :param {:opt [:project/author
-                         :jar/main-ns
-                         :jar.manifest/overrides]}
-           :ret :jar/manifest)
+           :param {:opt [::project/author
+                         ::jar/main-ns
+                         ::jar.manifest/overrides]}
+           :ret ::jar/manifest)

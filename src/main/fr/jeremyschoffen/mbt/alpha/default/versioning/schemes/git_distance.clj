@@ -11,19 +11,26 @@ Implementation of versioning schemes using the git disatnce building blocks from
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  git
+  git.describe
+  git.repo
+  git.tag)
+
+
 (defn- current-version*
   "Parse a git description into the current version.`"
-  [{tag :git/tag
+  [{tag ::git/tag
     :as git-desc}]
   (let [base (-> tag
-                 :git.tag/message
+                 ::git.tag/message
                  clojure.edn/read-string
                  :version
                  mbt-core/version-parse-git-distance)
         relevant-part (-> git-desc
-                          (select-keys #{:git/sha
-                                         :git.describe/distance
-                                         :git.repo/dirty?})
+                          (select-keys #{::git/sha
+                                         ::git.describe/distance
+                                         ::git.repo/dirty?})
                           u/strip-keys-nss)]
     (mbt-core/version-git-distance (merge base relevant-part))))
 

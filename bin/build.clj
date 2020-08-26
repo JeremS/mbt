@@ -6,6 +6,12 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [docs.core :as docs]))
 
+(u/mbt-alpha-pseudo-nss
+  maven
+  project
+  project.license
+  version-file
+  versioning)
 
 (spec-test/instrument
   `[mbt-core/deps-make-coord
@@ -19,18 +25,18 @@
 
 (def specific-conf
   (sorted-map
-    :maven/group-id 'fr.jeremyschoffen
-    :project/author "Jeremy Schoffen"
+    ::maven/group-id 'fr.jeremyschoffen
+    ::project/author "Jeremy Schoffen"
 
-    :version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
-    :version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-    :versioning/scheme mbt-defaults/git-distance-scheme
-    :versioning/major :alpha
+    ::version-file/ns 'fr.jeremyschoffen.mbt.alpha.version
+    ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
+    ::versioning/scheme mbt-defaults/git-distance-scheme
+    ::versioning/major :alpha
 
-    :project/licenses [{:project.license/name "Eclipse Public License - v 2.0"
-                        :project.license/url "https://www.eclipse.org/legal/epl-v20.html"
-                        :project.license/distribution :repo
-                        :project.license/file (u/safer-path "LICENSE")}]))
+    ::project/licenses [{::project.license/name "Eclipse Public License - v 2.0"
+                         ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
+                         ::project.license/distribution :repo
+                         ::project.license/file (u/safer-path "LICENSE")}]))
 
 
 (def conf (mbt-defaults/make-conf specific-conf))
@@ -38,7 +44,7 @@
 
 (defn generate-docs! [conf]
   (-> conf
-      (u/assoc-computed :project/maven-coords mbt-core/deps-make-coord)
+      (u/assoc-computed ::project/maven-coords mbt-core/deps-make-coord)
       (u/do-side-effect! docs/make-readme!)
       (u/do-side-effect! docs/make-rationale!)
       (u/do-side-effect! docs/make-design-doc!)))
@@ -53,14 +59,14 @@
 
 (defn deploy! [conf]
   (-> conf
-      (assoc :maven/server mbt-defaults/clojars)
+      (assoc ::maven/server mbt-defaults/clojars)
       mbt-defaults/deploy!))
 
 (comment
   (-> conf
       u/mark-dry-run
-      (u/assoc-computed :project/version (comp str mbt-defaults/anticipated-next-version)
-                        :project/maven-coords mbt-core/deps-make-coord)
+      (u/assoc-computed ::project/version (comp str mbt-defaults/anticipated-next-version)
+                        ::project/maven-coords mbt-core/deps-make-coord)
       (u/do-side-effect! docs/make-readme!)
       (u/do-side-effect! docs/make-rationale!)
       (u/do-side-effect! docs/make-design-doc!))
@@ -75,7 +81,7 @@
   (mbt-defaults/install! conf)
 
   (-> conf
-      (assoc :project/version "0")
+      (assoc ::project/version "0")
       (u/do-side-effect! mbt-defaults/build-jar!)
       (u/do-side-effect! mbt-defaults/install!)
       u/record-build))

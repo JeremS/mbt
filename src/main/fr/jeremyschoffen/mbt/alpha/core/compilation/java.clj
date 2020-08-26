@@ -12,8 +12,11 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (javax.tools StandardJavaFileManager JavaCompiler ToolProvider)))
-
-
+;; TODO impacted by changes to indexed classpath
+(u/mbt-alpha-pseudo-nss
+  classpath
+  compilation.java
+  compilation.java.file-manager)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Finding java files
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -33,17 +36,17 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
 
   See:
   - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]"
-  [{ i :classpath/index}]
+  [{ i ::classpath/index}]
   (-> i
-      :classpath/dir
+      ::classpath/dir
       (->> (into []
                  (comp
                    (map u/safer-path)
                    (mapcat find-java-files*))))))
 
 (u/spec-op project-files
-           :param {:req [:classpath/index]}
-           :ret :compilation.java/sources)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.java/sources)
 
 
 (defn external-files
@@ -51,33 +54,33 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
 
   See:
   - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]."
-  [{ i :classpath/index}]
+  [{ i ::classpath/index}]
   (-> i
-      :classpath/ext-dep
+      ::classpath/ext-dep
       (->> (into []
                  (mapcat find-java-files*)))))
 
 (u/spec-op external-files
-           :param {:req [:classpath/index]}
-           :ret :compilation.java/sources)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.java/sources)
 
 
-(defn jar-files [{ i :classpath/index}]
+(defn jar-files [{i ::classpath/index}]
   "Use an indexed classpath to find all .java files from jars.
 
   See:
     - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
   (-> i
-      :classpath/jar
+      ::classpath/jar
       (->> (into []
                  (mapcat (fn [src-jar]
                            (with-open [src (jar-fs/read-only-jar-fs src-jar)]
                              (find-java-files* src))))))))
 
 (u/spec-op jar-files
-           :param {:req [:classpath/index]}
-           :ret :compilation.java/sources)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.java/sources)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Building java object used to compile.
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -88,33 +91,33 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   (ToolProvider/getSystemJavaCompiler))
 
 (u/spec-op make-java-compiler
-           :ret :compilation.java/compiler)
+           :ret ::compilation.java/compiler)
 
 
 (defn make-standard-file-manager
   "Make a standard file manager from a java compiler."
   {:tag StandardJavaFileManager}
-  [{compiler :compilation.java/compiler
-    opts :compilation.java.file-manager/options}]
-  (let [{:compilation.java.file-manager/keys [listener locale charset]} opts]
+  [{compiler ::compilation.java/compiler
+    opts ::compilation.java.file-manager/options}]
+  (let [{::compilation.java.file-manager/keys [listener locale charset]} opts]
     (.getStandardFileManager ^JavaCompiler compiler listener locale charset)))
 
 (u/spec-op make-standard-file-manager
-           :param {:req [:compilation.java/compiler]
-                   :opt [:compilation.java.file-manager/options]})
+           :param {:req [::compilation.java/compiler]
+                   :opt [::compilation.java.file-manager/options]})
 
 
 (defn make-compilation-unit
   "Make a compilation unit to give a compilation task using a file manager."
-  [{file-manager :compilation.java/file-manager
-    sources :compilation.java/sources}]
+  [{file-manager ::compilation.java/file-manager
+    sources ::compilation.java/sources}]
   (->> sources
        (mapv fs/file)
        (.getJavaFileObjectsFromFiles ^StandardJavaFileManager file-manager)))
 
 (u/spec-op make-compilation-unit
-           :param {:req [:compilation.java/file-manager
-                         :compilation.java/sources]})
+           :param {:req [::compilation.java/file-manager
+                         ::compilation.java/sources]})
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Compilation proper
@@ -124,13 +127,13 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   it`.
 
   See: `javax.tool.JavaCompiler`."
-  [{compiler            :compilation.java/compiler
-    file-manager        :compilation.java/file-manager
-    out                 :compilation.java/compiler-out
-    diagnostic-listener :compilation.java/diagnostic-listener
-    options             :compilation.java/options
-    classes             :compilation.java/compiler-classes
-    compilation-unit    :compilation.java/compilation-unit}]
+  [{compiler            ::compilation.java/compiler
+    file-manager        ::compilation.java/file-manager
+    out                 ::compilation.java/compiler-out
+    diagnostic-listener ::compilation.java/diagnostic-listener
+    options             ::compilation.java/options
+    classes             ::compilation.java/compiler-classes
+    compilation-unit    ::compilation.java/compilation-unit}]
   (.call (.getTask ^JavaCompiler compiler
                    out
                    file-manager
@@ -140,10 +143,10 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
                    compilation-unit)))
 
 (u/spec-op compile!
-           :param {:req [:compilation.java/compiler
-                         :compilation.java/file-manager
-                         :compilation.java/compilation-unit]
-                   :opt [:compilation.java/compiler-out
-                         :compilation.java/diagnostic-listener
-                         :compilation.java/options
-                         :compilation.java/compiler-classes]})
+           :param {:req [::compilation.java/compiler
+                         ::compilation.java/file-manager
+                         ::compilation.java/compilation-unit]
+                   :opt [::compilation.java/compiler-out
+                         ::compilation.java/diagnostic-listener
+                         ::compilation.java/options
+                         ::compilation.java/compiler-classes]})

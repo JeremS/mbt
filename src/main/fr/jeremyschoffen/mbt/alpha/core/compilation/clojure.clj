@@ -12,6 +12,12 @@ Api providing clojure compilation utilities.
   (:import
     (java.util.jar JarFile)))
 
+(u/mbt-alpha-pseudo-nss
+  project
+  classpath
+  compilation.clojure)
+
+
 
 ;; inspired by https://github.com/luchiniatwork/cambada/blob/master/src/cambada/compile.clj
 
@@ -31,12 +37,12 @@ Api providing clojure compilation utilities.
   See:
     - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
-  [{cp :classpath/index}]
-  (-> cp :classpath/dir dirs->nss))
+  [{cp ::classpath/index}]
+  (-> cp ::classpath/dir dirs->nss))
 
 (u/spec-op project-nss
-           :param {:req [:classpath/index]}
-           :ret :compilation.clojure/namespaces)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.clojure/namespaces)
 
 
 (defn external-nss
@@ -46,12 +52,12 @@ Api providing clojure compilation utilities.
   See:
     - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
-  [{cp :classpath/index}]
+  [{cp ::classpath/index}]
   (-> cp :ext-dep dirs->nss))
 
 (u/spec-op external-nss
-           :param {:req [:classpath/index]}
-           :ret :compilation.clojure/namespaces)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.clojure/namespaces)
 
 
 (defn jar-nss
@@ -60,16 +66,16 @@ Api providing clojure compilation utilities.
   See:
     - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
   "
-  [{cp :classpath/index}]
+  [{cp ::classpath/index}]
   (into []
         (comp
           (map #(JarFile. ^String %))
           (mapcat ns-find/find-namespaces-in-jarfile))
-        (:classpath/jar cp)))
+        (::classpath/jar cp)))
 
 (u/spec-op jar-nss
-           :param {:req [:classpath/index]}
-           :ret :compilation.clojure/namespaces)
+           :param {:req [::classpath/index]}
+           :ret ::compilation.clojure/namespaces)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -80,22 +86,13 @@ Api providing clojure compilation utilities.
 (defn compile!
   "Compile a list of namespaces provided under the key `:compilation.clojure/namespaces`, the results are placed at the
   location specified under the key `:compilation.clojure/output-dir`."
-  [{output-dir :compilation.clojure/output-dir
-    namespaces :compilation.clojure/namespaces}]
+  [{output-dir ::compilation.clojure/output-dir
+    namespaces ::compilation.clojure/namespaces}]
   (fs/create-directories! output-dir)
   (binding [*compile-path* output-dir]
     (doseq [n namespaces]
       (compile n))))
 
 (u/spec-op compile!
-           :param {:req [:compilation.clojure/output-dir
-                         :compilation.clojure/namespaces]})
-
-(comment
-  (require '[fr.jeremyschoffen.mbt.alpha.core.building.deps :as deps])
-  (require '[fr.jeremyschoffen.mbt.alpha.core.building.classpath :as cp])
-
-  (-> {:project/working-dir (u/safer-path)}
-      (u/assoc-computed :project/deps deps/get-deps
-                        :classpath/index cp/indexed-classpath)
-      jar-nss))
+           :param {:req [::compilation.clojure/output-dir
+                         ::compilation.clojure/namespaces]})

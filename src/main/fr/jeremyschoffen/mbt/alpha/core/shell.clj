@@ -4,9 +4,14 @@ Api wrapping `clojure.java.shell`
       "}
   fr.jeremyschoffen.mbt.alpha.core.shell
   (:require
-    [clojure.java.shell :as shell]
+    [clojure.java.shell :as sh]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
+
+(u/mbt-alpha-pseudo-nss
+  project
+  shell)
 
 ;; inspired by https://github.com/EwenG/badigeon/blob/master/src/badigeon/exec.clj
 
@@ -21,12 +26,13 @@ Api wrapping `clojure.java.shell`
 (defn safer-sh
   "Wrapper around the `clojure.java.shell/sh function. Position the sh current dir on the
   project's working dir if provided.`"
-  [{wd :project/working-dir
-    cmd :shell/command}]
-  (shell/with-sh-env (get-english-env)
-    (shell/with-sh-dir (or wd (u/safer-path))
-      (apply shell/sh cmd))))
+  [{wd ::project/working-dir
+    cmd ::shell/command}]
+  (let [env (get-english-env)]
+    (sh/with-sh-env env
+      (sh/with-sh-dir (or wd (u/safer-path))
+        (apply sh/sh cmd)))))
 
 (u/spec-op safer-sh
-           :param {:req [:shell/command]
-                   :opt [:project/working-dir]})
+           :param {:req [::shell/command]
+                   :opt [::project/working-dir]})

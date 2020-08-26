@@ -10,6 +10,11 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
+(u/mbt-alpha-pseudo-nss
+  maven
+  project
+  versioning)
+
 (st/instrument [defaults/make-context])
 
 (deftest names
@@ -21,33 +26,33 @@
         project-name (-> repo fs/file-name str)
         group-id (symbol project-name)
 
-        ctxt (defaults/make-context {:project/working-dir wd})
-        ctxt-alpha (defaults/make-context {:project/working-dir wd
-                                           :versioning/major :alpha})
+        ctxt (defaults/make-context {::project/working-dir wd})
+        ctxt-alpha (defaults/make-context {::project/working-dir wd
+                                           ::versioning/major :alpha})
 
 
-        ctxt' (defaults/make-context {:project/working-dir wd'})]
+        ctxt' (defaults/make-context {::project/working-dir wd'})]
     (testing "Group ids"
       (facts
-        (:maven/group-id ctxt)
+        (::maven/group-id ctxt)
         => group-id
 
-        (:maven/group-id ctxt')
+        (::maven/group-id ctxt')
         => group-id
 
-        (:maven/group-id ctxt-alpha)
+        (::maven/group-id ctxt-alpha)
         => group-id))
 
 
     (testing "Artefact names"
       (facts
-        (:maven/artefact-name ctxt)
+        (::maven/artefact-name ctxt)
         => group-id
 
-        (:maven/artefact-name ctxt')
+        (::maven/artefact-name ctxt')
         => 'module1-toto
 
-        (:maven/artefact-name ctxt-alpha)
+        (::maven/artefact-name ctxt-alpha)
         => (-> group-id
                (str "-alpha")
                symbol)))
@@ -55,12 +60,12 @@
 
     (testing "Tag names"
       (facts
-        (:versioning/tag-base-name ctxt)
+        (::versioning/tag-base-name ctxt)
         => (str group-id)
 
-        (:versioning/tag-base-name ctxt-alpha)
+        (::versioning/tag-base-name ctxt-alpha)
         => (str group-id "-alpha")
 
 
-        (:versioning/tag-base-name ctxt')
+        (::versioning/tag-base-name ctxt')
         => "module1-toto"))))

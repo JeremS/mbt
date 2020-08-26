@@ -11,19 +11,23 @@ Api providing some utilities working with `clojure.tools.deps`.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [clojure.spec.alpha :as s]))
 
+(u/mbt-alpha-pseudo-nss
+  maven
+  project
+  project.deps)
 
 
 (defn get-deps
   "Slurp the deps.edn file of a project using [[clojure.tools.deps.alpha.reader/slurp-deps]].
-  The deps file's path is passed under the key `:project/deps-file`."
-  [{p :project/deps-file}]
+  The deps file's path is passed under the key `:fr...mbt.alpha.project.deps/file`."
+  [{p ::project.deps/file}]
   (-> p
       fs/file
       deps/slurp-deps))
 
 (u/spec-op get-deps
-           :param {:req [:project/deps-file]}
-           :ret :project/deps)
+           :param {:req [::project.deps/file]}
+           :ret ::project/deps)
 
 
 (defn make-symbolic-coord
@@ -32,22 +36,22 @@ Api providing some utilities working with `clojure.tools.deps`.
   For instance the hypothetical:
   ```clojure
   (make-symbolic-coord
-    {:maven/group-id 'org.clojure
-     :maven/artefact-name 'clojure
-     :maven/classifier 'docs})
+    {::fr...mbt.alpha.maven/group-id 'org.clojure
+     ::fr...mbt.alpha.maven/artefact-name 'clojure
+     ::fr...mbt.alpha.maven/classifier 'docs})
   ;=> org.clojure/clojure$docs
   ```
   "
-  [{group-id   :maven/group-id
-    name       :maven/artefact-name
-    classifier :maven/classifier}]
+  [{group-id   ::maven/group-id
+    name       ::maven/artefact-name
+    classifier ::maven/classifier}]
   (symbol (str group-id) (str name (when classifier
                                      (str "$" classifier)))))
 
 (u/spec-op make-symbolic-coord
-           :param {:req [:maven/group-id
-                         :maven/artefact-name]
-                   :opt [:maven/classifier]}
+           :param {:req [::maven/group-id
+                         ::maven/artefact-name]
+                   :opt [::maven/classifier]}
            :ret ::deps-specs/lib)
 
 
@@ -57,20 +61,20 @@ Api providing some utilities working with `clojure.tools.deps`.
   For instance:
   ```clojure
   (make-deps-coord
-    {:maven/group-id 'org.clojure
-     :maven/artefact-name 'clojure
-     :project/version \"10.0.1\"})
+    {::fr...mbt.alpha.maven/group-id 'org.clojure
+     ::fr...mbt.alpha.maven/artefact-name 'clojure
+     ::fr...mbt.alpha.project/version \"10.0.1\"})
   ;=> {:org.clojure/clojure {:mvn/version \"10.0.1\"}}
   ```
   "
-  [{v :project/version
+  [{v ::project/version
     :as param}]
   {(make-symbolic-coord param) {:mvn/version v}})
 
 (u/spec-op make-deps-coords
            :deps [make-symbolic-coord]
-           :param {:req [:maven/group-id
-                         :maven/artefact-name
-                         :project/version]
-                   :opt [:maven/classifier]}
+           :param {:req [::maven/group-id
+                         ::maven/artefact-name
+                         ::project/version]
+                   :opt [::maven/classifier]}
            :ret (s/map-of ::deps-specs/lib :mvn/coord))

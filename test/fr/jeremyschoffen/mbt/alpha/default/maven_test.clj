@@ -7,19 +7,25 @@
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
-    [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
+    [fr.jeremyschoffen.mbt.alpha.default.maven :as default-maven]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/mbt-alpha-pseudo-nss
+  maven
+  maven.install
+  maven.server
+  project)
 
-(stest/instrument [jar/ensure-jar-defaults
-                   jar/jar-out
-                   jar/jar!
 
-                   maven/install!
-                   maven/deploy!
+(stest/instrument `[jar/ensure-jar-defaults
+                    jar/jar-out
+                    jar/jar!
 
-                   mbt-core/clean!])
+                    default-maven/install!
+                    default-maven/deploy!
+
+                    mbt-core/clean!])
 
 
 (def project-path test-repos/deploy-project)
@@ -32,15 +38,15 @@
 (def group-id 'group)
 
 (def conf (-> (sorted-map
-                :project/working-dir project-path
-                :project/version version
-                :project/author "Tester"
+                ::project/working-dir project-path
+                ::project/version version
+                ::project/author "Tester"
 
-                :maven/artefact-name artefact-name
-                :maven/group-id (symbol group-id)
+                ::maven/artefact-name artefact-name
+                ::maven/group-id (symbol group-id)
 
-                :maven.install/dir install-dir
-                :maven/server {:maven.server/url (fs/url deploy-dir)})
+                ::maven.install/dir install-dir
+                ::maven/server {::maven.server/url (fs/url deploy-dir)})
               defaults/make-context
               jar/ensure-jar-defaults))
 
@@ -70,8 +76,8 @@
   (try
     (-> conf
         (u/side-effect! jar/jar!)
-        (u/side-effect! maven/install!)
-        (u/side-effect! maven/deploy!))
+        (u/side-effect! default-maven/install!)
+        (u/side-effect! default-maven/deploy!))
 
     (let [jar-content (list-jar-files jar-out)
           installed-jar-content (list-jar-files installed-jar-path)

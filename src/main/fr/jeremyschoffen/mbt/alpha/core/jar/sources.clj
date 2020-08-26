@@ -21,9 +21,12 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
     [fr.jeremyschoffen.mbt.alpha.core.jar.temp :as temp]
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
-
   (:import (java.nio.file Path)
            (clojure.lang Sequential)))
+
+(u/mbt-alpha-pseudo-nss
+  jar
+  jar.entry)
 
 
 (defn- throw-not-src [x]
@@ -50,10 +53,10 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
   If the context doesn't have one it just associates the function to the map. If an exclusion function
   is already there it joins the two using [[clojure.core/some-fn]]."
   [conf exclude]
-  (let [e (:jar/exclude? conf)
+  (let [e (::jar/exclude? conf)
         exclude' (cond-> exclude
                          e (some-fn e))]
-    (assoc conf :jar/exclude? exclude')))
+    (assoc conf ::jar/exclude? exclude')))
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- add-sequential-entries! [conf entries]
   (-> conf
-      (assoc :jar/entries entries)
+      (assoc ::jar/entries entries)
       temp/add-entries!))
 
 
@@ -91,22 +94,22 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
        (into []
              (comp (remove fs/directory?)
                    (map (fn [src-path]
-                          {:jar.entry/src src-path
-                           :jar.entry/dest (fs/relativize dir src-path)}))))))
+                          {::jar.entry/src src-path
+                           ::jar.entry/dest (fs/relativize dir src-path)}))))))
 
 (u/simple-fdef src-dir->jar-entries
                specs/dir-path?
-               :jar/entries)
+               ::jar/entries)
 
 
 (defn- add-src-dir! [conf src-dir]
   (-> conf
-      (assoc :jar/entries (src-dir->jar-entries src-dir))
+      (assoc ::jar/entries (src-dir->jar-entries src-dir))
       temp/add-entries!))
 
 (s/fdef add-src-dir!
-        :args (s/cat :conf (s/keys :req [:jar/temp-output]
-                                   :opt [:jar/exclude?])
+        :args (s/cat :conf (s/keys :req [::jar/temp-output]
+                                   :opt [::jar/exclude?])
                      :src specs/dir-path?))
 
 
@@ -135,25 +138,25 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
       (->> (into []
                  (comp (remove fs/directory?)
                        (map (fn [src-path]
-                              {:jar.entry/src src-path
-                               :jar.entry/dest (->> src-path
-                                                    (map str)
-                                                    (apply fs/path))})))))))
+                              {::jar.entry/src src-path
+                               ::jar.entry/dest (->> src-path
+                                                     (map str)
+                                                     (apply fs/path))})))))))
 
 (u/simple-fdef jar->jar-entries
                specs/file-system?
-               :jar/entries)
+               ::jar/entries)
 
 
 (defn- add-jar! [conf src-jar]
   (with-open [source-zfs (jar-fs/read-only-jar-fs src-jar)]
     (-> conf
-        (assoc :jar/entries (jar->jar-entries source-zfs))
+        (assoc ::jar/entries (jar->jar-entries source-zfs))
         temp/add-entries!)))
 
 (s/fdef add-jar!
-        :args (s/cat :conf (s/keys :req [:jar/temp-output]
-                                   :opt [:jar/exclude?])
+        :args (s/cat :conf (s/keys :req [::jar/temp-output]
+                                   :opt [::jar/exclude?])
                      :src specs/jar-path?))
 
 
