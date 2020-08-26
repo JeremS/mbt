@@ -9,7 +9,7 @@ Api wrapping `clojure.java.shell`
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   shell)
 

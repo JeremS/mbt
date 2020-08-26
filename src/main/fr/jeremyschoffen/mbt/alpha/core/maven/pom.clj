@@ -20,7 +20,7 @@ Api providing maven pom.xml files generation.
     [clojure.data.xml.node Element]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   project.license
   maven

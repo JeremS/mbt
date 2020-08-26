@@ -11,7 +11,7 @@ Api providing a maven install utilities.
   (:import
     [org.eclipse.aether.installation InstallRequest]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   maven
   maven.deploy
   maven.install

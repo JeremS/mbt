@@ -9,7 +9,7 @@ Building blocks of a versioning system based on git commit distance.
     [fr.jeremyschoffen.mbt.alpha.core.specs :as specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.describe
   git.repo

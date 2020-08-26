@@ -6,7 +6,7 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [docs.core :as docs]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   maven
   project
   project.license

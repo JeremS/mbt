@@ -11,7 +11,7 @@ File cleaning api.
   (:import
     [java.nio.file FileVisitResult FileVisitor]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   cleaning)
 

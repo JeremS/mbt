@@ -9,7 +9,7 @@ Higher level api to compile java files.
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   classpath
   compilation.java
   project)

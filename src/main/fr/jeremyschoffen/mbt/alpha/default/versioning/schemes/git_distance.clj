@@ -11,7 +11,7 @@ Implementation of versioning schemes using the git disatnce building blocks from
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.describe
   git.repo

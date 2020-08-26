@@ -18,7 +18,7 @@ Api providing the default generation of the build configuration.
     [clojure.spec.alpha :as s]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   build
   build.jar
   cleaning

@@ -21,7 +21,7 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
     (org.eclipse.jgit.api.errors RefAlreadyExistsException JGitInternalException)))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.add!
   git.commit

@@ -11,7 +11,7 @@ Specs used in the default api.
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   build
   build.jar

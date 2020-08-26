@@ -8,7 +8,7 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   classpath
   cleaning
   compilation.java

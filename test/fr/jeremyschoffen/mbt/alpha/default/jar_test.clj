@@ -14,7 +14,7 @@
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   build
   jar.entry
   maven

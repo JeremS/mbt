@@ -14,7 +14,7 @@ Api providing default behaviour for maven tasks.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   build
   build.jar
   git

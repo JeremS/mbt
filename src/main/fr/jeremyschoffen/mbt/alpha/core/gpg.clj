@@ -13,7 +13,7 @@ Api providing gpg utilities.
     [java.io StringReader]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   gpg
   gpg.sign!
   project

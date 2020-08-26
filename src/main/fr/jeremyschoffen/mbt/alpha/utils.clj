@@ -34,7 +34,7 @@ Utilities used in the whole project.
        (alias '~a '~full-ns))))
 
 
-(defmacro mbt-alpha-pseudo-nss [& aliases]
+(defmacro pseudo-nss [& aliases]
   `(do ~@(for [alias aliases]
            `(pseudo-ns fr.jeremyschoffen.mbt.alpha ~alias))))
 
@@ -137,4 +137,3 @@ Utilities used in the whole project.
            `[(s/def ~new-name (clojure.spec.alpha/get-spec '~cloned-sym))
              (spec-db/add-spec! '~(ns-qualify new-name) (spec ~cloned-sym))])
        (var ~new-name))))
-

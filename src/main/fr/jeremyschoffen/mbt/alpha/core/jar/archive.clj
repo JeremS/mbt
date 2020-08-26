@@ -12,7 +12,7 @@ Api providing the tools to make a jar archive from a directory.
   (:import
     (java.nio.file FileVisitResult FileVisitor)))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   jar)
 
 

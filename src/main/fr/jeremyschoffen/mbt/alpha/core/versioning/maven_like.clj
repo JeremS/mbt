@@ -13,7 +13,7 @@ Building blocks to versioning systems following the maven or semver model.
     [java.lang Comparable]
     [org.apache.maven.artifact.versioning DefaultArtifactVersion]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.describe
   git.repo

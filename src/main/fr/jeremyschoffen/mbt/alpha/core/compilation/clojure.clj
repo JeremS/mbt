@@ -12,7 +12,7 @@ Api providing clojure compilation utilities.
   (:import
     (java.util.jar JarFile)))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   classpath
   compilation.clojure)

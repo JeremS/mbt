@@ -12,7 +12,7 @@ Api providing utilities when manipulating classpaths generated using `clojure.to
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   classpath
   project
   project.deps)

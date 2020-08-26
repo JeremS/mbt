@@ -11,7 +11,7 @@ Api used to generate version files.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   versioning
   version-file)

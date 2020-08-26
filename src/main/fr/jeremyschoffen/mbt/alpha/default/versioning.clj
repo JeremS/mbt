@@ -12,7 +12,7 @@ Grouping of the different versioning utilities.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   versioning)
 

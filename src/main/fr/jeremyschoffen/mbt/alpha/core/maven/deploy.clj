@@ -18,7 +18,7 @@ Api providing  maven deployment utilites.
     [org.eclipse.aether.repository RemoteRepository$Builder]
     [org.eclipse.aether.util.repository AuthenticationBuilder]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   maven
   maven.credentials
   maven.deploy

@@ -11,7 +11,7 @@
     [fr.jeremyschoffen.mbt.alpha.test.repos :as repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   jar
   jar.entry)
 

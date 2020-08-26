@@ -6,7 +6,7 @@
     [fr.jeremyschoffen.mbt.alpha.core.maven.deploy :as deploy]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   maven
   maven.credentials
   maven.server

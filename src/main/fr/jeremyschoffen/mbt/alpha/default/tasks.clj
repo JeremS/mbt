@@ -13,7 +13,7 @@ Higher level apis.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   build
   git
   git.commit

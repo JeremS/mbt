@@ -15,7 +15,7 @@ Api containing the default logic for using git state as a versioning mechanism.
   (:import [java.util Date TimeZone]
            [java.text SimpleDateFormat]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.describe
   git.tag

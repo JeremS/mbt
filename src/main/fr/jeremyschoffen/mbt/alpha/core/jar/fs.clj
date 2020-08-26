@@ -12,7 +12,7 @@ Api providing some jar file system utilies.
     (java.net URI)
     (java.util HashMap)))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   jar)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar FileSystem cstr

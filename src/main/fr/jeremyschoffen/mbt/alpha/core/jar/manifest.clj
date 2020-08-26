@@ -10,7 +10,7 @@ Api providing utilities when generating manifest files.
     [fr.jeremyschoffen.mbt.alpha.version :as v]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   jar
   jar.manifest)

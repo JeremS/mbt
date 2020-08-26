@@ -24,7 +24,7 @@ Types implementing [[fr.jeremyschoffen.mbt.alpha.core.jar.protocols/JarSource]]:
   (:import (java.nio.file Path)
            (clojure.lang Sequential)))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   jar
   jar.entry)
 

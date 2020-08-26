@@ -27,7 +27,7 @@ Specs used in `mbt's` core apis.
 
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   project.license
   project.deps

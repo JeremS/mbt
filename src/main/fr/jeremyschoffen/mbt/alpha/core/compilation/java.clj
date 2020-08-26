@@ -13,7 +13,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
   (:import
     (javax.tools StandardJavaFileManager JavaCompiler ToolProvider)))
 ;; TODO impacted by changes to indexed classpath
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   classpath
   compilation.java
   compilation.java.file-manager)

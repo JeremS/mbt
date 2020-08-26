@@ -10,7 +10,7 @@ Utilites common to different maven related tasks.
   (:import
     [org.eclipse.aether.artifact DefaultArtifact]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   project
   maven
   maven.deploy

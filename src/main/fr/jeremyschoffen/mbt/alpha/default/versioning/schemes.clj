@@ -12,7 +12,7 @@ Api used when versioning the project using git state.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   versioning)
 

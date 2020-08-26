@@ -11,7 +11,7 @@ Api providing some utilities working with `clojure.tools.deps`.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [clojure.spec.alpha :as s]))
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   maven
   project
   project.deps)

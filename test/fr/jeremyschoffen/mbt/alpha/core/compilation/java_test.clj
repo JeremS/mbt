@@ -9,7 +9,7 @@
     [fr.jeremyschoffen.mbt.alpha.core.shell :as core-shell]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 (ns-unalias *ns* 'shell)
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   compilation.java
   project
   shell)

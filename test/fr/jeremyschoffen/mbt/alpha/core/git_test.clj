@@ -10,7 +10,7 @@
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   git
   git.commit
   git.describe

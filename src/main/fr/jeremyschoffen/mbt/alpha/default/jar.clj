@@ -12,7 +12,7 @@ Apis providing the jar sources used by default.
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
-(u/mbt-alpha-pseudo-nss
+(u/pseudo-nss
   build
   build.jar
   classpath
