@@ -25,7 +25,7 @@
   project
   versioning)
 
-(st/unstrument)
+
 (st/instrument `[mbt-core/git-add!
                  mbt-core/git-add-all!
                  mbt-core/git-commit!

@@ -17,9 +17,9 @@
   versioning)
 
 
-(st/instrument [vs/current-version
-                vs/bump
-                vs/bump])
+(st/instrument `[vs/current-version
+                 vs/bump
+                 vs/bump])
 
 (def maven-ctxt {::versioning/scheme vs/maven-scheme})
 (def semver-ctxt {::versioning/scheme vs/semver-scheme})

@@ -8,11 +8,11 @@
     [fr.jeremyschoffen.mbt.alpha.core.versioning.maven-like :as version]))
 
 
-(st/instrument [version/parse-version
-                version/maven-version
-                version/semver-version
-                version/bump
-                version/safer-bump])
+(st/instrument `[version/parse-version
+                 version/maven-version
+                 version/semver-version
+                 version/bump
+                 version/safer-bump])
 
 (deftest parse-version
   (facts

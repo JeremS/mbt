@@ -13,7 +13,7 @@
   project)
 
 
-(stest/instrument [deps/make-deps-coords])
+(stest/instrument `[deps/make-deps-coords])
 
 (def group-id 'group)
 (def project-name 'project-gamma)

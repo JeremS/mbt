@@ -14,7 +14,7 @@
   project)
 
 
-(stest/instrument [mbt-cleaning/clean!])
+(stest/instrument `[mbt-cleaning/clean!])
 
 
 (deftest cleaning

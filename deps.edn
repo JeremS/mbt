@@ -28,7 +28,8 @@
   :doc {:extra-paths ["src/doc/"]
         :extra-deps {fr.jeremyschoffen/textp-doc-alpha {:mvn/version "0"}}}
 
-  :perf {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}}}
+  :perf {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "0.4.1"}}
+         :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
 
   :test {:extra-paths ["test"]
          :extra-deps {metosin/testit {:mvn/version "0.4.0"}

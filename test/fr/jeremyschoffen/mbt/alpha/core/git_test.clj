@@ -20,17 +20,17 @@
   project)
 
 
-(st/instrument [core-git/any-commit?
-                core-git/commit!
-                core-git/describe
-                core-git/dirty?
-                core-git/get-tag
-                core-git/make-jgit-repo
-                core-git/prefix
-                core-git/status
-                core-git/tag!
-                core-git/top-level
-                core-git/update-all!])
+(st/instrument `[core-git/any-commit?
+                 core-git/commit!
+                 core-git/describe
+                 core-git/dirty?
+                 core-git/get-tag
+                 core-git/make-jgit-repo
+                 core-git/prefix
+                 core-git/status
+                 core-git/tag!
+                 core-git/top-level
+                 core-git/update-all!])
 
 
 (defn make-temp-repo! []

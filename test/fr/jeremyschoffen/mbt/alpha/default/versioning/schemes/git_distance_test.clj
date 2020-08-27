@@ -16,9 +16,9 @@
   versioning)
 
 
-(st/instrument [vs/current-version
-                vs/bump
-                vs/bump])
+(st/instrument `[vs/current-version
+                 vs/bump
+                 vs/bump])
 
 
 (def git-distance-ctxt {::versioning/scheme vs/git-distance-scheme})

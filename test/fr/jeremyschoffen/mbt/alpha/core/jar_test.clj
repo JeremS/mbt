@@ -16,8 +16,8 @@
   jar.entry)
 
 (st/instrument
-  `[jar/make-jar-archive!
-    jar/add-srcs!])
+  `[core-jar/make-jar-archive!
+    core-jar/add-srcs!])
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

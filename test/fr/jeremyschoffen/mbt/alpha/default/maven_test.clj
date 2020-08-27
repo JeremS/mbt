@@ -5,12 +5,12 @@
     [testit.core :refer :all]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    ;[fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as default-maven]
     [fr.jeremyschoffen.mbt.alpha.test.repos :as test-repos]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
 
 (u/pseudo-nss
   maven

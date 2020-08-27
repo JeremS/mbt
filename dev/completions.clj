@@ -45,8 +45,8 @@
 :maven/artefact-name 
 :maven/group-id 
 :maven/classifier 
-:maven.pom/dir 
-:maven/pom 
+:maven.pom/path
+:maven.pom/xml
 :maven/pom-properties 
 :maven/local-repo 
 :maven.settings/file 
@@ -264,36 +264,36 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Defaults
 ;;----------------------------------------------------------------------------------------------------------------------
-::project/name
-::project/output-dir
+:project/name
+:project/output-dir
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building
 ;;----------------------------------------------------------------------------------------------------------------------
-::build.jar/output-dir
+:build.jar/output-dir
 
 
 
-::build/jar-name
-::build/uberjar-name
+:build/jar-name
+:build/uberjar-name
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deployment
 ;;----------------------------------------------------------------------------------------------------------------------
-::maven.deploy/sign-artefacts?
+:maven.deploy/sign-artefacts?
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning
 ;;----------------------------------------------------------------------------------------------------------------------
-::versioning/bump-level?
-::versioning/scheme
-::versioning/tag-base-name
+:versioning/bump-level?
+:versioning/scheme
+:versioning/tag-base-name
 
-::versioning/version
+:versioning/version
 
-::versioning/major
+:versioning/major
 
-::version-file/path
-::version-file/ns
+:version-file/path
+:version-file/ns

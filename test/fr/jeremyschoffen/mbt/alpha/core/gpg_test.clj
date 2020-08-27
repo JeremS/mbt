@@ -16,7 +16,7 @@
   shell)
 
 
-(st/instrument [core-gpg/gpg-version core-gpg/sign-file!])
+(st/instrument `[core-gpg/gpg-version core-gpg/sign-file!])
 
 (defn try-fn [f]
   (try
