@@ -17,7 +17,6 @@ Utilities used in the whole project.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Namespaces machinery
 ;;----------------------------------------------------------------------------------------------------------------------
-;;TODO rename these, its obvious via ns that we are in mbtalpha...
 (defmacro alias-root-mbt-alpha [a]
   `(do
      (create-ns 'fr.jeremyschoffen.mbt.alpha)
@@ -37,10 +36,6 @@ Utilities used in the whole project.
 (defmacro pseudo-nss [& aliases]
   `(do ~@(for [alias aliases]
            `(pseudo-ns fr.jeremyschoffen.mbt.alpha ~alias))))
-
-
-
-
 
 
 

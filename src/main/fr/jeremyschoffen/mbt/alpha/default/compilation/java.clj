@@ -49,7 +49,7 @@ Higher level api to compile java files.
     [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-unit]]"
   [param]
   (u/ensure-computed param
-                     ::classpath/raw-absolute mbt-core/classpath-raw-absolute
+                     ::classpath/raw-absolute mbt-core/classpath-raw
                      ::compilation.java/compiler mbt-core/compilation-java-compiler
                      ::compilation.java/file-manager mbt-core/compilation-java-std-file-manager
                      ::compilation.java/options default-options

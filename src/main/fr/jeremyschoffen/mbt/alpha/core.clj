@@ -28,7 +28,6 @@ Facade grouping the core apis in one place.
 ;; Classpath
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone classpath-raw classpath/raw-classpath)
-(u/def-clone classpath-raw-absolute classpath/absolute-raw-classpath)
 (u/def-clone classpath-indexed classpath/indexed-classpath)
 
 ;;----------------------------------------------------------------------------------------------------------------------
