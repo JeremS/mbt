@@ -41,12 +41,12 @@
            :ret ::maven/artefact-name)
 
 
-(defn pom-dir
+(defn pom-path
   "Defaults to `:project/output-dir`."
-  [{wd ::project/output-dir}]
-  wd)
+  [{out-dir ::project/output-dir}]
+  (u/safer-path out-dir "pom.xml"))
 
-(u/spec-op pom-dir
+(u/spec-op pom-path
            :param {:req [::project/output-dir]}
            :ret ::maven.pom/dir)
 
@@ -81,7 +81,7 @@
 
 (def conf {::maven/group-id (impl/calc group-id ::project/working-dir)
            ::maven/artefact-name (impl/calc artefact-name ::versioning/tag-base-name)
-           ::maven.pom/dir (impl/calc pom-dir ::project/output-dir)
+           ::maven.pom/path (impl/calc pom-path ::project/output-dir)
            ::maven/local-repo (impl/calc maven-local-repo)
            ::maven.install/dir (impl/calc maven-install-dir)
            ::maven.settings/file (impl/calc maven-settings-file)})

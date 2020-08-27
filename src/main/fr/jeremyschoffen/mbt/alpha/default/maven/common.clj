@@ -24,9 +24,9 @@ Common maven utilities used in the default apis.
   "Makes a sequence of maps representing maven artefacts following the `:maven.deploy/artefact` spec.
 
   Here representations for a pom.xml and a jar are made."
-  [{pom-dir ::maven.pom/dir
+  [{pom-path ::maven.pom/path
     jar-path ::jar/output}]
-  [{::maven.deploy.artefact/path (fs/path pom-dir "pom.xml")
+  [{::maven.deploy.artefact/path      pom-path
     ::maven.deploy.artefact/extension "pom"}
 
    {::maven.deploy.artefact/path jar-path

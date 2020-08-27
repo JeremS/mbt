@@ -12,7 +12,7 @@ Minimal api wrapping some of the `java.tools` apis providing java compilation ut
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
   (:import
     (javax.tools StandardJavaFileManager JavaCompiler ToolProvider)))
-;; TODO impacted by changes to indexed classpath
+
 (u/pseudo-nss
   classpath
   compilation.java

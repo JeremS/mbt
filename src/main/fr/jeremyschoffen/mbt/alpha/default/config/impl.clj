@@ -54,10 +54,13 @@
         dependency-graph (graph/digraph calcs-map)
         plan (execution-plan dependency-graph)]
     (persistent!
-      (reduce (fn [acc k]
-                (if-let [computation (and (contains? calcs k)
-                                          (-> acc k :f))]
-                  (assoc! acc k (computation acc))
+      (reduce (fn [acc config-key]
+                (if-let [{f :f
+                          deps :deps} (and (contains? calcs config-key)
+                                           (get conf config-key))]
+                  (assoc! acc config-key (-> acc
+                                             (select-keys deps)
+                                             f))
                   acc))
               (transient conf)
               plan))))

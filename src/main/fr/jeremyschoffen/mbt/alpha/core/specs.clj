@@ -115,7 +115,7 @@ Specs used in `mbt's` core apis.
 (s/def ::maven/group-id symbol?)
 (s/def ::maven/classifier symbol?)
 
-(s/def ::maven.pom/dir path?)
+(s/def ::maven.pom/path path?)
 (s/def ::maven.pom/xml map?)
 (s/def ::maven.pom/properties string?)
 

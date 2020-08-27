@@ -47,7 +47,6 @@ Api providing default behaviour for maven tasks.
         ::project/deps mbt-core/deps-get ;;FIXME handled by config
         ::project/version v/current-project-version)))
 
-;;TODO: find out if we could pass these types of spec into :opt and use :fn
 (u/spec-op ensure-basic-conf
            :deps [default-jar/jar-out
                   mbt-core/deps-get
@@ -126,7 +125,7 @@ Api providing default behaviour for maven tasks.
                   mbt-core/maven-install!]
            :param {:req #{::maven/artefact-name
                           ::maven/group-id
-                          ::maven.pom/dir}
+                          ::maven.pom/path}
                    :opt #{::build/jar-name
                           ::jar/output-dir
                           ::git/repo
@@ -204,7 +203,7 @@ Api providing default behaviour for maven tasks.
                          ::maven/artefact-name
                          ::maven/group-id
                          ::maven/server
-                         ::maven.pom/dir
+                         ::maven.pom/path
                          ::project/deps]
                    :opt [::gpg/command
                          ::gpg/home-dir

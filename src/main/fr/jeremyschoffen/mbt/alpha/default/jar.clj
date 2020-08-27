@@ -236,18 +236,19 @@ Apis providing the jar sources used by default.
   (u/ensure-computed p
                      ::project/deps mbt-core/deps-get
                      ::classpath/index mbt-core/classpath-indexed
-                     ::maven.pom/xml mbt-core/maven-new-pom
+                     ::maven.pom/xml mbt-core/maven-sync-pom!
                      ::maven.pom/properties mbt-core/maven-new-pom-properties
                      ::jar/manifest mbt-core/manifest))
 
 (u/spec-op ensure-jar-defaults
            :deps [mbt-core/deps-get
                   mbt-core/classpath-indexed
-                  mbt-core/maven-new-pom
+                  mbt-core/maven-sync-pom!
                   mbt-core/maven-new-pom-properties
                   mbt-core/manifest]
            :param {:req #{::maven/artefact-name
                           ::maven/group-id
+                          ::maven.pom/path
                           ::project/working-dir
                           ::project/version}
                    :opt #{::jar/main-ns
