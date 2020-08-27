@@ -46,27 +46,30 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
   (-to-u-path [this] (get-dir this)))
 
 
-(defn- datafy-jgit-obj [o]
-  (vary-meta (datafy/datafy o) assoc :jgit/object o))
+(defprotocol DatafyJGit
+  (datafy-jgit* [x]))
 
-;; TODO: don't use datafy, no control over protocol nor datatypes
-(extend-protocol cp/Datafiable
+(defn- datafy-jgit-obj [o]
+  (vary-meta (datafy-jgit* o) assoc :jgit/object o))
+
+
+(extend-protocol DatafyJGit
   PersonIdent
-  (datafy [this] {::git.identity/name (.getName this)
-                  ::git.identity/email (.getEmailAddress this)
-                  :date (.getWhen this)
-                  :time (.getTimeZone this)})
+  (datafy-jgit* [this] {::git.identity/name (.getName this)
+                        ::git.identity/email (.getEmailAddress this)
+                        :date (.getWhen this)
+                        :time (.getTimeZone this)})
   RevTag
-  (datafy [this]
+  (datafy-jgit* [this]
     {::git.tag/name (.getTagName this)
      ::git.tag/message (.getFullMessage this)
      ::git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
 
   RevCommit
-  (datafy [this] {::git.commit/name (.getName this)
-                  ::git.commit/message (.getFullMessage this)
-                  ::git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
-                  ::git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
+  (datafy-jgit* [this] {::git.commit/name (.getName this)
+                        ::git.commit/message (.getFullMessage this)
+                        ::git.commit/committer (datafy-jgit-obj (.getCommitterIdent this))
+                        ::git.commit/author (datafy-jgit-obj (.getAuthorIdent this))}))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Simulate git rev-parse
