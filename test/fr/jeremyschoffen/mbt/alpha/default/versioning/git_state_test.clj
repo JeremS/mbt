@@ -9,7 +9,6 @@
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]
-    ;[fr.jeremyschoffen.mbt.alpha.default.defaults :as defaults]
     [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.versioning.schemes.protocols :as vp]
     [fr.jeremyschoffen.mbt.alpha.test.helpers :as h]

@@ -48,7 +48,7 @@
 
 (u/spec-op pom-path
            :param {:req [::project/output-dir]}
-           :ret ::maven.pom/dir)
+           :ret ::maven.pom/path)
 
 
 (defn maven-local-repo
