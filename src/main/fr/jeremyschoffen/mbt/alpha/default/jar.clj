@@ -4,6 +4,7 @@ Apis providing the jar sources used by default.
       "}
   fr.jeremyschoffen.mbt.alpha.default.jar
   (:require
+    [clojure.spec.alpha :as s]
     [clojure.data.xml :as xml]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
@@ -15,6 +16,7 @@ Apis providing the jar sources used by default.
 (u/pseudo-nss
   build
   build.jar
+  build.uberjar
   classpath
   cleaning
   jar
@@ -227,28 +229,30 @@ Apis providing the jar sources used by default.
 ;; Jar building
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn ensure-jar-defaults
-  "Add to a config map the necessary keys to make a jar. Namely:
-    - :fr...mbt.alpha.project/deps
+  "Ensure the presence in the config map of some necessary keys to make a jar. Computes
+   values for those keys if necessary.
+
+   Namely:
     - :fr...mbt.alpha.classpath/index
-    - :fr...mbt.alpha.maven/pom
+    - :fr...mbt.alpha.maven.pom/xml
+    - :fr...mbt.alpha.maven.pom/properties
     - :fr...mbt.alpha.jar/manifest"
   [p]
   (u/ensure-computed p
-                     ::project/deps mbt-core/deps-get
-                     ::classpath/index mbt-core/classpath-indexed
-                     ::maven.pom/xml mbt-core/maven-sync-pom!
-                     ::maven.pom/properties mbt-core/maven-new-pom-properties
-                     ::jar/manifest mbt-core/manifest))
+    ::classpath/index mbt-core/classpath-indexed
+    ::maven.pom/xml mbt-core/maven-sync-pom!
+    ::maven.pom/properties mbt-core/maven-new-pom-properties
+    ::jar/manifest mbt-core/manifest))
 
 (u/spec-op ensure-jar-defaults
-           :deps [mbt-core/deps-get
-                  mbt-core/classpath-indexed
+           :deps [mbt-core/classpath-indexed
                   mbt-core/maven-sync-pom!
                   mbt-core/maven-new-pom-properties
                   mbt-core/manifest]
            :param {:req #{::maven/artefact-name
                           ::maven/group-id
                           ::maven.pom/path
+                          ::project/deps
                           ::project/working-dir
                           ::project/version}
                    :opt #{::jar/main-ns
@@ -256,8 +260,11 @@ Apis providing the jar sources used by default.
                           ::maven/scm
                           ::project/author
                           ::project.deps/aliases
-                          ::project.deps/file
-                          ::project/licenses}})
+                          ::project/licenses}}
+           :ret (s/keys :req [::classpath/index
+                              ::maven.pom/xml
+                              ::maven.pom/properties
+                              ::jar/manifest]))
 
 
 (defn make-jar&clean!
@@ -288,35 +295,23 @@ Apis providing the jar sources used by default.
                    :opt [::jar/exclude?]})
 
 
-(defn jar-out
-  "Make the jar path given the `:fr...mbt.alpha.build.jar/output-dir` and `:fr...mbt.alpha.build/jar-name`."
-  [{jar-name ::build/jar-name
-    out ::build.jar/output-dir}]
-  (u/safer-path out jar-name))
-
-(u/spec-op jar-out
-           :param {:req [::build/jar-name
-                         ::build.jar/output-dir]}
-           :ret ::jar/output)
-
-
 (defn jar!
   "Create a skinny jar. The jar sources are determined using
-  [[fr.jeremyschoffen.mbt.alpha.default.jar/simple-jar-srcs]], the jar's path name
-  [[fr.jeremyschoffen.mbt.alpha.default.jar/jar-out]].
+  [[fr.jeremyschoffen.mbt.alpha.default.jar/simple-jar-srcs]].
 
   This function takes care of generating a deleting a temporary directory used to group the
   jar files that end up compressed into the jar archive."
   [param]
   (-> param
-      (u/ensure-computed
-        ::jar/srcs simple-jar-srcs
-        ::jar/output jar-out)
+      (u/assoc-computed ::jar/output ::build.jar/path)
+      (u/ensure-computed ::jar/srcs simple-jar-srcs)
       make-jar&clean!))
 
 (u/spec-op jar!
-           :deps [jar-out simple-jar-srcs make-jar&clean!]
-           :param {:req [::classpath/index
+           :deps [simple-jar-srcs
+                  make-jar&clean!]
+           :param {:req [::build.jar/path
+                         ::classpath/index
                          ::jar/manifest
                          ::maven/artefact-name
                          ::maven/group-id
@@ -325,48 +320,26 @@ Apis providing the jar sources used by default.
                          ::project/deps
                          ::project/working-dir]
                    :opt [::jar/exclude?
-                         ::jar/output
-                         ::build/jar-name
-                         ::build.jar/output-dir
-                         ::project/licences]}
-           :fn (fn [args]
-                 (let [{jar-out-dir ::build.jar/output-dir
-                        jar-name ::build/jar-name
-                        jar-out ::jar/output} (-> args :args :param)]
-                   (or jar-out
-                       (and jar-out-dir jar-name)))))
-
-
-
-(defn uberjar-out
-  "Make the uberjar path given the `:fr...mbt.alpha.build.jar/output-dir` and `:fr...mbt.alpha.build/jar-name`."
-  [{jar-name ::build/uberjar-name
-    out ::build.jar/output-dir}]
-  (u/safer-path out jar-name))
-
-(u/spec-op uberjar-out
-           :param {:req [::build/uberjar-name
-                         ::build.jar/output-dir]}
-           :ret ::jar/output)
+                         ::project/licences]})
 
 
 (defn uberjar!
   "Build an uberjar. The jar sources are determined using
-  [[fr.jeremyschoffen.mbt.alpha.default.jar/uber-jar-srcs]], the uberjar's path
-  [[fr.jeremyschoffen.mbt.alpha.default.jar/uberjar-out]].
+  [[fr.jeremyschoffen.mbt.alpha.default.jar/uber-jar-srcs]].
 
   This function takes care of generating a deleting a temporary directory used to group the
   jar files that end up compressed into the jar archive."
   [param]
   (-> param
-      (u/ensure-computed
-        ::jar/srcs uber-jar-srcs
-        ::jar/output uberjar-out)
+      (u/ensure-computed ::jar/srcs uber-jar-srcs)
+      (u/assoc-computed ::jar/output ::build.uberjar/path)
       make-jar&clean!))
 
 (u/spec-op uberjar!
-           :deps [uberjar-out uber-jar-srcs make-jar&clean!]
-           :param {:req [::classpath/index
+           :deps [uber-jar-srcs
+                  make-jar&clean!]
+           :param {:req [::build.uberjar/path
+                         ::classpath/index
                          ::jar/manifest
                          ::maven/artefact-name
                          ::maven/group-id
@@ -375,13 +348,4 @@ Apis providing the jar sources used by default.
                          ::project/deps
                          ::project/working-dir]
                    :opt [::jar/exclude?
-                         ::build/uberjar-name
-                         ::build.jar/output-dir
-                         ::jar/output
-                         ::project/licenses]}
-           :fn (fn [args]
-                 (let [{jar-out-dir ::build.jar/output-dir
-                        jar-name ::build/uberjar-name
-                        jar-out ::jar/output} (-> args :args :param)]
-                   (or jar-out
-                       (and jar-out-dir jar-name)))))
+                         ::project/licenses]})

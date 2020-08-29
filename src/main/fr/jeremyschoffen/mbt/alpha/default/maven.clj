@@ -7,7 +7,6 @@ Api providing default behaviour for maven tasks.
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.jar :as default-jar]
     [fr.jeremyschoffen.mbt.alpha.default.maven.common :as mc]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
@@ -37,30 +36,19 @@ Api providing default behaviour for maven tasks.
 (defn ensure-basic-conf
   "Ensure the necessary basic keys needed to install/deploy maven artefacts are present in the config. Fill the
   blanks with: default values. Those keys are:
-    - :fr...mbt.alpha.jar/output
     - :fr...mbt.alpha.project/deps
     - :fr...mbt.alpha.project/version"
   [param]
   (-> param
-      (u/ensure-computed
-        ::jar/output default-jar/jar-out ;;FIXME handled by config
-        ::project/deps mbt-core/deps-get ;;FIXME handled by config
-        ::project/version v/current-project-version)))
+      (u/ensure-computed ::project/version v/current-project-version))) ;;FIXME needs to go too.
 
 (u/spec-op ensure-basic-conf
-           :deps [default-jar/jar-out
-                  mbt-core/deps-get
+           :deps [mbt-core/deps-get
                   v/current-project-version]
-           :param {:opt [::build/jar-name
-                         ::build.jar/output-dir
-                         ::project.deps/file
-                         ::git/repo
-                         ::project.deps/file
+           :param {:opt [::git/repo
                          ::versioning/scheme
                          ::versioning/tag-base-name]}
-           :ret (s/keys :req [::jar/output
-                              ::project/deps
-                              ::project/version]))
+           :ret (s/keys :req [::project/version]))
 
 
 (defn ensure-install-conf
@@ -77,12 +65,9 @@ Api providing default behaviour for maven tasks.
 (u/spec-op ensure-install-conf
            :deps [ensure-basic-conf
                   make-usual-artefacts]
-           :param {:req [::maven.pom/dir]
-                   :opt [::build/jar-name
-                         ::build.jar/output-dir
-                         ::project.deps/file
-                         ::git/repo
-                         ::project.deps/file
+           :param {:req [::maven.pom/path
+                         ::build.jar/path]
+                   :opt [::git/repo
                          ::versioning/scheme
                          ::versioning/tag-base-name]}
            :ret (s/keys :req [::maven.deploy/artefacts]))
@@ -123,20 +108,17 @@ Api providing default behaviour for maven tasks.
            :deps [ensure-install-conf
                   mbt-core/maven-sync-pom!
                   mbt-core/maven-install!]
-           :param {:req #{::maven/artefact-name
+           :param {:req #{::build.jar/path
+                          ::maven/artefact-name
                           ::maven/group-id
-                          ::maven.pom/path}
-                   :opt #{::build/jar-name
-                          ::jar/output-dir
-                          ::git/repo
+                          ::maven.pom/path
+                          ::project/deps}
+                   :opt #{::git/repo
                           ::maven/classifier
                           ::maven.deploy/artefacts
                           ::maven/scm
                           ::maven.install/dir
-                          ::maven.pom/dir
                           ::project/licenses
-                          ::project/deps
-                          ::project.deps/file
                           ::project/version
                           ::versioning/scheme
                           ::versioning/tag-base-name}})
@@ -163,18 +145,15 @@ Api providing default behaviour for maven tasks.
            :deps [ensure-basic-conf
                   make-usual-artefacts
                   make-usual-artefacts+signatures!]
-           :param {:req #{::maven.pom/dir},
-                   :opt #{::build/jar-name
-                          ::build.jar/output-dir
-                          ::git/repo
+           :param {:req [::maven.pom/path
+                         ::build.jar/path]
+                   :opt #{::git/repo
                           ::gpg/command
                           ::gpg/home-dir
                           ::gpg/key-id
                           ::gpg/pass-phrase
                           ::gpg/version
-                          ::jar/output
                           ::project/working-dir
-                          ::project.deps/file
                           ::versioning/scheme
                           ::versioning/tag-base-name}}
            :ret (s/keys :req [::maven.deploy/artefacts]))
@@ -198,8 +177,7 @@ Api providing default behaviour for maven tasks.
            :deps [mbt-core/maven-sync-pom!
                   ensure-deploy-conf
                   mbt-core/maven-deploy!]
-           :param {:req [::build/jar-name
-                         ::build.jar/output-dir
+           :param {:req [::build.jar/path
                          ::maven/artefact-name
                          ::maven/group-id
                          ::maven/server
@@ -210,36 +188,10 @@ Api providing default behaviour for maven tasks.
                          ::gpg/key-id
                          ::gpg/pass-phrase
                          ::gpg/version
+                         ::maven.deploy/artefacts
                          ::maven.deploy/sign-artefacts?
                          ::maven/classifier
                          ::maven/credentials
                          ::maven/local-repo
                          ::maven.settings/file
                          ::project/working-dir]})
-
-{:req #{::maven/artefact-name
-        ::maven/group-id
-        ::maven/server
-        ::maven.pom/dir}
- :opt #{::build/jar-name
-        ::build.jar/output-dir
-        ::git/repo
-        ::gpg/command
-        ::gpg/home-dir
-        ::gpg/key-id
-        ::gpg/pass-phrase
-        ::gpg/version
-        ::jar/output
-        ::maven/classifier
-        ::maven/credentials
-        ::maven/local-repo
-        ::maven/scm
-        ::maven.deploy/artefacts
-        ::maven.settings/file
-        ::project/licenses
-        ::project/working-dir
-        ::project/deps
-        ::project.deps/file
-        ::project/version
-        ::versioning/scheme
-        ::versioning/tag-base-name},}

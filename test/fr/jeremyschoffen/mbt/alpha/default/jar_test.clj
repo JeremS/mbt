@@ -16,6 +16,8 @@
 
 (u/pseudo-nss
   build
+  build.jar
+  build.uberjar
   jar.entry
   maven
   project
@@ -59,7 +61,7 @@
                                       ::project.license/file (u/safer-path project2-path "LICENSE")}]
                  ::maven/group-id group-id
                  ::maven/artefact-name 'project-2
-                 ::build/jar-name "project2.jar"
+                 ::build.jar/name "project2.jar"
                  ::jar/exclude? intruder?)
                config/make-base-config
                jar/ensure-jar-defaults))
@@ -67,18 +69,18 @@
 
 (def ctxt2-i (-> ctxt2
                  (dissoc ::jar/exclude?)
-                 (assoc ::build/jar-name "project2-i.jar")))
+                 (assoc ::build.jar/name "project2-i.jar")))
 
 
 (deftest simple-jar
   (let [_ (jar/jar! ctxt2)
         content (-> ctxt2
-                    jar/jar-out
+                    ::build.jar/path
                     h/jar-content)
 
         _ (jar/jar! ctxt2-i)
         content+i (-> ctxt2-i
-                      jar/jar-out
+                      ::build.jar/path
                       h/jar-content)]
 
     (testing "The content that should be there is."
@@ -132,7 +134,7 @@
                 ::project/author author
                 ::maven/group-id group-id
                 ::maven/artefact-name 'project-1
-                ::build/uberjar-name "project1-standalone.jar"
+                ::build.uberjar/name "project1-standalone.jar"
                 ::jar/exclude? uberjar-exclude?}
                config/make-base-config
                (u/assoc-computed ::project/deps get-project1-deps)
@@ -142,7 +144,7 @@
   (try
     (let [_ (jar/uberjar! ctxt1)
           content (-> ctxt1
-                      jar/uberjar-out
+                      ::build.uberjar/path
                       h/jar-content)
           services-1 (slurp (u/safer-path project1-path services-props-rpath))
           services-2 (slurp (u/safer-path project2-path services-props-rpath))]

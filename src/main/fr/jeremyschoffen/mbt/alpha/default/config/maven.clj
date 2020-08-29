@@ -9,6 +9,7 @@
 (u/pseudo-nss
   maven
   maven.install
+  maven.deploy
   maven.pom
   maven.settings
   project
@@ -84,4 +85,5 @@
            ::maven.pom/path (impl/calc pom-path ::project/output-dir)
            ::maven/local-repo (impl/calc maven-local-repo)
            ::maven.install/dir (impl/calc maven-install-dir)
-           ::maven.settings/file (impl/calc maven-settings-file)})
+           ::maven.settings/file (impl/calc maven-settings-file)
+           ::maven.deploy/sign-artefacts? false})

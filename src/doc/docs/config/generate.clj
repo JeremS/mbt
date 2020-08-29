@@ -93,6 +93,6 @@
   (spit config-docs-path (updated-docs)))
 
 (comment
-  (generate-doc-from-scratch!)
-  (updated-docs!))
+  ;(generate-doc-from-scratch!)
+  (update-docs!))
 

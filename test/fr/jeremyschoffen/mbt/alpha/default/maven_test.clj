@@ -13,6 +13,7 @@
 
 
 (u/pseudo-nss
+  build.jar
   maven
   maven.install
   maven.server
@@ -20,7 +21,6 @@
 
 
 (st/instrument `[jar/ensure-jar-defaults
-                 jar/jar-out
                  jar/jar!
 
                  default-maven/install!
@@ -51,7 +51,7 @@
               config/make-base-config
               jar/ensure-jar-defaults))
 
-(def jar-out (jar/jar-out conf))
+(def jar-out (::build.jar/path conf))
 
 (def maven-jar-name (str artefact-name "-" version ".jar"))
 

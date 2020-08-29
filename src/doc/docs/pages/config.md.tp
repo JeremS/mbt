@@ -2,17 +2,17 @@
 
 # Config keys reference
 
-◊config-key[:fr.jeremyschoffen.mbt.alpha.build/jar-name]{
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build/jar-output-dir]{
+The dir into which build jars.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/name]{
 The file name of the skinny jar to build.
-}
-◊config-key[:fr.jeremyschoffen.mbt.alpha.build/uberjar-name]{
-The file name of the uberjar to build.
-}
-◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/output-dir]{
-the dir into which build jars.
 }
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/path]{
 The definitive location of the jar to build : jar.output/dir + jar/name
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.uberjar/name]{
+The file name of the uberjar to build.
 }
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.build.uberjar/path]{
 The definitive location of the jar to build : jar.output/dir + uberjar/name

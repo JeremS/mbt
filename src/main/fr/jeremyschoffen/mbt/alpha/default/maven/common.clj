@@ -12,6 +12,7 @@ Common maven utilities used in the default apis.
 
 
 (u/pseudo-nss
+  build.jar
   gpg
   jar
   maven.deploy
@@ -25,7 +26,7 @@ Common maven utilities used in the default apis.
 
   Here representations for a pom.xml and a jar are made."
   [{pom-path ::maven.pom/path
-    jar-path ::jar/output}]
+    jar-path ::build.jar/path}]
   [{::maven.deploy.artefact/path      pom-path
     ::maven.deploy.artefact/extension "pom"}
 
@@ -33,8 +34,8 @@ Common maven utilities used in the default apis.
     ::maven.deploy.artefact/extension "jar"}])
 
 (u/spec-op make-usual-artefacts
-           :param {:req [::maven.pom/dir
-                         ::jar/output]}
+           :param {:req [::maven.pom/path
+                         ::build.jar/path]}
            :ret ::maven.deploy/artefacts)
 
 
@@ -49,8 +50,8 @@ Common maven utilities used in the default apis.
 
 (u/spec-op make-usual-artefacts+signatures!
            :deps [make-usual-artefacts mbt-core/maven-sign-artefacts!]
-           :param {:req [::jar/output
-                         ::maven.pom/dir]
+           :param {:req [::build.jar/path
+                         ::maven.pom/path]
                    :opt [::gpg/command
                          ::gpg/home-dir
                          ::gpg/key-id

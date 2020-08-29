@@ -13,8 +13,14 @@
 (u/pseudo-nss
   maven
   project
+  project.deps
   versioning)
 
+(defn make-base-config [user-defined]
+  (-> config/base
+      (dissoc ::project.deps/file ::project/deps)
+      (merge user-defined)
+      config/compute-conf))
 
 
 (deftest names
@@ -26,12 +32,12 @@
         project-name (-> repo fs/file-name str)
         group-id (symbol project-name)
 
-        ctxt (config/make-base-config {::project/working-dir wd})
-        ctxt-alpha (config/make-base-config {::project/working-dir wd
-                                             ::versioning/major         :alpha})
+        ctxt (make-base-config {::project/working-dir wd})
+        ctxt-alpha (make-base-config {::project/working-dir wd
+                                      ::versioning/major         :alpha})
 
 
-        ctxt' (config/make-base-config {::project/working-dir wd'})]
+        ctxt' (make-base-config {::project/working-dir wd'})]
     (testing "Group ids"
       (facts
         (::maven/group-id ctxt)

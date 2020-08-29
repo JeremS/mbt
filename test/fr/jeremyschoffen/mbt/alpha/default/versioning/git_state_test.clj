@@ -22,6 +22,7 @@
   git.describe
   git.tag
   project
+  project.deps
   versioning)
 
 
@@ -144,9 +145,16 @@
         (git-state/next-version ctxt) => "4"))))
 
 
+(defn make-base-config [user-defined]
+  (-> config/base
+      (dissoc ::project.deps/file ::project/deps)
+      (merge user-defined)
+      config/compute-conf))
+
+
 (deftest next-tag-simple-repo
   (let [repo (h/make-temp-repo!)
-        ctxt (config/make-base-config
+        ctxt (make-base-config
                {::git/repo repo
                 ::project/working-dir (fs/path repo)
                 ::versioning/scheme test-scheme})
@@ -170,7 +178,7 @@
         project-dir1-relative (fs/path "module1" "project1")
         project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (config/make-base-config
+        ctxt1 (make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir1
                  ::versioning/scheme   test-scheme})
@@ -179,7 +187,7 @@
 
         project-dir2-relative (fs/path "module1" "project2")
         project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
-        ctxt2 (config/make-base-config
+        ctxt2 (make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir2
                  ::versioning/scheme   test-scheme})
@@ -207,7 +215,7 @@
         project-dir1-relative (fs/path "module1" "project1")
         project-dir1 (u/ensure-dir! (fs/path repo project-dir1-relative))
 
-        ctxt1 (config/make-base-config
+        ctxt1 (make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir1
                  ::versioning/scheme   test-scheme})
@@ -217,7 +225,7 @@
 
         project-dir2-relative (fs/path "module1" "project2")
         project-dir2 (u/ensure-dir! (fs/path repo project-dir2-relative))
-        ctxt2 (config/make-base-config
+        ctxt2 (make-base-config
                 {::git/repo            repo
                  ::project/working-dir project-dir2
                  ::versioning/scheme   test-scheme})
