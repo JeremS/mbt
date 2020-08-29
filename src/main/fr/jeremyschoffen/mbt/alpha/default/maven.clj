@@ -33,45 +33,6 @@ Api providing default behaviour for maven tasks.
 (u/def-clone make-usual-artefacts mc/make-usual-artefacts)
 (u/def-clone make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 
-(defn ensure-basic-conf
-  "Ensure the necessary basic keys needed to install/deploy maven artefacts are present in the config. Fill the
-  blanks with: default values. Those keys are:
-    - :fr...mbt.alpha.project/deps
-    - :fr...mbt.alpha.project/version"
-  [param]
-  (-> param
-      (u/ensure-computed ::project/version v/current-project-version))) ;;FIXME needs to go too.
-
-(u/spec-op ensure-basic-conf
-           :deps [mbt-core/deps-get
-                  v/current-project-version]
-           :param {:opt [::git/repo
-                         ::versioning/scheme
-                         ::versioning/tag-base-name]}
-           :ret (s/keys :req [::project/version]))
-
-
-(defn ensure-install-conf
-  "Ensure that the keys needed to install a jar are part of the config.
-   The basic ones are taken care of using [[fr.jeremyschoffen.mbt.alpha.default.maven/ensure-basic-conf]].
-   The key `:fr...mbt.alpha.maven.deploy/artefacts` is computed specifically. Default behavior is to make 2 artefacts,
-   one for the jar, one for a pom.xml."
-  [param]
-  (-> param
-      ensure-basic-conf
-      (u/ensure-computed
-        ::maven.deploy/artefacts make-usual-artefacts)))
-
-(u/spec-op ensure-install-conf
-           :deps [ensure-basic-conf
-                  make-usual-artefacts]
-           :param {:req [::maven.pom/path
-                         ::build.jar/path]
-                   :opt [::git/repo
-                         ::versioning/scheme
-                         ::versioning/tag-base-name]}
-           :ret (s/keys :req [::maven.deploy/artefacts]))
-
 
 (defn check-artefacts-exist
   "Check that the artefacts described under the key `:fr...mbt.alpha.maven.deploy/artefacts` actually exist."
@@ -94,34 +55,35 @@ Api providing default behaviour for maven tasks.
 (defn install!
   "Install a jar of the current project into the local maven repo.
 
-  Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the
-  `:fr...mbt.alpha.maven.pom/dir` location. If `:fr...mbt.alpha.maven.deploy/artefacts` isn't provided the default
-  behavior is to generate it using [[fr.jeremyschoffen.mbt.alpha.default.maven/ensure-install-conf]]."
+  This function takes care of several operations. It starts by ensuring that the config has a
+  `:fr...mbt.alpha.maven.deploy/artefacts` key, compute a value with
+  [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]] if necessary. Next it
+  generates/synchronizes a/the pom.xml file at the `:fr...mbt.alpha.maven.pom/path` location.
+
+  After checking the actual existence of the deployment artefacts uses maven to install them.
+  "
   [param]
   (-> param
-      ensure-install-conf
+      (u/ensure-computed ::maven.deploy/artefacts make-usual-artefacts)
       (u/do-side-effect! mbt-core/maven-sync-pom!)
       (u/check check-artefacts-exist)
       mbt-core/maven-install!))
 
 (u/spec-op install!
-           :deps [ensure-install-conf
+           :deps [make-usual-artefacts
                   mbt-core/maven-sync-pom!
                   mbt-core/maven-install!]
            :param {:req #{::build.jar/path
                           ::maven/artefact-name
                           ::maven/group-id
                           ::maven.pom/path
-                          ::project/deps}
-                   :opt #{::git/repo
+                          ::project/deps
+                          ::project/version}
+                   :opt #{::maven.deploy/artefacts
                           ::maven/classifier
-                          ::maven.deploy/artefacts
                           ::maven/scm
                           ::maven.install/dir
-                          ::project/licenses
-                          ::project/version
-                          ::versioning/scheme
-                          ::versioning/tag-base-name}})
+                          ::project/licenses}})
 
 
 (defn ensure-deploy-conf
@@ -137,35 +99,32 @@ Api providing default behaviour for maven tasks.
                                 make-usual-artefacts+signatures!
                                 make-usual-artefacts)]
     (-> param
-        ensure-basic-conf
-        (u/ensure-computed
-          ::maven.deploy/artefacts make-deploy-artefacts))))
+        (u/ensure-computed ::maven.deploy/artefacts make-deploy-artefacts))))
 
 (u/spec-op ensure-deploy-conf
-           :deps [ensure-basic-conf
-                  make-usual-artefacts
+           :deps [make-usual-artefacts
                   make-usual-artefacts+signatures!]
            :param {:req [::maven.pom/path
                          ::build.jar/path]
-                   :opt #{::git/repo
-                          ::gpg/command
+                   :opt #{::gpg/command
                           ::gpg/home-dir
                           ::gpg/key-id
                           ::gpg/pass-phrase
                           ::gpg/version
-                          ::project/working-dir
-                          ::versioning/scheme
-                          ::versioning/tag-base-name}}
+                          ::project/working-dir}}
            :ret (s/keys :req [::maven.deploy/artefacts]))
 
 
 (defn deploy!
-  "Deploy a jar of the current project to a remote repo.
+  "Deploy a jar of the current project into the a remote maven repo.
+  This function takes care of several operations. It starts by ensuring that the config has a
+  `:fr...mbt.alpha.maven.deploy/artefacts` key, compute a value with
+  [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]] if necessary. Next it
+  generates/synchronizes a/the pom.xml file at the `:fr...mbt.alpha.maven.pom/path` location.
 
-  Before doing so generate/synchronize a/the pom.xml file to be found in the directory at the
-  `:fr...mbt.alpha.maven.pom/dir` location. If `:fr...mbt.alpha.maven.deploy/artefacts` isn't provided the default
-  behavior is to generate and assoc it to the conf using
-  [[fr.jeremyschoffen.mbt.alpha.default.maven/ensure-deploy-conf]]."
+  After checking the actual existence of the deployment artefacts uses maven to install them.
+
+  "
   [param]
   (-> param
       ensure-deploy-conf
@@ -182,7 +141,8 @@ Api providing default behaviour for maven tasks.
                          ::maven/group-id
                          ::maven/server
                          ::maven.pom/path
-                         ::project/deps]
+                         ::project/deps
+                         ::project/version]
                    :opt [::gpg/command
                          ::gpg/home-dir
                          ::gpg/key-id
@@ -193,5 +153,7 @@ Api providing default behaviour for maven tasks.
                          ::maven/classifier
                          ::maven/credentials
                          ::maven/local-repo
+                         ::maven/scm
                          ::maven.settings/file
+                         ::project/licenses
                          ::project/working-dir]})

@@ -33,12 +33,17 @@
 
 
 (defn artefact-name
-  "Default maven name: `project/name`."
-  [{base-name ::versioning/tag-base-name}]
-  (symbol base-name))
+  "Defaults to `project/name` + suffixes depending on `:versioning/major` and `:versioning/stable`."
+  [{p-name  ::project/name
+    major   ::versioning/major}]
+  (-> p-name
+      (cond-> (and major (not= major :none))
+              (str "-" (name major)))
+      symbol))
 
 (u/spec-op artefact-name
-           :param {:req [::versioning/tag-base-name]}
+           :param {:req [::project/name
+                         ::versioning/major]}
            :ret ::maven/artefact-name)
 
 
@@ -81,7 +86,7 @@
 
 
 (def conf {::maven/group-id (impl/calc group-id ::project/working-dir)
-           ::maven/artefact-name (impl/calc artefact-name ::versioning/tag-base-name)
+           ::maven/artefact-name (impl/calc artefact-name ::project/name ::versioning/major)
            ::maven.pom/path (impl/calc pom-path ::project/output-dir)
            ::maven/local-repo (impl/calc maven-local-repo)
            ::maven.install/dir (impl/calc maven-install-dir)
