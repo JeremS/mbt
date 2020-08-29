@@ -1,2 +1,425 @@
+◊(require '[docs.config.tags :refer [config-key]])◊
 
-◊config-key[:name :project/name]{source}{doc}
+# Config keys reference
+
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build/jar-name]{
+The file name of the skinny jar to build.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build/uberjar-name]{
+The file name of the uberjar to build.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/output-dir]{
+the dir into which build jars.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/path]{
+The definitive location of the jar to build : jar.output/dir + jar/name
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.uberjar/path]{
+The definitive location of the jar to build : jar.output/dir + uberjar/name
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.classpath/index]{
+An indexed classpath used to derive jar sources.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.classpath/raw]{
+A classpath string.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.cleaning/target]{
+Path to a file / directory to delete.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.clojure/namespaces]{
+List of namespaces of clojure namespaces to compile.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.clojure/output-dir]{
+Directory where clojure copilation will output.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compilation-unit]{
+A java compilation unit required by the java api. Contains the paths to
+the .java files to compile.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler]{
+
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-classes]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-out]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/diagnostic-listener]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/file-manager]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/options]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/output-dir]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/sources]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/charset]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/diagnostic-listener]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/locale]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/options]{}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/add!]{
+Options used when staging files in git.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/commit]{
+Data found in a git commit.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/commit!]{
+Options used when commiting to git.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/description]{
+Data found in a git description.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/identity]{
+Data representing an identity in git (committer...).
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/prefix]{
+Git prefix as in `git -C wd/ rev-parse --show-prefix`
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/raw-description]{
+The string returned by `git describe -opts*` given the options we pass by default.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/repo]{
+A JGit object representing a git repo.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/sha]{
+A git sha.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/tag]{
+Clojure data representing a git tag.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/tag!]{
+Option used when creating a new git tag.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git/top-level]{
+Git top level as in `git -C wd/ rev-parse --show-toplevel`.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git-distance/number]{
+Number representing a distance from an earlier commit. We get it from git descriptions.
+It's used when computing version numbers.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git-distance/qualifier]{
+Qualifier for a version nulber in the `git-distance scheme`.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.add!/file-patterns]{
+Pattern to be passed to git add.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.add!/update?]{
+Git add option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.add!/working-tree-iterator]{
+Git add option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/all?]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/allow-empty?]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/amend?]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/author]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/committer]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/insert-change-id?]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/message]{
+Message in a commit.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/name]{
+Name of a commit.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/no-verify?]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/only]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.commit/reflog-comment]{
+Git commit option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.describe/distance]{
+Git distance in a description.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.describe/tag-pattern]{
+The pattern used to find a previous commit in a description.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.identity/email]{
+Email in a git identity.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.identity/name]{
+Name in a git identity.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.repo/dirty?]{
+Whether the repo is dirty in a description.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/annotated?]{
+  Git tag option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/force?]{
+Git tag option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/message]{
+Message of a tag.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/name]{
+Name of a tag.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/signed?]{
+Git tag option.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.git.tag/tagger]{
+Identity of the tagger.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/command]{
+The gpg command to use at the command line. Typically `gpg` or `gpg2`.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/home-dir]{
+The `gpg home directory` to point gpg to.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/key-id]{
+Id of the key gpg should use to sign artefacts.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/pass-phrase]{
+A passphrase for the specified / default key gpg will use to sign artefacts.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/sign!]{
+Signing options for gpg:
+- what to sign.
+- where to put the signature.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg/version]{
+Internal representation of gpg's version used to dictate what options
+are required to use when signing.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg.sign!/in]{
+File to sign with gpg.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.gpg.sign!/out]{
+Where the signature gpg generates goes.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/entries]{
+A collection of jar entries.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/entry]{
+Representation of a jar entry.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/exclude?]{
+Function determining if a potential jar entry actually makes it into a jar.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/file-system]{
+A java nio filesystem pointing at a jar.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/main-ns]{
+the main namespace of a jar. (Used in jar manifests.)
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/manifest]{
+A jar manifest.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/output]{
+The path poiting at the location a jar will be created.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/src]{
+Source for a jar: source directories, other jars...
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/srcs]{
+Collection aof jar sources.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar/temp-output]{
+The location of the directory containing all jar entries. Basically the un-compressed
+content of a jar archive to be compressed.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar.adding/result]{
+Key found in the returned values of the jar-ing operation giving some information
+as to what happened to the jar entry.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar.clash/strategy]{
+Key found in the returned values of the jar-ing operation indicating a clash
+happened and what strategy was employed to resolve it.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar.entry/dest]{
+The destination of a jar entry in the final jar.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar.entry/src]{
+The path to the actual jar entry.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.jar.manifest/overrides]{
+Additionnal entries for the a jar manifest.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/artefact-name]{
+The name of a maven artefact (devoid of classifier).
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/classifier]{
+A classifer to be employed for a mavan artefact.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/credentials]{
+Credentials used in maven operations.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/group-id]{
+The group id for a maven artefact.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/local-repo]{
+Path to the local maven repo.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/scm]{
+Scm information for pom.xml files.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven/server]{
+Server information when deploying maven artefacts.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven-like/qualifier]{
+qualifier in the maven versioning: `alpha3`, `rc2`...
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven-like/subversions]{
+Vector of 3 integers used to describe a maven / semver version number (major, minor, patch).
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven-like.qualifier/label]{
+Name of the qualifier in the maven versioning scheme: `:alpha`, `:beta`, `:rc`.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven-like.qualifier/n]{
+The number in maven version qualifier: the 2 in `alpha2`.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.credentials/passphrase]{
+Passphrase used in maven credentials.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.credentials/password]{
+Password used in maven credentials.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.credentials/private-key]{
+Private key used in maven credentials.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.credentials/user-name]{
+User name used in maven credentials.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy/artefact]{
+Maven artefact in the deploy sense. Basically a representation of a file
+that will be installed / deployed by maven.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy/artefacts]{
+Collection of maven deploy artefacts to be installed / deployed.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy/sign-artefacts?]{
+Option to sign artefacts when deploying them.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/extension]{
+Extension of a deployment artefact.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/path]{
+Path to a deployment artefact.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.install/dir]{
+Directory where we want maven installation to put artefacts.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.pom/path]{
+Path to the `pom.xml` file to be used / synced.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.pom/properties]{
+A `pom.properties` to be put in jars.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.pom/xml]{
+Content of a `pom.xml` file in data form (data used by `clojure.tools.xml`).
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.scm/connection]{
+Scm data for maven poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.scm/developer-connection]{
+Scm data for maven poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.scm/tag]{
+Scm data for maven poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.scm/url]{
+Scm data for maven poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.server/id]{
+An id of a maven server. Typically the id used in maven's `settings.xml` files
+to identify a server.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.server/url]{
+Url to a maven server.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.settings/file]{
+Location of the `settings.xml` file to use.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/author]{
+Author of the project. Used in jar manifests.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/deps]{
+The deps map of the project.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/license]{
+Data for a license entry in pom files.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/licenses]{
+Collection of the license entries for the pom file.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/name]{
+Name of the project. Used to generate git tags and maven artefact id.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/output-dir]{
+The directory in which the build tool outputs stuff.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/version]{
+Version of the project. Used in maven related activities.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project/working-dir]{
+Working directory / root of the project.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.deps/aliases]{
+Aliases to be used in conjunction with the project's deps.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.deps/file]{
+Location of the `deps.edn` file to use.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.license/comment]{
+License data in poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.license/distribution]{
+License data in poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.license/file]{
+Path to the license file. (Will be included in jars.)
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.license/name]{
+License data in poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.project.license/url]{
+License data in poms.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.shell/command]{
+Command to be run in another process. Basically:
+```clojure
+(apply clojure.java.shell/sh command)
+```
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.shell/err]{
+Key in the return value of a shell process.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.shell/exit]{
+Key in the return value of a shell process.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.shell/out]{
+Key in the return value of a shell process.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.shell/result]{
+Return value of a shell process.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.version-file/ns]{
+Namespace of the version file.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.version-file/path]{
+Where to put the version file.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.versioning/bump-level]{
+Bump level to use when releasing a new version of the project. Depends on the versioning
+scheme used.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.versioning/major]{
+Optional marker that will be used when creating git tag names and maven artefact names.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.versioning/scheme]{
+The versioning scheme to use.
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.versioning/tag-base-name]{
+The base part of generated tag names, `mbt-alpha` in `mbt-alpha-vX`
+}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.versioning/version]{
+A a representation of a version generated and used by the version scheme.
+}

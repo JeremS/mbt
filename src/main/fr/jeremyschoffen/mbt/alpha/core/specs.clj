@@ -176,7 +176,6 @@ Specs used in `mbt's` core apis.
                                   ::classpath/ext-dep
                                   ::classpath/file})
 (s/def ::classpath/raw string?)
-(s/def ::classpath/raw-absolute string?)
 (s/def ::classpath/index (s/map-of classpath-index-categories
                                    (s/coll-of string?)))
 
