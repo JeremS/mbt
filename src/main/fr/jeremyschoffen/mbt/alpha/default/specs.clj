@@ -40,6 +40,8 @@ Specs used in the default api.
 (s/def ::build.uberjar/name (every-pred string? jar-ext?))
 (s/def ::build.uberjar/path specs/jar-path?)
 
+(s/def ::build.jar/allow-non-maven-deps boolean?)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deployment
 ;;----------------------------------------------------------------------------------------------------------------------

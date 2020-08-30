@@ -3,12 +3,13 @@
     [ubergraph.core :as graph]
     [fr.jeremyschoffen.dolly.core :as dolly]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
+    [fr.jeremyschoffen.mbt.alpha.default.config.build :as build-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.cleaning :as cleaning-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.compilation :as compi-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.git :as git-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.gpg :as gpg-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
-    [fr.jeremyschoffen.mbt.alpha.default.config.jar :as jar-c]
+    ;[fr.jeremyschoffen.mbt.alpha.default.config.jar :as jar-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.maven :as maven-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.project :as project-c]
     [fr.jeremyschoffen.mbt.alpha.default.config.versioning :as versioning-conf]))
@@ -46,7 +47,7 @@
             git-c/conf
             gpg-c/conf2
             versioning-conf/conf
-            jar-c/conf
+            build-c/conf
             maven-c/conf))
 
 

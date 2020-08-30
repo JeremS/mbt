@@ -30,6 +30,20 @@ Api providing some utilities working with `clojure.tools.deps`.
            :ret ::project/deps)
 
 
+(defn non-maven-deps
+  "Utility signaling non maven deps. These deps can't go into a pom file."
+  [{deps-map ::project/deps}]
+  (into #{}
+        (keep (fn [[k v]]
+                (when-not (contains? v :mvn/version)
+                  k)))
+        (:deps deps-map)))
+
+(u/spec-op non-maven-deps
+           :param {:req [::project/deps]}
+           :ret (s/coll-of symbol? :kind set?))
+
+
 (defn make-symbolic-coord
   "Create a Clojure symbol following the clojure tools deps format used to specified maven dependencies.
 

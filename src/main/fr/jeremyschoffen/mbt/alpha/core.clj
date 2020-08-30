@@ -58,7 +58,7 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone deps-get deps/get-deps)
 (u/def-clone deps-make-coord deps/make-deps-coords)
-
+(u/def-clone deps-non-maven deps/non-maven-deps)
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ Facade grouping the core apis in one place.
 (u/def-clone maven-get-pom pom/get-pom)
 (u/def-clone maven-new-pom-properties pom/new-pom-properties)
 (u/def-clone maven-sync-pom! pom/sync-pom!)
-(u/def-clone maven-non-mvn-deps pom/non-maven-deps)
+
 
 (u/def-clone maven-default-local-repo maven-common/default-local-repo)
 (u/def-clone maven-default-settings-file maven-common/maven-default-settings-file)

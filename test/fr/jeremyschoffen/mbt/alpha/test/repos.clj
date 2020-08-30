@@ -11,6 +11,8 @@
 
 (def test-repos (u/safer-path "resources-test" "test-repos"))
 
+(def tasks-test-repo (u/safer-path  test-repos "task"))
+
 (def jar (u/safer-path test-repos "jar"))
 
 (def deploy-project (u/safer-path test-repos "deploy"))

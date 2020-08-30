@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.jar
+(ns fr.jeremyschoffen.mbt.alpha.default.config.build
   (:require
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
@@ -64,7 +64,8 @@
            :ret ::build.uberjar/path)
 
 
-(def conf {::build/jar-output-dir (impl/calc jar-out-dir ::project/output-dir)
+(def conf {::build.jar/allow-non-maven-deps false
+           ::build/jar-output-dir (impl/calc jar-out-dir ::project/output-dir)
 
            ::build.jar/name (impl/calc jar-name ::maven/artefact-name)
            ::build.jar/path (impl/calc jar-out ::build/jar-output-dir ::build.jar/name)

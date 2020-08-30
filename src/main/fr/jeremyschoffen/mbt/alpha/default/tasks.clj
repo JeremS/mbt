@@ -5,6 +5,7 @@ Higher level apis.
   fr.jeremyschoffen.mbt.alpha.default.tasks
   (:require
     [clojure.spec.alpha :as s]
+    [cognitect.anomalies :as anom]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
@@ -76,19 +77,36 @@ Higher level apis.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Building jars
 ;;----------------------------------------------------------------------------------------------------------------------
+(defn check-incompatible-deps
+  "Checks wheter or not the jar being built uses deps incompatible with maven (git libs, local deps)."
+  [{allowed? ::build.jar/allow-non-maven-deps
+    :as conf}]
+  (let [non-maven-deps (mbt-core/deps-non-maven conf)]
+    (when (and (seq non-maven-deps)
+               (not allowed?))
+      (throw (ex-info "Can't build a skinny jar while having non maven deps."
+                      {::anom/category ::anom/forbidden
+                       :mbt/error :invalid-deps
+                       :faulty-deps non-maven-deps})))))
+
 (defn jar!
-  "Build a skinny jar for the project. Ensure that the `:fr...mbt.alpha.project/version` is present int the config with
-  [[fr.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
-  Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]].
+  "Build a skinny jar for the project.
+  Depending on the value of `:fr...mbt.alpha.build.jar/allow-non-maven-deps` this function will throw
+  an exception if non maven deps are found.
+
+  Also ensures several config keys are present using
+  [[fr.jeremyschoffen.mbt.alpha.default.jar/ensure-jar-defaults]].
   "
   [param]
   (-> param
+      (u/check check-incompatible-deps)
       jar/ensure-jar-defaults
       jar/jar!))
 
 (u/spec-op jar!
            :deps [jar/ensure-jar-defaults jar/jar!]
            :param {:req [::build.jar/path
+                         ::build.jar/allow-non-maven-deps
                          ::maven/artefact-name
                          ::maven/group-id
                          ::maven.pom/path

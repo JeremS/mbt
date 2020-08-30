@@ -29,20 +29,6 @@ Api providing maven pom.xml files generation.
 
 
 
-;;TODO: maybe throw exception when deps aren't maven compatible
-(defn non-maven-deps
-  "Utility signaling non maven deps. These deps can't go into a pom file."
-  [{deps-map ::project/deps}]
-  (into #{}
-        (keep (fn [[k v]]
-                (when-not (contains? v :mvn/version)
-                  k)))
-        (:deps deps-map)))
-
-(u/spec-op non-maven-deps
-           :param {:req [::project/deps]}
-           :ret (s/coll-of symbol? :kind set?))
-
 ;; Rework from tools deps
 ;; https://github.com/clojure/tools.deps.alpha/blob/master/src/main/clojure/clojure/tools/deps/alpha/gen/pom.clj
 
