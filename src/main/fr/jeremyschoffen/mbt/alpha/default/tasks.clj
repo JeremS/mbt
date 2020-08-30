@@ -15,10 +15,13 @@ Higher level apis.
 
 (u/pseudo-nss
   build
+  build.jar
+  build.uberjar
   git
   git.commit
   jar.manifest
   maven
+  maven.pom
   project
   project.deps
   versioning)
@@ -103,25 +106,25 @@ Higher level apis.
   "
   [param]
   (-> param
-      (u/ensure-computed ::project/version v/current-project-version)
       jar/ensure-jar-defaults
       jar/jar!))
 
 (u/spec-op jar!
-           :deps [v/current-version jar/ensure-jar-defaults jar/jar!]
-           :param {:req [::build/jar-name
-                         ::git/repo
+           :deps [jar/ensure-jar-defaults jar/jar!]
+           :param {:req [::build.jar/path
                          ::maven/artefact-name
                          ::maven/group-id
-                         ::project/output-dir
-                         ::project/working-dir
-                         ::versioning/scheme]
+                         ::maven.pom/path
+                         ::project/deps
+                         ::project/version
+                         ::project/working-dir]
                    :opt [::jar/exclude?
                          ::jar/main-ns
                          ::jar.manifest/overrides
+                         ::maven/scm
                          ::project/author
-                         ::project.deps/aliases
-                         ::versioning/tag-base-name]})
+                         ::project/licenses
+                         ::project.deps/aliases]})
 
 
 (defn uberjar!
@@ -130,22 +133,22 @@ Higher level apis.
   Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
-      (u/ensure-computed ::project/version v/current-project-version)
       jar/ensure-jar-defaults
       jar/uberjar!))
 
 (u/spec-op uberjar!
-           :deps [v/current-version jar/ensure-jar-defaults jar/uberjar!]
-           :param {:req [::build/uberjar-name
-                         ::git/repo
+           :deps [jar/ensure-jar-defaults jar/uberjar!]
+           :param {:req [::build.uberjar/path
                          ::maven/artefact-name
                          ::maven/group-id
-                         ::project/output-dir
-                         ::project/working-dir
-                         ::versioning/scheme]
+                         ::maven.pom/path
+                         ::project/deps
+                         ::project/version
+                         ::project/working-dir]
                    :opt [::jar/exclude?
                          ::jar/main-ns
                          ::jar.manifest/overrides
+                         ::maven/scm
                          ::project/author
-                         ::project.deps/aliases
-                         ::versioning/tag-base-name]})
+                         ::project/licenses
+                         ::project.deps/aliases]})
