@@ -1,5 +1,6 @@
 (ns docs.config.generate
   (:require
+    [clojure.data]
     [meander.epsilon :as m]
     [fr.jeremyschoffen.textp.alpha.reader.core :as textp-reader]
     [fr.jeremyschoffen.textp.alpha.lib.compilation :refer [emit!] :as compi]
@@ -89,10 +90,24 @@
 (defn generate-doc-from-scratch! []
   (spit config-docs-path (generate-doc-from-scratch)))
 
+
 (defn update-docs! []
   (spit config-docs-path (updated-docs)))
 
+
+(defn changes []
+  (let [old-keys (-> config-docs-path
+                     slurp
+                     textp-reader/read-from-string
+                     (m/search
+                       (m/scan ('config-key {:content [?x] } & ?_))
+                       ?x)
+                     set)
+        [old new] (clojure.data/diff old-keys config-data/config-keys)]
+    [old new]))
+
 (comment
   ;(generate-doc-from-scratch!)
+  (changes)
   (update-docs!))
 

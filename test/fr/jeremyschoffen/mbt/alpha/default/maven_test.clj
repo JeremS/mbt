@@ -38,18 +38,18 @@
 (def version "1.0")
 (def group-id 'group)
 
-(def conf (-> (sorted-map
-                ::project/working-dir project-path
-                ::project/version version
-                ::project/author "Tester"
+(def conf (-> {::project/working-dir project-path
+               ::project/version version
+               ::project/author "Tester"
 
-                ::maven/artefact-name artefact-name
-                ::maven/group-id (symbol group-id)
+               ::maven/artefact-name artefact-name
+               ::maven/group-id (symbol group-id)
 
-                ::maven.install/dir install-dir
-                ::maven/server {::maven.server/url (fs/url deploy-dir)})
+               ::maven.install/dir install-dir
+               ::maven/server {::maven.server/url (fs/url deploy-dir)}}
               config/make-base-config
-              jar/ensure-jar-defaults))
+              jar/ensure-jar-defaults
+              (->> (into (sorted-map)))))
 
 (def jar-out (::build.jar/path conf))
 
@@ -76,9 +76,9 @@
 (deftest testing-install-deploy
   (try
     (-> conf
-        (u/side-effect! jar/jar!)
-        (u/side-effect! default-maven/install!)
-        (u/side-effect! default-maven/deploy!))
+        (u/do-side-effect! jar/jar!)
+        (u/do-side-effect! default-maven/install!)
+        (u/do-side-effect! default-maven/deploy!))
 
     (let [jar-content (list-jar-files jar-out)
           installed-jar-content (list-jar-files installed-jar-path)
