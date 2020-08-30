@@ -31,10 +31,14 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning machinery
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone current-project-version versioning/current-project-version)
+(u/def-clone versioning-initial-version versioning/schemes-initial-version)
+(u/def-clone versioning-current-version versioning/current-version)
+(u/def-clone versioning-next-version versioning/next-version)
+
+
 
 ;; Git versioning
-(u/def-clone bump-tag! versioning/bump-tag!)
+(u/def-clone versioning-tag-new-version! versioning/tag-new-version!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Premade

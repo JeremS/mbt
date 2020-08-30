@@ -86,7 +86,7 @@ Api containing the default logic for using git state as a versioning mechanism.
     (vs/initial-version param)))
 
 (u/spec-op next-version
-           :deps [most-recent-description vs/initial-version vs/bump]
+           :deps [most-recent-description vs/current-version vs/bump]
            :param {:req [::git/repo
                          ::versioning/scheme]
                    :opt [::versioning/tag-base-name
@@ -137,7 +137,7 @@ Api containing the default logic for using git state as a versioning mechanism.
            :ret map?)
 
 
-(defn make-tag
+(defn- make-tag
   "Create tag data usable by our git wrapper."
   [param]
   (let [m (make-tag-data param)]
@@ -152,57 +152,26 @@ Api containing the default logic for using git state as a versioning mechanism.
            :ret ::git/tag)
 
 
-(defn next-tag
+(defn new-tag
   "Make the next tag/milestone."
   [param]
   (-> param
-      (u/assoc-computed
-        ::git/prefix mbt-core/git-prefix
-        ::versioning/version next-version)
+      (u/assoc-computed ::git/prefix mbt-core/git-prefix)
       make-tag))
 
-(u/spec-op next-tag
-           :deps [mbt-core/git-prefix make-tag next-version]
-           :param {:req #{::git/repo
-                          ::project/working-dir
-                          ::versioning/tag-base-name
-                          ::versioning/scheme}
-                   :opt #{::versioning/bump-level}}
+(u/spec-op new-tag
+           :deps [mbt-core/git-prefix make-tag]
+           :param {:req [::project/working-dir
+                         ::versioning/tag-base-name
+                         ::versioning/version]}
            :ret ::git/tag)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Operations!
 ;;----------------------------------------------------------------------------------------------------------------------
-(def module-build-file "deps.edn")
-
-
-(defn has-build-file?
-  "Checking that the working dir contains a `deps.edn` file."
-  [{wd ::project/working-dir}]
-  (let [build-file (u/safer-path wd module-build-file)]
-    (fs/exists? build-file)))
-
-(u/spec-op has-build-file?
-           :param {:req [::project/working-dir]}
-           :ret boolean?)
-
-
-(defn check-build-file
-  "Check that the working dir contains a `deps.edn` file. Throws an exception if not."
-  [param]
-  (when-not (has-build-file? param)
-    (throw (ex-info "No build file detected."
-                    (merge param {::anom/category ::anom/not-found
-                                  :mbt/error      :no-build-file})))))
-
-(u/spec-op check-build-file
-           :deps [has-build-file?]
-           :param {:req [::project/working-dir]})
-
-
 (defn check-not-dirty
-  "Check xheter the git repo is dirty or not. Throws if it is."
+  "Check wheter the git repo is dirty or not. Throws if it is."
   [param]
   (when (mbt-core/git-dirty? param)
     (throw (ex-info "Can't do this operation on a dirty repo."
@@ -217,18 +186,15 @@ Api containing the default logic for using git state as a versioning mechanism.
 (defn check-repo-in-order
   "Concentrate several checks in one function. Namely:
     - [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-some-commit]]
-    - [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-build-file]]
     - [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/check-not-dirty]]"
   [ctxt]
   (-> ctxt
       (u/check check-some-commit)
-      (u/check check-build-file)
       (u/check check-not-dirty)))
 
 (u/spec-op check-repo-in-order
-           :deps [check-build-file check-some-commit check-not-dirty]
-           :param {:req [::project/working-dir
-                         ::git/repo]})
+           :deps [check-some-commit check-not-dirty]
+           :param {:req [::git/repo]})
 
 
 (defn tag!
@@ -245,19 +211,17 @@ Api containing the default logic for using git state as a versioning mechanism.
                          ::git/tag!]})
 
 
-(defn bump-tag!
-  "Create a new tag in git marking a new milestone in the project. The next version, tag name, etc... are computed from
-  the previous versioning state already in git. If no version has been established yet, the initial version of the used
-  version scheme will be selected."
+(defn tag-new-version!
+  "Create a new tag in git marking a new milestone in the project."
   [param]
   (-> param
-      (u/augment-computed ::git/tag! next-tag)
+      (u/augment-computed ::git/tag! new-tag)
       tag!))
 
-(u/spec-op bump-tag!
-           :deps [next-tag tag!]
-           :param {:req [::project/working-dir
-                         ::git/repo
-                         ::versioning/scheme
-                         ::versioning/tag-base-name]
-                   :opt [::versioning/bump-level]})
+(u/spec-op tag-new-version!
+           :deps [new-tag tag!]
+           :param {:req [::git/repo
+                         ::project/working-dir
+                         ::versioning/tag-base-name
+                         ::versioning/version]}
+           :ret ::git/tag)

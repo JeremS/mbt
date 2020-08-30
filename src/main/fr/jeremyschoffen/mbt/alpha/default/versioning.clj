@@ -28,25 +28,9 @@ Grouping of the different versioning utilities.
 (u/def-clone most-recent-description git-state/most-recent-description)
 (u/def-clone current-version git-state/current-version)
 (u/def-clone next-version git-state/next-version)
-(u/def-clone next-tag git-state/next-tag)
+
 (u/def-clone tag! git-state/tag!)
 (u/def-clone check-repo-in-order git-state/check-repo-in-order)
-(u/def-clone bump-tag! git-state/bump-tag!)
+(u/def-clone tag-new-version! git-state/tag-new-version!)
 
 (u/def-clone write-version-file! vf/write-version-file!)
-
-
-(defn current-project-version
-  "Get the project's current version using git state and the provided version scheme then
-  get its string representation."
-  [param]
-  (-> param
-      current-version
-      str))
-
-(u/spec-op current-project-version
-           :deps [current-version]
-           :param {:req [::git/repo
-                         ::versioning/scheme]
-                   :opt [::versioning/tag-base-name]}
-           :ret string?)

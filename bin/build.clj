@@ -41,6 +41,15 @@
 (def conf (mbt-defaults/config-make specific-conf))
 
 
+(defn next-version [conf]
+  (let [initial (mbt-defaults/versioning-initial-version conf)
+        next-v (mbt-defaults/versioning-next-version conf)]
+    (-> next-v
+        (cond-> (not= initial next-v)
+                (update :distance inc))
+        str)))
+
+
 (defn generate-docs! [conf]
   (-> conf
       (u/assoc-computed ::project/maven-coords mbt-core/deps-make-coord)
@@ -51,9 +60,11 @@
 
 (defn new-milestone! [param]
   (-> param
-      (mbt-defaults/generate-before-bump! (u/do-side-effect! generate-docs!)
-                                          (u/do-side-effect! mbt-defaults/write-version-file!))
-      (u/side-effect! mbt-defaults/bump-tag!)))
+      (u/assoc-computed ::versioning/version next-version
+                        ::project/version (comp str ::versioning/version))
+      (u/do-side-effect! generate-docs!)
+      (u/do-side-effect! mbt-defaults/write-version-file!)
+      (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
 
 
 (defn deploy! [conf]
@@ -61,14 +72,19 @@
       (assoc ::maven/server mbt-defaults/clojars)
       mbt-defaults/deploy!))
 
+
 (comment
+  ;(require '[clj-async-profiler.core :as async-p])
+  ;(async-p/profile)
   (-> conf
-      u/mark-dry-run
+      ;u/mark-dry-run
       (u/assoc-computed ::project/version (comp str mbt-defaults/anticipated-next-version)
                         ::project/maven-coords mbt-core/deps-make-coord)
-      (u/do-side-effect! docs/make-readme!)
-      (u/do-side-effect! docs/make-rationale!)
-      (u/do-side-effect! docs/make-design-doc!))
+      (->> (into (sorted-map)))
+      ;(u/do-side-effect! docs/make-readme!)
+      ;(u/do-side-effect! docs/make-rationale!)
+      ;(u/do-side-effect! docs/make-design-doc!)
+      (u/do-side-effect! docs/make-config-doc!))
 
   (new-milestone! conf)
 
@@ -79,9 +95,11 @@
   (mbt-defaults/build-jar! conf)
   (mbt-defaults/install! conf)
 
+  (mbt-defaults/current-project-version conf)
+  (mbt-defaults/next-project-version conf)
   (-> conf
-      (assoc ::project/version "0")
+      ;(assoc ::project/version "0")
       (u/do-side-effect! mbt-defaults/build-jar!)
-      (u/do-side-effect! mbt-defaults/install!)
+      ;(u/do-side-effect! mbt-defaults/install!)
       u/record-build))
 
