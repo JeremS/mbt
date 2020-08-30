@@ -31,14 +31,15 @@ Higher level apis.
 ;; Pre bump generation
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- commit-generated! [conf]
-  (mbt-core/git-commit! (assoc conf
-                          ::git/commit! {::git.commit/message "Added generated files."})))
+  (-> conf
+      (u/augment-v ::git/commit! {::git.commit/message "Added generated files."})
+      mbt-core/git-commit!))
 
 (u/spec-op commit-generated!
            :deps [mbt-core/git-commit!]
            :param {:req [::git/repo
                          ::git/commit!]})
-
+(u/param-suggestions commit-generated!)
 
 (defn generate-before-bump!
   "Helper function intended to be used just before tagging a new version. The idea here is that when we want to release
