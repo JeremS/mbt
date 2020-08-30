@@ -96,6 +96,7 @@ Utilities used in the whole project.
 (dolly/def-clone assoc-computed mc/assoc-computed)
 (dolly/def-clone ensure-computed mc/ensure-computed)
 (dolly/def-clone augment-computed mc/augment-computed)
+(dolly/def-clone augment-v mc/augment-v)
 
 
 (defn strip-keys-nss [m]
