@@ -28,30 +28,8 @@ Higher level apis.
 
 
 ;;----------------------------------------------------------------------------------------------------------------------
-;; Version file
+;; Pre bump generation
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn anticipated-next-version
-  "Get the next version of the project assuming the commit distance will be one more than it is now.
-
-  Useful when the build process must generate and commit files before tagging the next version."
-  [param]
-  (let [current-version (v/current-version param)]
-    (if-not current-version
-      (v/schemes-initial-version param)
-      (-> param
-          (assoc ::versioning/version
-                 (update current-version :distance inc))
-          v/schemes-bump))))
-
-(u/spec-op anticipated-next-version
-           :deps [v/current-version v/schemes-initial-version v/schemes-bump]
-           :param {:req [::git/repo
-                         ::versioning/scheme]
-                   :opt [::versioning/bump-level
-                         ::versioning/tag-base-name]}
-           :ret ::versioning/version)
-
-
 (defn- commit-generated! [conf]
   (mbt-core/git-commit! (assoc conf
                           ::git/commit! {::git.commit/message "Added generated files."})))
@@ -70,11 +48,9 @@ Higher level apis.
   This function attemps to provide a way to encapsulate this logic. It is performed in several steps:
 
   1) Checks the repo using [[fr.jeremyschoffen.mbt.alpha.default.versioning/check-repo-in-order]].
-  2) Ensure the the presence of the `:fr...mbt.alpha.project/version` key of the `conf` using
-     [[fr.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]] if necessary.
-  3) Thread `conf` through `fns` using [[fr.jeremyschoffen.mbt.alpha.utils//thread-fns]].
-  4) Add all the new files to git using [[fr.jeremyschoffen.mbt.alpha.core/git-add-all!]]
-  5) Commit all the generated files.
+  2) Thread `conf` through `fns` using [[fr.jeremyschoffen.mbt.alpha.utils//thread-fns]].
+  3) Add all the new files to git using [[fr.jeremyschoffen.mbt.alpha.core/git-add-all!]]
+  4) Commit all the generated files.
 
 
   Args:
@@ -83,13 +59,13 @@ Higher level apis.
   [conf & fns]
   (-> conf
       (u/check v/check-repo-in-order)
-      (u/ensure-computed ::project/version (comp str anticipated-next-version))
       (as-> conf (apply u/thread-fns conf fns))
       (u/do-side-effect! mbt-core/git-add-all!)
       (u/do-side-effect! commit-generated!)))
 
 (s/fdef generate-before-bump!
         :args (s/cat :param (s/keys :req [::git/repo
+                                          ::project/version
                                           ::versioning/scheme]
                                     :opt [::versioning/tag-base-name
                                           ::versioning/bump-level])

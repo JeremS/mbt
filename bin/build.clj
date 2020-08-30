@@ -17,10 +17,10 @@
   `[mbt-core/deps-make-coord
 
     mbt-defaults/write-version-file!
-    mbt-defaults/generate-before-bump!
-    mbt-defaults/bump-tag!
+    mbt-defaults/build-before-bump!
+    mbt-defaults/versioning-tag-new-version!
     mbt-defaults/build-jar!
-    mbt-defaults/install!])
+    mbt-defaults/maven-install!])
 
 
 (def specific-conf
@@ -55,22 +55,23 @@
       (u/assoc-computed ::project/maven-coords mbt-core/deps-make-coord)
       (u/do-side-effect! docs/make-readme!)
       (u/do-side-effect! docs/make-rationale!)
-      (u/do-side-effect! docs/make-design-doc!)))
+      (u/do-side-effect! docs/make-design-doc!)
+      (u/do-side-effect! docs/make-config-doc!)))
 
 
 (defn new-milestone! [param]
   (-> param
       (u/assoc-computed ::versioning/version next-version
                         ::project/version (comp str ::versioning/version))
-      (u/do-side-effect! generate-docs!)
-      (u/do-side-effect! mbt-defaults/write-version-file!)
+      (mbt-defaults/build-before-bump! (u/do-side-effect! generate-docs!)
+                                       (u/do-side-effect! mbt-defaults/write-version-file!))
       (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
 
 
 (defn deploy! [conf]
   (-> conf
       (assoc ::maven/server mbt-defaults/clojars)
-      mbt-defaults/deploy!))
+      mbt-defaults/maven-deploy!))
 
 
 (comment
@@ -93,7 +94,7 @@
   (str (mbt-defaults/anticipated-next-version conf))
 
   (mbt-defaults/build-jar! conf)
-  (mbt-defaults/install! conf)
+  (mbt-defaults/maven-install! conf)
 
   (mbt-defaults/current-project-version conf)
   (mbt-defaults/next-project-version conf)

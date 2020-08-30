@@ -45,12 +45,12 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone write-version-file! versioning/write-version-file!)
 
-(u/def-clone anticipated-next-version tasks/anticipated-next-version)
-(u/def-clone generate-before-bump! tasks/generate-before-bump!)
+
+(u/def-clone build-before-bump! tasks/generate-before-bump!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)
-(u/def-clone install! maven/install!)
-(u/def-clone deploy! maven/deploy!)
+(u/def-clone maven-install! maven/install!)
+(u/def-clone maven-deploy! maven/deploy!)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default remote repo
