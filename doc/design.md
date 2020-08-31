@@ -1,8 +1,8 @@
-◊(require '[docs.tags :refer :all] :reload)◊
-◊(require '[fr.jeremyschoffen.textp.alpha.html.tags :refer :all])◊
+
+
 
 # Design
-Here are some design ideas & principles that guided the development or emerged while coding mbt. They are
+Here are some design ideas &amp; principles that guided the development or emerged while coding mbt. They are
 informed by the observations made in the rationale.
 
 ## The base api's *shape*
@@ -11,7 +11,7 @@ context / config map making every effective argument a named one.
 
 This model allows for the following properties:
 - There are no positional semantics in the api's functions. Every datum pertinent to the build process is named
-- We can declare a config map similar to ◊leiningen{Leiningen's} config as a build context
+- We can declare a config map similar to [Leiningen's](https://leiningen.org/) config as a build context
 - We can have a simple (easy?) model for build tasks:
   - A build task can be a function of a config
   - We can thread a context through several successive build tasks
@@ -28,10 +28,10 @@ This model allows for the following properties:
 The process of building artefacts involves versioning. There is support for a pluggable versioning schemes
 using git tags in the default api. Maven and Semver are there...
 
-There is also very basic support designed with the ◊spec-ulation-talk\ and the ◊meander{Meander project} in mind.
+There is also very basic support designed with the [spec-ulation talk](https://www.youtube.com/watch?v=oyLBGkS5ICk&list=PLZdCLR02grLrEwKaZv-5QbUzK0zGKOOcr&index=4&t=0s) and the [Meander project](https://github.com/noprompt/meander) in mind.
 The idea is to have named Major versions which are reflected in namespaces and in artefact names.
 Also we must never introduce breaking changes inside a major version, Only provide more or require less.
-(See the ◊spec-ulation-talk).
+(See the [spec-ulation talk](https://www.youtube.com/watch?v=oyLBGkS5ICk&list=PLZdCLR02grLrEwKaZv-5QbUzK0zGKOOcr&index=4&t=0s)).
 
 For instance this project is named "mbt" and has a major version name `alpha`. The git tags
 and maven artefacts generated will be `mbt-alpha(something)?`. In the alpha version
@@ -58,7 +58,7 @@ something like `:com.domain.project.version.actual.ns/name`
 
 The solution used in mbt is to provide macros simplifying this kind of stuff:
 ```clojure
-◊un-escaped{
+
 (create-ns 'com.domain.project.version.user)
 (alias 'user 'com.domain.project.version.user)
 
@@ -69,7 +69,7 @@ The solution used in mbt is to provide macros simplifying this kind of stuff:
 (fr.jeremyschoffen.mbt.alpha.utils/pseudo-nss project)
 ::project/name
 ;=> fr.jeremyschoffen.mbt.alpha.project/name
-}
+
 ```
 
 
@@ -101,11 +101,11 @@ its own build tool and still use the default api where useful.
 ## Credits
 This project takes a lot from different projects whether in design ideas or directly in the way to code specific things:
 
-- ◊boot / ◊ring for the threaded context model
-- ◊cambada for the compilation code.
-- ◊depstar for the idea that we can build a jar from a classpath.
-- ◊depstar / ◊cambada / ◊badigeon for the jar building code.
-- ◊boot / ◊badigeon for the gpg code
-- ◊badigeon for the manifest code
-- ◊metav for the git versioning code.
-- ◊meander / ◊tools-deps as a source of inspiration for the versioning scheme
+- [Boot](https://boot-clj.com/) / [Ring](https://github.com/ring-clojure/ring) for the threaded context model
+- [Cambada](https://github.com/luchiniatwork/cambada) for the compilation code.
+- [Depstar](https://github.com/seancorfield/depstar) for the idea that we can build a jar from a classpath.
+- [Depstar](https://github.com/seancorfield/depstar) / [Cambada](https://github.com/luchiniatwork/cambada) / [Badigeon](https://github.com/EwenG/badigeon) for the jar building code.
+- [Boot](https://boot-clj.com/) / [Badigeon](https://github.com/EwenG/badigeon) for the gpg code
+- [Badigeon](https://github.com/EwenG/badigeon) for the manifest code
+- [Metav](https://github.com/jgrodziski/metav) for the git versioning code.
+- [Meander](https://github.com/noprompt/meander) / [tools.deps](https://github.com/clojure/tools.deps.alpha) as a source of inspiration for the versioning scheme

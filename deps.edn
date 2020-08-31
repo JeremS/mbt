@@ -10,7 +10,7 @@
         ubergraph/ubergraph             {:mvn/version"0.8.2"}
 
         fr.jeremyschoffen/dolly         {:mvn/version "0"}
-        fr.jeremyschoffen/clj-nio-alpha {:mvn/version "1"}
+        fr.jeremyschoffen/clj-nio-alpha {:mvn/version "0"}
         fr.jeremyschoffen/mapiform-alpha {:mvn/version "0"}}
 
 
@@ -23,7 +23,7 @@
              :extra-deps  {org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.12.1"}
                            org.apache.logging.log4j/log4j-core       {:mvn/version "2.12.1"}}}
 
-  :build {:extra-paths ["bin"]}
+  :build {:extra-paths ["src/build"]}
 
   :doc {:extra-paths ["src/doc/"]
         :extra-deps {fr.jeremyschoffen/textp-doc-alpha {:mvn/version "0"}

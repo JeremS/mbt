@@ -34,3 +34,17 @@ Grouping of the different versioning utilities.
 (u/def-clone tag-new-version! git-state/tag-new-version!)
 
 (u/def-clone write-version-file! vf/write-version-file!)
+
+
+(defn next-version+x
+  "Make a `next-version` function that adds `x` to the git distance of the version
+  returned.
+
+  Useful when anticipating the number of commits before tagging a release."
+  [x]
+  (fn [conf]
+    (let [next-v (next-version conf)
+          initial (schemes-initial-version conf)]
+      (-> next-v
+          (cond-> (not= initial next-v)
+                  (update :distance + x))))))

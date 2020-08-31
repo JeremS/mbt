@@ -26,7 +26,6 @@
 (def design-src "docs/pages/design.md.tp")
 
 (defn make-design-doc! [{wd ::project/working-dir}]
-  (println "dest" (u/safer-path wd "doc" "design.md"))
   (spit (u/safer-path wd "doc" "design.md")
         (doc/make-document design-src {})))
 

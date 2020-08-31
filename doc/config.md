@@ -1,9 +1,44 @@
 
 
-# Config keys
+# Config keys reference
 
 
-##  `:fr.jeremyschoffen.mbt.alpha.build/jar-name`
+##  `:fr.jeremyschoffen.mbt.alpha.build/jar-output-dir`
+
+### Spec:
+```clojure
+path?
+```
+### Description:
+
+
+The dir into which build jars.
+
+
+### Constructors:
+
+- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out-dir]]
+
+
+##  `:fr.jeremyschoffen.mbt.alpha.build.jar/allow-non-maven-deps`
+
+### Spec:
+```clojure
+boolean?
+```
+### Description:
+
+
+Config option for the default api when it comes to producing skinny jars.
+Defaulting to false, [[fr.jeremyschoffen.mbt.alpha.default/build-jar!]] will throw
+an exception if there are non *maven compatible* deps used in the project.
+
+The idea is to guard from shipping a jar in which the pom.xml can't provide all deps.
+
+
+
+
+##  `:fr.jeremyschoffen.mbt.alpha.build.jar/name`
 
 ### Spec:
 ```clojure
@@ -17,41 +52,7 @@ The file name of the skinny jar to build.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.jar/jar-name]]
-
-
-##  `:fr.jeremyschoffen.mbt.alpha.build/uberjar-name`
-
-### Spec:
-```clojure
-(every-pred string? jar-ext?)
-```
-### Description:
-
-
-The file name of the uberjar to build.
-
-
-### Constructors:
-
-- [[fr.jeremyschoffen.mbt.alpha.default.config.jar/uberjar-name]]
-
-
-##  `:fr.jeremyschoffen.mbt.alpha.build.jar/output-dir`
-
-### Spec:
-```clojure
-path?
-```
-### Description:
-
-
-the dir into which build jars.
-
-
-### Constructors:
-
-- [[fr.jeremyschoffen.mbt.alpha.default.config.jar/jar-out-dir]]
+- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-name]]
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/path`
@@ -66,6 +67,27 @@ jar-path?
 The definitive location of the jar to build : jar.output/dir + jar/name
 
 
+### Constructors:
+
+- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out]]
+
+
+##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/name`
+
+### Spec:
+```clojure
+(every-pred string? jar-ext?)
+```
+### Description:
+
+
+The file name of the uberjar to build.
+
+
+### Constructors:
+
+- [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-name]]
+
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/path`
 
@@ -78,6 +100,10 @@ jar-path?
 
 The definitive location of the jar to build : jar.output/dir + uberjar/name
 
+
+### Constructors:
+
+- [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-out]]
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.classpath/index`
@@ -476,9 +502,10 @@ Clojure data representing a git tag.
 - [[fr.jeremyschoffen.mbt.alpha.core/git-tag!]]
 - [[fr.jeremyschoffen.mbt.alpha.core.git/get-tag]]
 - [[fr.jeremyschoffen.mbt.alpha.core.git/tag!]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/next-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/make-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/next-tag]]
+- [[fr.jeremyschoffen.mbt.alpha.default/versioning-tag-new-version!]]
+- [[fr.jeremyschoffen.mbt.alpha.default.versioning/tag-new-version!]]
+- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/new-tag]]
+- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-new-version!]]
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git/tag!`
@@ -1113,11 +1140,6 @@ jar-path?
 
 The path poiting at the location a jar will be created.
 
-
-### Constructors:
-
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/jar-out]]
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/uberjar-out]]
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/src`
@@ -2115,8 +2137,8 @@ A a representation of a version generated and used by the version scheme.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default/anticipated-next-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.tasks/anticipated-next-version]]
+- [[fr.jeremyschoffen.mbt.alpha.default/versioning-initial-version]]
+- [[fr.jeremyschoffen.mbt.alpha.default/versioning-next-version]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning/next-version]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning/schemes-bump]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning/schemes-current-version]]

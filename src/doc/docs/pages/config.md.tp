@@ -5,6 +5,14 @@
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.build/jar-output-dir]{
 The dir into which build jars.
 }
+◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/allow-non-maven-deps]{
+Config option for the default api when it comes to producing skinny jars.
+Defaulting to false, [[fr.jeremyschoffen.mbt.alpha.default/build-jar!]] will throw
+an exception if there are non *maven compatible* deps used in the project.
+
+The idea is to guard from shipping a jar in which the pom.xml can't provide all deps.
+}
+
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/name]{
 The file name of the skinny jar to build.
 }
@@ -36,9 +44,7 @@ Directory where clojure copilation will output.
 A java compilation unit required by the java api. Contains the paths to
 the .java files to compile.
 }
-◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler]{
-
-}
+◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler]{}
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-classes]{}
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-out]{}
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.compilation.java/diagnostic-listener]{}

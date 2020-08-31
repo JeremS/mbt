@@ -14,7 +14,7 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone config-make config/make-base-config)
+(u/def-clone config config/make-base-config)
 (u/def-clone config-calc config/calc)
 (u/def-clone config-compute config/compute-conf)
 (u/def-clone config-print-deps config/pprint-deps)
@@ -34,6 +34,7 @@ Facade grouping the default apis in one place.
 (u/def-clone versioning-initial-version versioning/schemes-initial-version)
 (u/def-clone versioning-current-version versioning/current-version)
 (u/def-clone versioning-next-version versioning/next-version)
+(u/def-clone versioning-make-next-version+x versioning/next-version+x)
 
 
 
