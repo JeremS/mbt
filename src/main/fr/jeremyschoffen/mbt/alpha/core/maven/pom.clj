@@ -212,9 +212,11 @@ Api providing maven pom.xml files generation.
 
 (defn- replace-paths
   [pom [path & paths]]
-  (when path
-    (when (seq paths) (apply printerrln "Skipping paths:" paths))
-    (xml-update pom [::pom/build ::pom/sourceDirectory] (xml/sexp-as-element (gen-source-dir path)))))
+  (if path
+    (do
+      (when (seq paths) (apply printerrln "Skipping paths:" paths))
+      (xml-update pom [::pom/build ::pom/sourceDirectory] (xml/sexp-as-element (gen-source-dir path))))
+    pom))
 
 
 (defn- replace-repos
