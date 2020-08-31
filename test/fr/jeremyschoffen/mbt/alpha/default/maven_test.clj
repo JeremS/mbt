@@ -77,6 +77,7 @@
   (try
     (-> conf
         (u/do-side-effect! jar/jar!)
+        (u/do-side-effect! mbt-core/maven-sync-pom!)
         (u/do-side-effect! default-maven/install!)
         (u/do-side-effect! default-maven/deploy!))
 

@@ -91,4 +91,7 @@
            ::maven/local-repo (impl/calc maven-local-repo)
            ::maven.install/dir (impl/calc maven-install-dir)
            ::maven.settings/file (impl/calc maven-settings-file)
+
+           ::maven.install/sync-pom? true
+           ::maven.deploy/sync-pom? true
            ::maven.deploy/sign-artefacts? false})

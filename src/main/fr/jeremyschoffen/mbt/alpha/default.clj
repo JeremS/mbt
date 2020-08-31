@@ -4,6 +4,7 @@ Facade grouping the default apis in one place.
       "}
   fr.jeremyschoffen.mbt.alpha.default
   (:require
+    [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
@@ -50,6 +51,7 @@ Facade grouping the default apis in one place.
 (u/def-clone build-before-bump! tasks/generate-before-bump!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)
+(u/def-clone maven-sync-pom! mbt-core/maven-sync-pom!)
 (u/def-clone maven-install! maven/install!)
 (u/def-clone maven-deploy! maven/deploy!)
 

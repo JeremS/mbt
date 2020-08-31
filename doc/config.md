@@ -37,7 +37,6 @@ The idea is to guard from shipping a jar in which the pom.xml can't provide all 
 
 
 
-
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/name`
 
 ### Spec:
@@ -1538,6 +1537,21 @@ Option to sign artefacts when deploying them.
 
 
 
+##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/sync-pom?`
+
+### Spec:
+```clojure
+boolean?
+```
+### Description:
+
+
+Whether or not the default install operation will sync the pom.xml file.
+Default to true.
+
+
+
+
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/extension`
 
 ### Spec:
@@ -1579,6 +1593,21 @@ Directory where we want maven installation to put artefacts.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-install-dir]]
+
+
+##  `:fr.jeremyschoffen.mbt.alpha.maven.install/sync-pom?`
+
+### Spec:
+```clojure
+boolean?
+```
+### Description:
+
+
+Whether or not the default deploy operation will sync the pom.xml file.
+Default to true.
+
+
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/path`
@@ -1635,6 +1664,7 @@ Content of a `pom.xml` file in data form (data used by `clojure.tools.xml`).
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/get-pom]]
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom]]
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/sync-pom!]]
+- [[fr.jeremyschoffen.mbt.alpha.default/maven-sync-pom!]]
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/connection`

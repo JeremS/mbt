@@ -55,23 +55,22 @@ Api providing default behaviour for maven tasks.
 (defn install!
   "Install a jar of the current project into the local maven repo.
 
-  This function takes care of several operations. It starts by ensuring that the config has a
-  `:fr...mbt.alpha.maven.deploy/artefacts` key, compute a value with
-  [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]] if necessary. Next it
-  generates/synchronizes a/the pom.xml file at the `:fr...mbt.alpha.maven.pom/path` location.
+  It starts by ensuring that the config has a `:fr...mbt.alpha.maven.deploy/artefacts` key, compute a value with
+  [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]] if necessary.
 
   After checking the actual existence of the deployment artefacts uses maven to install them.
   "
   [param]
-  (-> param
-      (u/ensure-computed ::maven.deploy/artefacts make-usual-artefacts)
-      (u/do-side-effect! mbt-core/maven-sync-pom!)
-      (u/check check-artefacts-exist)
-      mbt-core/maven-install!))
+  (let [sync-pom? (::maven.install/sync-pom? param)]
+    (-> param
+        (cond-> sync-pom? (u/do-side-effect! mbt-core/maven-sync-pom!))
+        (u/ensure-computed ::maven.deploy/artefacts make-usual-artefacts)
+        (u/check check-artefacts-exist)
+        mbt-core/maven-install!)))
 
 (u/spec-op install!
-           :deps [make-usual-artefacts
-                  mbt-core/maven-sync-pom!
+           :deps [mbt-core/maven-sync-pom!
+                  make-usual-artefacts
                   mbt-core/maven-install!]
            :param {:req #{::build.jar/path
                           ::maven/artefact-name
@@ -86,13 +85,13 @@ Api providing default behaviour for maven tasks.
                           ::project/licenses}})
 
 
-(defn ensure-deploy-conf
-  "Ensure that the keys needed to deploy a jar are part of the config.
-   The basic ones are taken care of using [[fr.jeremyschoffen.mbt.alpha.default.maven/ensure-basic-conf]].
+(defn ensure-deploy-artefacts
+  "Ensure that the key `:fr...mbt.alpha.maven.deploy/artefacts` has a value
+  computing a default on if necessary. Default behavior is to make 2
+  artefacts, one for the jar, one for a pom.xml.
 
-   The key `:fr...mbt.alpha.maven.deploy/artefacts` is computed here specifically. Default behavior is to make 2
-   artefacts, one for the jar, one for a pom.xml. Also gnupg can be used to sign these artefacts if the parameter under
-   the key `:fr...mbt.alpha.maven.deploy/sign-artefacts?` is true."
+  Gnupg can be used to sign these artefacts if the parameter under the key
+  `:fr...mbt.alpha.maven.deploy/sign-artefacts?` is true."
   [{sign? ::maven.deploy/sign-artefacts?
     :as param}]
   (let [make-deploy-artefacts (if sign?
@@ -101,7 +100,7 @@ Api providing default behaviour for maven tasks.
     (-> param
         (u/ensure-computed ::maven.deploy/artefacts make-deploy-artefacts))))
 
-(u/spec-op ensure-deploy-conf
+(u/spec-op ensure-deploy-artefacts
            :deps [make-usual-artefacts
                   make-usual-artefacts+signatures!]
            :param {:req [::maven.pom/path
@@ -117,24 +116,22 @@ Api providing default behaviour for maven tasks.
 
 (defn deploy!
   "Deploy a jar of the current project into the a remote maven repo.
-  This function takes care of several operations. It starts by ensuring that the config has a
-  `:fr...mbt.alpha.maven.deploy/artefacts` key, compute a value with
-  [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]] if necessary. Next it
-  generates/synchronizes a/the pom.xml file at the `:fr...mbt.alpha.maven.pom/path` location.
+  It starts by ensuring that the config has a `:fr...mbt.alpha.maven.deploy/artefacts` key and compute a value with
+  [[fr.jeremyschoffen.mbt.alpha.default.maven/ensure-deploy-artefacts]] if necessary.
 
   After checking the actual existence of the deployment artefacts uses maven to install them.
-
   "
   [param]
-  (-> param
-      ensure-deploy-conf
-      (u/do-side-effect! mbt-core/maven-sync-pom!)
-      (u/check check-artefacts-exist)
-      mbt-core/maven-deploy!))
+  (let [sync-pom? (::maven.deploy/sync-pom?  param)]
+    (-> param
+        (cond-> sync-pom? (u/do-side-effect! mbt-core/maven-sync-pom!))
+        ensure-deploy-artefacts
+        (u/check check-artefacts-exist)
+        mbt-core/maven-deploy!)))
 
 (u/spec-op deploy!
            :deps [mbt-core/maven-sync-pom!
-                  ensure-deploy-conf
+                  ensure-deploy-artefacts
                   mbt-core/maven-deploy!]
            :param {:req [::build.jar/path
                          ::maven/artefact-name

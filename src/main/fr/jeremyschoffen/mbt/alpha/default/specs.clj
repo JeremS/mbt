@@ -17,6 +17,7 @@ Specs used in the default api.
   build
   build.jar
   build.uberjar
+  maven.install
   maven.deploy
   versioning
   version-file)
@@ -45,6 +46,8 @@ Specs used in the default api.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deployment
 ;;----------------------------------------------------------------------------------------------------------------------
+(s/def ::maven.install/sync-pom? boolean?)
+(s/def ::maven.deploy/sync-pom? boolean?)
 (s/def ::maven.deploy/sign-artefacts? boolean?)
 
 

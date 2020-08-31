@@ -12,7 +12,6 @@ an exception if there are non *maven compatible* deps used in the project.
 
 The idea is to guard from shipping a jar in which the pom.xml can't provide all deps.
 }
-
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.build.jar/name]{
 The file name of the skinny jar to build.
 }
@@ -304,6 +303,11 @@ Collection of maven deploy artefacts to be installed / deployed.
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy/sign-artefacts?]{
 Option to sign artefacts when deploying them.
 }
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy/sync-pom?]{
+Whether or not the default install operation will sync the pom.xml file.
+Default to true.
+}
+
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/extension]{
 Extension of a deployment artefact.
 }
@@ -313,6 +317,11 @@ Path to a deployment artefact.
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.install/dir]{
 Directory where we want maven installation to put artefacts.
 }
+◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.install/sync-pom?]{
+Whether or not the default deploy operation will sync the pom.xml file.
+Default to true.
+}
+
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.maven.pom/path]{
 Path to the `pom.xml` file to be used / synced.
 }
