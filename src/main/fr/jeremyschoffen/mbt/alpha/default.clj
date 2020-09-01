@@ -12,6 +12,9 @@ Facade grouping the default apis in one place.
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as versioning]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/pseudo-nss
+  maven.server)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Default conf
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -60,5 +63,5 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (def clojars
   "Representation of clojars following the `:maven/server` spec."
-  #:maven.server{:id "clojars"
-                 :url "https://repo.clojars.org/"})
+  {::maven.server/id "clojars"
+   ::maven.server/url "https://repo.clojars.org/"})
