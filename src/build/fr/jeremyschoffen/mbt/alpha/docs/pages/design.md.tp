@@ -1,4 +1,4 @@
-◊(require '[docs.tags :refer :all] :reload)◊
+◊(require '[fr.jeremyschoffen.mbt.alpha.docs.tags :refer :all] :reload)◊
 ◊(require '[fr.jeremyschoffen.textp.alpha.html.tags :refer :all])◊
 
 # Design

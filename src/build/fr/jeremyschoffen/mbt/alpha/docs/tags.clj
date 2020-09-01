@@ -1,4 +1,4 @@
-(ns docs.tags
+(ns fr.jeremyschoffen.mbt.alpha.docs.tags
   (:require [fr.jeremyschoffen.textp.alpha.doc.core :as doc]))
 
 (def tools-deps (doc/make-link "https://github.com/clojure/tools.deps.alpha" "tools.deps"))

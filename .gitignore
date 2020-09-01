@@ -1,7 +1,7 @@
 /target
 /classes
 /checkouts
-/secrets
+/build
 pom.xml
 pom.xml.asc
 *.jar

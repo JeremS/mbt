@@ -8,7 +8,7 @@ Higher level apis.
     [cognitect.anomalies :as anom]
 
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
-    [fr.jeremyschoffen.mbt.alpha.default.jar :as jar]
+    [fr.jeremyschoffen.mbt.alpha.default.jar :as default-jar]
     [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
@@ -20,6 +20,7 @@ Higher level apis.
   build.uberjar
   git
   git.commit
+  jar
   jar.manifest
   maven
   maven.pom
@@ -100,11 +101,11 @@ Higher level apis.
   [param]
   (-> param
       (u/check check-incompatible-deps)
-      jar/ensure-jar-defaults
-      jar/jar!))
+      default-jar/ensure-jar-defaults
+      default-jar/jar!))
 
 (u/spec-op jar!
-           :deps [jar/ensure-jar-defaults jar/jar!]
+           :deps [default-jar/ensure-jar-defaults default-jar/jar!]
            :param {:req [::build.jar/path
                          ::build.jar/allow-non-maven-deps
                          ::maven/artefact-name
@@ -128,11 +129,12 @@ Higher level apis.
   Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
-      jar/ensure-jar-defaults
-      jar/uberjar!))
+      default-jar/ensure-jar-defaults
+      default-jar/uberjar!))
 
 (u/spec-op uberjar!
-           :deps [jar/ensure-jar-defaults jar/uberjar!]
+           :deps [default-jar/ensure-jar-defaults
+                  default-jar/uberjar!]
            :param {:req [::build.uberjar/path
                          ::maven/artefact-name
                          ::maven/group-id

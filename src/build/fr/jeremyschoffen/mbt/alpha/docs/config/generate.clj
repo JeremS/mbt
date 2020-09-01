@@ -1,11 +1,11 @@
-(ns docs.config.generate
+(ns fr.jeremyschoffen.mbt.alpha.docs.config.generate
   (:require
     [clojure.data]
     [meander.epsilon :as m]
     [fr.jeremyschoffen.textp.alpha.reader.core :as textp-reader]
     [fr.jeremyschoffen.textp.alpha.lib.compilation :refer [emit!] :as compi]
     [fr.jeremyschoffen.mbt.alpha.utils :as mbt-utils]
-    [docs.config.data :as config-data]
+    [fr.jeremyschoffen.mbt.alpha.docs.config.data :as config-data]
     [medley.core :as medley]))
 
 

@@ -1,4 +1,4 @@
-(ns docs.config.compilation
+(ns fr.jeremyschoffen.mbt.alpha.docs.config.compilation
   (:require
     [fr.jeremyschoffen.textp.alpha.lib.compilation :refer [emit!]]
     [fr.jeremyschoffen.textp.alpha.doc.markdown-compiler :as md]

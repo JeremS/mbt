@@ -1,9 +1,9 @@
-(ns docs.config.tags
+(ns fr.jeremyschoffen.mbt.alpha.docs.config.tags
   (:require
     [clojure.spec.alpha :as s]
     [clojure.data.xml :as xml]
     [fr.jeremyschoffen.textp.alpha.lib.tag-utils :as textp-lib]
-    [docs.config.data :as config-data]))
+    [fr.jeremyschoffen.mbt.alpha.docs.config.data :as config-data]))
 
 
 (s/def ::config-key-args (s/cat :config-key (s/? ::textp-lib/tag-clj-arg)

@@ -1,4 +1,4 @@
-(ns docs.config.data
+(ns fr.jeremyschoffen.mbt.alpha.docs.config.data
   (:require
     [clojure.spec.alpha :as s]
     [meander.epsilon :as m]

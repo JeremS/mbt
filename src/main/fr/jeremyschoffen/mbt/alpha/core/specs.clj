@@ -153,8 +153,13 @@ Specs used in `mbt's` core apis.
 ;; Maven Server conf
 (s/def ::maven.server/id string?)
 (s/def ::maven.server/url fs/url?)
-(s/def ::maven/server (s/keys :opt [::maven.server/id
-                                    ::maven.server/url]))
+
+
+
+(s/def ::maven/server (s/or :id-req (s/keys :req [::maven.server/id]
+                                            :opt [::maven.server/url])
+                            :url-req (s/keys :req [::maven.server/url]
+                                             :opt [::maven.server/id]))) ;TODO might be a better way to do this
 
 ;; Maven deployment conf
 (s/def ::maven.deploy.artefact/path path?)

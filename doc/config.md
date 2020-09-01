@@ -2,7 +2,7 @@
 
 # Config keys reference
 
-
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build/jar-output-dir`
 
 ### Spec:
@@ -18,8 +18,8 @@ The dir into which build jars.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/allow-non-maven-deps`
 
 ### Spec:
@@ -35,8 +35,8 @@ an exception if there are non *maven compatible* deps used in the project.
 
 The idea is to guard from shipping a jar in which the pom.xml can't provide all deps.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/name`
 
 ### Spec:
@@ -52,8 +52,8 @@ The file name of the skinny jar to build.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-name]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/path`
 
 ### Spec:
@@ -69,8 +69,8 @@ The definitive location of the jar to build : jar.output/dir + jar/name
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/name`
 
 ### Spec:
@@ -86,8 +86,8 @@ The file name of the uberjar to build.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-name]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/path`
 
 ### Spec:
@@ -103,8 +103,8 @@ The definitive location of the jar to build : jar.output/dir + uberjar/name
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-out]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.classpath/index`
 
 ### Spec:
@@ -121,8 +121,8 @@ An indexed classpath used to derive jar sources.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/classpath-indexed]]
 - [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.classpath/raw`
 
 ### Spec:
@@ -139,8 +139,8 @@ A classpath string.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/classpath-raw]]
 - [[fr.jeremyschoffen.mbt.alpha.core.classpath/raw-classpath]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.cleaning/target`
 
 ### Spec:
@@ -156,8 +156,8 @@ Path to a file / directory to delete.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.cleaning/cleaning-target]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.clojure/namespaces`
 
 ### Spec:
@@ -178,8 +178,8 @@ List of namespaces of clojure namespaces to compile.
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/external-nss]]
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/jar-nss]]
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/project-nss]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.clojure/output-dir`
 
 ### Spec:
@@ -195,8 +195,8 @@ Directory where clojure copilation will output.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-clojure-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compilation-unit`
 
 ### Spec:
@@ -209,8 +209,8 @@ Directory where clojure copilation will output.
 A java compilation unit required by the java api. Contains the paths to
 the .java files to compile.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler`
 
 ### Spec:
@@ -221,43 +221,43 @@ the .java files to compile.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-compiler]]
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/make-java-compiler]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-classes`
 
 ### Spec:
 ```clojure
 (coll-of string? :kind vector?)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-out`
 
 ### Spec:
 ```clojure
 (instance? java.io.Writer %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/diagnostic-listener`
 
 ### Spec:
 ```clojure
 (instance? javax.tools.DiagnosticListener %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/file-manager`
 
 ### Spec:
 ```clojure
 (instance? javax.tools.StandardJavaFileManager %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/options`
 
 ### Spec:
 ```clojure
 (coll-of string? :kind vector?)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/output-dir`
 
 ### Spec:
@@ -267,8 +267,8 @@ path?
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-java-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/sources`
 
 ### Spec:
@@ -283,29 +283,29 @@ path?
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/external-files]]
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/jar-files]]
 - [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/project-files]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/charset`
 
 ### Spec:
 ```clojure
 (instance? java.nio.charset.Charset %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/diagnostic-listener`
 
 ### Spec:
 ```clojure
 (instance? javax.tools.DiagnosticListener %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/locale`
 
 ### Spec:
 ```clojure
 (instance? java.util.Locale %)
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/options`
 
 ### Spec:
@@ -315,8 +315,8 @@ path?
  [:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/diagnostic-listener
   :fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/locale
   :fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/charset])
-```
-
+```</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/add!`
 
 ### Spec:
@@ -333,8 +333,8 @@ path?
 
 Options used when staging files in git.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/commit`
 
 ### Spec:
@@ -353,8 +353,8 @@ Options used when staging files in git.
 
 Data found in a git commit.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/commit!`
 
 ### Spec:
@@ -378,8 +378,8 @@ Data found in a git commit.
 
 Options used when commiting to git.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/description`
 
 ### Spec:
@@ -397,8 +397,8 @@ Options used when commiting to git.
 
 Data found in a git description.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/identity`
 
 ### Spec:
@@ -413,8 +413,8 @@ Data found in a git description.
 
 Data representing an identity in git (committer...).
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/prefix`
 
 ### Spec:
@@ -431,8 +431,8 @@ Git prefix as in `git -C wd/ rev-parse --show-prefix`
 
 - [[fr.jeremyschoffen.mbt.alpha.core/git-prefix]]
 - [[fr.jeremyschoffen.mbt.alpha.core.git/prefix]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/raw-description`
 
 ### Spec:
@@ -444,8 +444,8 @@ string?
 
 The string returned by `git describe -opts*` given the options we pass by default.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/repo`
 
 ### Spec:
@@ -463,8 +463,8 @@ A JGit object representing a git repo.
 - [[fr.jeremyschoffen.mbt.alpha.core/git-make-jgit-repo]]
 - [[fr.jeremyschoffen.mbt.alpha.core.git/make-jgit-repo]]
 - [[fr.jeremyschoffen.mbt.alpha.default.config.git/git-repo]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/sha`
 
 ### Spec:
@@ -476,8 +476,8 @@ string?
 
 A git sha.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/tag`
 
 ### Spec:
@@ -505,8 +505,8 @@ Clojure data representing a git tag.
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning/tag-new-version!]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/new-tag]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-new-version!]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/tag!`
 
 ### Spec:
@@ -526,8 +526,8 @@ Clojure data representing a git tag.
 
 Option used when creating a new git tag.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git/top-level`
 
 ### Spec:
@@ -544,8 +544,8 @@ Git top level as in `git -C wd/ rev-parse --show-toplevel`.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/git-top-level]]
 - [[fr.jeremyschoffen.mbt.alpha.core.git/top-level]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git-distance/number`
 
 ### Spec:
@@ -558,8 +558,8 @@ integer?
 Number representing a distance from an earlier commit. We get it from git descriptions.
 It's used when computing version numbers.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git-distance/qualifier`
 
 ### Spec:
@@ -571,8 +571,8 @@ git-distance-qualifiers
 
 Qualifier for a version nulber in the `git-distance scheme`.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.add!/file-patterns`
 
 ### Spec:
@@ -584,8 +584,8 @@ Qualifier for a version nulber in the `git-distance scheme`.
 
 Pattern to be passed to git add.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.add!/update?`
 
 ### Spec:
@@ -597,8 +597,8 @@ boolean?
 
 Git add option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.add!/working-tree-iterator`
 
 ### Spec:
@@ -610,8 +610,8 @@ any?
 
 Git add option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/all?`
 
 ### Spec:
@@ -623,8 +623,8 @@ boolean?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/allow-empty?`
 
 ### Spec:
@@ -636,8 +636,8 @@ boolean?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/amend?`
 
 ### Spec:
@@ -649,8 +649,8 @@ boolean?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/author`
 
 ### Spec:
@@ -665,8 +665,8 @@ Git commit option.
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/committer`
 
 ### Spec:
@@ -681,8 +681,8 @@ Git commit option.
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/insert-change-id?`
 
 ### Spec:
@@ -694,8 +694,8 @@ boolean?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/message`
 
 ### Spec:
@@ -707,8 +707,8 @@ string?
 
 Message in a commit.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/name`
 
 ### Spec:
@@ -720,8 +720,8 @@ string?
 
 Name of a commit.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/no-verify?`
 
 ### Spec:
@@ -733,8 +733,8 @@ boolean?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/only`
 
 ### Spec:
@@ -746,8 +746,8 @@ string?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.commit/reflog-comment`
 
 ### Spec:
@@ -759,8 +759,8 @@ string?
 
 Git commit option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.describe/distance`
 
 ### Spec:
@@ -772,8 +772,8 @@ int?
 
 Git distance in a description.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.describe/tag-pattern`
 
 ### Spec:
@@ -785,8 +785,8 @@ string?
 
 The pattern used to find a previous commit in a description.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.identity/email`
 
 ### Spec:
@@ -798,8 +798,8 @@ string?
 
 Email in a git identity.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.identity/name`
 
 ### Spec:
@@ -811,8 +811,8 @@ string?
 
 Name in a git identity.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.repo/dirty?`
 
 ### Spec:
@@ -824,8 +824,8 @@ boolean?
 
 Whether the repo is dirty in a description.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/annotated?`
 
 ### Spec:
@@ -837,8 +837,8 @@ boolean?
 
   Git tag option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/force?`
 
 ### Spec:
@@ -850,8 +850,8 @@ boolean?
 
 Git tag option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/message`
 
 ### Spec:
@@ -863,8 +863,8 @@ string?
 
 Message of a tag.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/name`
 
 ### Spec:
@@ -876,8 +876,8 @@ string?
 
 Name of a tag.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/signed?`
 
 ### Spec:
@@ -889,8 +889,8 @@ boolean?
 
 Git tag option.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/tagger`
 
 ### Spec:
@@ -905,8 +905,8 @@ Git tag option.
 
 Identity of the tagger.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/command`
 
 ### Spec:
@@ -918,8 +918,8 @@ string?
 
 The gpg command to use at the command line. Typically `gpg` or `gpg2`.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/home-dir`
 
 ### Spec:
@@ -931,8 +931,8 @@ path?
 
 The `gpg home directory` to point gpg to.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/key-id`
 
 ### Spec:
@@ -944,8 +944,8 @@ string?
 
 Id of the key gpg should use to sign artefacts.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/pass-phrase`
 
 ### Spec:
@@ -957,8 +957,8 @@ string?
 
 A passphrase for the specified / default key gpg will use to sign artefacts.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/sign!`
 
 ### Spec:
@@ -976,8 +976,8 @@ Signing options for gpg:
 - what to sign.
 - where to put the signature.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg/version`
 
 ### Spec:
@@ -995,8 +995,8 @@ are required to use when signing.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/gpg-version]]
 - [[fr.jeremyschoffen.mbt.alpha.core.gpg/gpg-version]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg.sign!/in`
 
 ### Spec:
@@ -1008,8 +1008,8 @@ path?
 
 File to sign with gpg.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg.sign!/out`
 
 ### Spec:
@@ -1025,8 +1025,8 @@ Where the signature gpg generates goes.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.core.gpg/make-sign-out]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/entries`
 
 ### Spec:
@@ -1044,8 +1044,8 @@ A collection of jar entries.
 - [[fr.jeremyschoffen.mbt.alpha.core/jar-add-srcs!]]
 - [[fr.jeremyschoffen.mbt.alpha.core.jar/add-srcs!]]
 - [[fr.jeremyschoffen.mbt.alpha.core.jar.temp/add-srcs!]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/entry`
 
 ### Spec:
@@ -1064,8 +1064,8 @@ Representation of a jar entry.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.jar/make-manifest-entry]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/exclude?`
 
 ### Spec:
@@ -1077,8 +1077,8 @@ fn?
 
 Function determining if a potential jar entry actually makes it into a jar.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/file-system`
 
 ### Spec:
@@ -1095,8 +1095,8 @@ A java nio filesystem pointing at a jar.
 
 - [[fr.jeremyschoffen.mbt.alpha.core.jar/writable-jar-fs]]
 - [[fr.jeremyschoffen.mbt.alpha.core.jar.fs/writable-jar-fs]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/main-ns`
 
 ### Spec:
@@ -1108,8 +1108,8 @@ symbol?
 
 the main namespace of a jar. (Used in jar manifests.)
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/manifest`
 
 ### Spec:
@@ -1126,8 +1126,8 @@ A jar manifest.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/manifest]]
 - [[fr.jeremyschoffen.mbt.alpha.core.jar.manifest/make-manifest]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/output`
 
 ### Spec:
@@ -1139,8 +1139,8 @@ jar-path?
 
 The path poiting at the location a jar will be created.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/src`
 
 ### Spec:
@@ -1156,8 +1156,8 @@ Source for a jar: source directories, other jars...
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.jar/make-staples-entries]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/srcs`
 
 ### Spec:
@@ -1174,8 +1174,8 @@ Collection aof jar sources.
 
 - [[fr.jeremyschoffen.mbt.alpha.default.jar/simple-jar-srcs]]
 - [[fr.jeremyschoffen.mbt.alpha.default.jar/uber-jar-srcs]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/temp-output`
 
 ### Spec:
@@ -1188,8 +1188,8 @@ path?
 The location of the directory containing all jar entries. Basically the un-compressed
 content of a jar archive to be compressed.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar.adding/result`
 
 ### Spec:
@@ -1202,8 +1202,8 @@ any?
 Key found in the returned values of the jar-ing operation giving some information
 as to what happened to the jar entry.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar.clash/strategy`
 
 ### Spec:
@@ -1216,8 +1216,8 @@ as to what happened to the jar entry.
 Key found in the returned values of the jar-ing operation indicating a clash
 happened and what strategy was employed to resolve it.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar.entry/dest`
 
 ### Spec:
@@ -1229,8 +1229,8 @@ path?
 
 The destination of a jar entry in the final jar.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar.entry/src`
 
 ### Spec:
@@ -1242,8 +1242,8 @@ The destination of a jar entry in the final jar.
 
 The path to the actual jar entry.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.jar.manifest/overrides`
 
 ### Spec:
@@ -1255,8 +1255,8 @@ map?
 
 Additionnal entries for the a jar manifest.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/artefact-name`
 
 ### Spec:
@@ -1272,8 +1272,8 @@ The name of a maven artefact (devoid of classifier).
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/artefact-name]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/classifier`
 
 ### Spec:
@@ -1285,8 +1285,8 @@ symbol?
 
 A classifer to be employed for a mavan artefact.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/credentials`
 
 ### Spec:
@@ -1303,8 +1303,8 @@ A classifer to be employed for a mavan artefact.
 
 Credentials used in maven operations.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/group-id`
 
 ### Spec:
@@ -1320,8 +1320,8 @@ The group id for a maven artefact.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/group-id]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/local-repo`
 
 ### Spec:
@@ -1337,8 +1337,8 @@ Path to the local maven repo.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-local-repo]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/scm`
 
 ### Spec:
@@ -1355,24 +1355,33 @@ Path to the local maven repo.
 
 Scm information for pom.xml files.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/server`
 
 ### Spec:
 ```clojure
-(keys
- :opt
- [:fr.jeremyschoffen.mbt.alpha.maven.server/id
-  :fr.jeremyschoffen.mbt.alpha.maven.server/url])
+(or
+ :id-req
+ (keys
+  :req
+  [:fr.jeremyschoffen.mbt.alpha.maven.server/id]
+  :opt
+  [:fr.jeremyschoffen.mbt.alpha.maven.server/url])
+ :url-req
+ (keys
+  :req
+  [:fr.jeremyschoffen.mbt.alpha.maven.server/url]
+  :opt
+  [:fr.jeremyschoffen.mbt.alpha.maven.server/id]))
 ```
 ### Description:
 
 
 Server information when deploying maven artefacts.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven-like/qualifier`
 
 ### Spec:
@@ -1387,8 +1396,8 @@ Server information when deploying maven artefacts.
 
 qualifier in the maven versioning: `alpha3`, `rc2`...
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven-like/subversions`
 
 ### Spec:
@@ -1400,8 +1409,8 @@ qualifier in the maven versioning: `alpha3`, `rc2`...
 
 Vector of 3 integers used to describe a maven / semver version number (major, minor, patch).
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven-like.qualifier/label`
 
 ### Spec:
@@ -1413,8 +1422,8 @@ allowed-qualifiers
 
 Name of the qualifier in the maven versioning scheme: `:alpha`, `:beta`, `:rc`.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven-like.qualifier/n`
 
 ### Spec:
@@ -1426,8 +1435,8 @@ Name of the qualifier in the maven versioning scheme: `:alpha`, `:beta`, `:rc`.
 
 The number in maven version qualifier: the 2 in `alpha2`.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.credentials/passphrase`
 
 ### Spec:
@@ -1439,8 +1448,8 @@ string?
 
 Passphrase used in maven credentials.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.credentials/password`
 
 ### Spec:
@@ -1452,8 +1461,8 @@ string?
 
 Password used in maven credentials.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.credentials/private-key`
 
 ### Spec:
@@ -1465,8 +1474,8 @@ path?
 
 Private key used in maven credentials.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.credentials/user-name`
 
 ### Spec:
@@ -1478,8 +1487,8 @@ string?
 
 User name used in maven credentials.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/artefact`
 
 ### Spec:
@@ -1500,8 +1509,8 @@ that will be installed / deployed by maven.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/maven-sign-artefact!]]
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefact!]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/artefacts`
 
 ### Spec:
@@ -1522,8 +1531,8 @@ Collection of maven deploy artefacts to be installed / deployed.
 - [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts+signatures!]]
 - [[fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts]]
 - [[fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts+signatures!]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/sign-artefacts?`
 
 ### Spec:
@@ -1535,8 +1544,8 @@ boolean?
 
 Option to sign artefacts when deploying them.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/sync-pom?`
 
 ### Spec:
@@ -1549,9 +1558,9 @@ boolean?
 Whether or not the default install operation will sync the pom.xml file.
 Default to true.
 
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 
-
-
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/extension`
 
 ### Spec:
@@ -1563,8 +1572,8 @@ string?
 
 Extension of a deployment artefact.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy.artefact/path`
 
 ### Spec:
@@ -1576,8 +1585,8 @@ path?
 
 Path to a deployment artefact.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.install/dir`
 
 ### Spec:
@@ -1593,8 +1602,8 @@ Directory where we want maven installation to put artefacts.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-install-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.install/sync-pom?`
 
 ### Spec:
@@ -1607,9 +1616,9 @@ boolean?
 Whether or not the default deploy operation will sync the pom.xml file.
 Default to true.
 
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 
-
-
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/path`
 
 ### Spec:
@@ -1625,8 +1634,8 @@ Path to the `pom.xml` file to be used / synced.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/pom-path]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/properties`
 
 ### Spec:
@@ -1643,8 +1652,8 @@ A `pom.properties` to be put in jars.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/maven-new-pom-properties]]
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom-properties]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/xml`
 
 ### Spec:
@@ -1665,8 +1674,8 @@ Content of a `pom.xml` file in data form (data used by `clojure.tools.xml`).
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom]]
 - [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/sync-pom!]]
 - [[fr.jeremyschoffen.mbt.alpha.default/maven-sync-pom!]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/connection`
 
 ### Spec:
@@ -1678,8 +1687,8 @@ string?
 
 Scm data for maven poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/developer-connection`
 
 ### Spec:
@@ -1691,8 +1700,8 @@ string?
 
 Scm data for maven poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/tag`
 
 ### Spec:
@@ -1704,8 +1713,8 @@ string?
 
 Scm data for maven poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/url`
 
 ### Spec:
@@ -1717,8 +1726,8 @@ string?
 
 Scm data for maven poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.server/id`
 
 ### Spec:
@@ -1731,8 +1740,8 @@ string?
 An id of a maven server. Typically the id used in maven's `settings.xml` files
 to identify a server.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.server/url`
 
 ### Spec:
@@ -1744,8 +1753,8 @@ url?
 
 Url to a maven server.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.settings/file`
 
 ### Spec:
@@ -1761,8 +1770,8 @@ Location of the `settings.xml` file to use.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-settings-file]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/author`
 
 ### Spec:
@@ -1778,8 +1787,8 @@ Author of the project. Used in jar manifests.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.project/project-author]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/deps`
 
 ### Spec:
@@ -1800,8 +1809,8 @@ The deps map of the project.
 
 - [[fr.jeremyschoffen.mbt.alpha.core/deps-get]]
 - [[fr.jeremyschoffen.mbt.alpha.core.deps/get-deps]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/license`
 
 ### Spec:
@@ -1820,8 +1829,8 @@ The deps map of the project.
 
 Data for a license entry in pom files.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/licenses`
 
 ### Spec:
@@ -1833,8 +1842,8 @@ Data for a license entry in pom files.
 
 Collection of the license entries for the pom file.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/name`
 
 ### Spec:
@@ -1850,8 +1859,8 @@ Name of the project. Used to generate git tags and maven artefact id.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.project/project-name]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/output-dir`
 
 ### Spec:
@@ -1867,8 +1876,8 @@ The directory in which the build tool outputs stuff.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.project/output-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/version`
 
 ### Spec:
@@ -1880,8 +1889,8 @@ The directory in which the build tool outputs stuff.
 
 Version of the project. Used in maven related activities.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project/working-dir`
 
 ### Spec:
@@ -1897,8 +1906,8 @@ Working directory / root of the project.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.project/working-dir]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.deps/aliases`
 
 ### Spec:
@@ -1910,8 +1919,8 @@ Working directory / root of the project.
 
 Aliases to be used in conjunction with the project's deps.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.deps/file`
 
 ### Spec:
@@ -1927,8 +1936,8 @@ Location of the `deps.edn` file to use.
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.project/deps-file]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/comment`
 
 ### Spec:
@@ -1940,8 +1949,8 @@ string?
 
 License data in poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/distribution`
 
 ### Spec:
@@ -1953,8 +1962,8 @@ license-distros
 
 License data in poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/file`
 
 ### Spec:
@@ -1966,8 +1975,8 @@ path?
 
 Path to the license file. (Will be included in jars.)
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/name`
 
 ### Spec:
@@ -1979,8 +1988,8 @@ string?
 
 License data in poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/url`
 
 ### Spec:
@@ -1992,8 +2001,8 @@ string?
 
 License data in poms.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.shell/command`
 
 ### Spec:
@@ -2012,8 +2021,8 @@ Command to be run in another process. Basically:
 (apply clojure.java.shell/sh command)
 ```
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.shell/err`
 
 ### Spec:
@@ -2025,8 +2034,8 @@ string?
 
 Key in the return value of a shell process.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.shell/exit`
 
 ### Spec:
@@ -2038,8 +2047,8 @@ int?
 
 Key in the return value of a shell process.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.shell/out`
 
 ### Spec:
@@ -2051,8 +2060,8 @@ string?
 
 Key in the return value of a shell process.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.shell/result`
 
 ### Spec:
@@ -2068,8 +2077,8 @@ Key in the return value of a shell process.
 
 Return value of a shell process.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.version-file/ns`
 
 ### Spec:
@@ -2081,8 +2090,8 @@ symbol?
 
 Namespace of the version file.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.version-file/path`
 
 ### Spec:
@@ -2094,8 +2103,8 @@ path?
 
 Where to put the version file.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/bump-level`
 
 ### Spec:
@@ -2108,8 +2117,8 @@ keyword?
 Bump level to use when releasing a new version of the project. Depends on the versioning
 scheme used.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/major`
 
 ### Spec:
@@ -2121,8 +2130,8 @@ keyword?
 
 Optional marker that will be used when creating git tag names and maven artefact names.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/scheme`
 
 ### Spec:
@@ -2134,8 +2143,8 @@ Optional marker that will be used when creating git tag names and maven artefact
 
 The versioning scheme to use.
 
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/tag-base-name`
 
 ### Spec:
@@ -2151,8 +2160,8 @@ The base part of generated tag names, `mbt-alpha` in `mbt-alpha-vX`
 ### Constructors:
 
 - [[fr.jeremyschoffen.mbt.alpha.default.config.versioning/tag-base-name]]
-
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
+<fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/version`
 
 ### Spec:
@@ -2177,4 +2186,4 @@ A a representation of a version generated and used by the version scheme.
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/bump]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/current-version]]
 - [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/initial-version]]
-
+</fr.jeremyschoffen.mbt.alpha.docs.config.tags:config-key>

@@ -1,4 +1,4 @@
-◊(require '[docs.config.tags :refer [config-key]])◊
+◊(require '[fr.jeremyschoffen.mbt.alpha.docs.config.tags :refer [config-key]])◊
 
 # Config keys reference
 

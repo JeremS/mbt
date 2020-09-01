@@ -4,6 +4,7 @@ Facade grouping the default apis in one place.
       "}
   fr.jeremyschoffen.mbt.alpha.default
   (:require
+    [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.config :as config]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
@@ -64,4 +65,4 @@ Facade grouping the default apis in one place.
 (def clojars
   "Representation of clojars following the `:maven/server` spec."
   {::maven.server/id "clojars"
-   ::maven.server/url "https://repo.clojars.org/"})
+   ::maven.server/url (fs/url "https://repo.clojars.org/")})

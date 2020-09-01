@@ -1,6 +1,6 @@
 ◊(require '[fr.jeremyschoffen.textp.alpha.html.tags :refer :all])◊
 ◊(require '[fr.jeremyschoffen.textp.alpha.doc.tags :as tags])◊
-◊(require '[docs.tags :refer :all])◊
+◊(require '[fr.jeremyschoffen.mbt.alpha.docs.tags :refer :all])◊
 # Mbt
 
 A build tool designed to be used with ◊tools-deps\.
@@ -16,7 +16,7 @@ Mbt aims to provide APIs to build clojure projects. It is designed as follow:
 - We can chain build operations using the `->` macro and some utilities.
 
 
-To get started this project's own build might help describe mbt's usage.
+To get started here is a build scheme I used building mbt at some point.
 
 We pull in the core api, the default api and some utilities.
 ```clojure
