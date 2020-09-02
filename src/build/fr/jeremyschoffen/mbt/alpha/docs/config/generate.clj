@@ -9,7 +9,8 @@
     [medley.core :as medley]))
 
 
-(def config-docs-path (mbt-utils/safer-path "src" "doc" "docs" "pages" "config.md.tp"))
+(def config-docs-path
+  (mbt-utils/safer-path "src" "build" "fr" "jeremyschoffen" "mbt" "alpha" "docs" "pages" "config.md.tp"))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; fresh docs

@@ -12,16 +12,25 @@
 
 (def mbt-ns "fr.jeremyschoffen.mbt.alpha")
 
-(defn mbt? [x]
-  (let [ns (namespace x)]
-    (clojure.string/starts-with? ns mbt-ns)))
+(def mbt-docs-ns (str mbt-ns ".docs"))
 
+(defn mbt? [n]
+  (clojure.string/starts-with? n mbt-ns))
+
+(defn mbt-docs? [n]
+  (clojure.string/starts-with? n mbt-docs-ns))
+
+
+(defn to-document? [x]
+  (let [n (namespace x)]
+    (and (mbt? n)
+         (not (mbt-docs? n)))))
 
 (defn get-mbt-config-keys []
   (into (sorted-set)
         (m/search (s/registry)
                   {(m/and (m/pred keyword?)
-                          (m/pred mbt?)
+                          (m/pred to-document?)
                           ?spec)
                    ?_}
                   ?spec)))

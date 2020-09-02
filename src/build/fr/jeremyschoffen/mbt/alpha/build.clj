@@ -55,8 +55,6 @@
                    :opt [::maven/classifier]})
 
 
-
-
 (def next-version+1
   "Compute the next version with an increased git distance to take into account the
   commit created by the docs generation."
