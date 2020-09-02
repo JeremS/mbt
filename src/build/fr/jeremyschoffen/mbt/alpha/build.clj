@@ -3,7 +3,8 @@
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
-    [fr.jeremyschoffen.mbt.alpha.docs.core :as docs]))
+    [fr.jeremyschoffen.mbt.alpha.docs.core :as docs]
+    [clojure.spec.alpha :as s]))
 
 
 (u/pseudo-nss
@@ -56,7 +57,10 @@
 
 
 
-(def next-version+1 (mbt-defaults/versioning-make-next-version+x 1))
+(def next-version+1
+  "Compute the next version with an increased git distance to take into account the
+  commit created by the docs generation."
+  (mbt-defaults/versioning-make-next-version+x 1))
 
 (u/spec-op next-version+1
            :deps [mbt-defaults/versioning-next-version]
@@ -66,8 +70,9 @@
                          ::versioning/tag-base-name]})
 
 
-
-(defn merge-version+1 [conf]
+(defn merge-version+1
+  "Assoc version info to the config."
+  [conf]
   (-> conf
     (u/assoc-computed ::versioning/version next-version+1
                       ::project/version (comp str ::versioning/version))))
@@ -77,10 +82,14 @@
            :param {:req [::git/repo
                          ::versioning/scheme]
                    :opt [::versioning/bump-level
-                         ::versioning/tag-base-name]})
+                         ::versioning/tag-base-name]}
+           :ret (s/keys :req [::versioning/version
+                              ::project/version]))
 
 
-(defn prebuild-generation! [conf]
+(defn prebuild-generation!
+  "Build the docs and version file then commit."
+  [conf]
   (-> conf
       (mbt-defaults/build-before-bump! (u/do-side-effect! generate-docs!)
                                        (u/do-side-effect! mbt-defaults/write-version-file!))))
@@ -93,9 +102,10 @@
                          ::version-file/path]})
 
 
-(defn new-milestone! [conf]
+(defn new-milestone!
+  "Generate docs then tag a new version."
+  [conf]
   (-> conf
-      merge-version+1
       (u/do-side-effect! prebuild-generation!)
       (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
 
