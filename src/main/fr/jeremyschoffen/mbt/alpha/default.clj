@@ -36,22 +36,19 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning machinery
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone versioning-initial-version versioning/schemes-initial-version)
+
 (u/def-clone versioning-current-version versioning/current-version)
+(u/def-clone versioning-last-version versioning/last-version)
 (u/def-clone versioning-next-version versioning/next-version)
-(u/def-clone versioning-make-next-version+x versioning/next-version+x)
-
-
-
-;; Git versioning
+(u/def-clone versioning-next-version+1 versioning/next-version+1)
 (u/def-clone versioning-tag-new-version! versioning/tag-new-version!)
+(u/def-clone versioning-project-version versioning/project-version)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone write-version-file! versioning/write-version-file!)
-
-
+(u/def-clone maven-make-github-scm tasks/make-github-scm)
 (u/def-clone build-before-bump! tasks/generate-before-bump!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)

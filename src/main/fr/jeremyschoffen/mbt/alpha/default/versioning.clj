@@ -14,6 +14,7 @@ Grouping of the different versioning utilities.
 
 (u/pseudo-nss
   git
+  project
   versioning)
 
 
@@ -21,9 +22,6 @@ Grouping of the different versioning utilities.
 (u/def-clone semver-scheme schemes/semver-scheme)
 (u/def-clone git-distance-scheme schemes/git-distance-scheme)
 
-(u/def-clone schemes-current-version schemes/current-version)
-(u/def-clone schemes-initial-version schemes/initial-version)
-(u/def-clone schemes-bump schemes/bump)
 
 (u/def-clone most-recent-description git-state/most-recent-description)
 (u/def-clone current-version git-state/current-version)
@@ -36,7 +34,22 @@ Grouping of the different versioning utilities.
 (u/def-clone write-version-file! vf/write-version-file!)
 
 
-(defn next-version+x
+(defn last-version
+  "Return the last tagged version."
+  [param]
+  (-> param
+      current-version
+      (assoc :distance 0)))
+
+(u/spec-op last-version
+           :deps [current-version]
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [:versioning/tag-base-name]}
+           :ret ::versioning/version)
+
+
+(defn make-next-version+x
   "Make a `next-version` function that adds `x` to the git distance of the version
   returned.
 
@@ -44,7 +57,30 @@ Grouping of the different versioning utilities.
   [x]
   (fn [conf]
     (let [next-v (next-version conf)
-          initial (schemes-initial-version conf)]
+          initial (schemes/initial-version conf)]
       (-> next-v
           (cond-> (not= initial next-v)
                   (update :distance + x))))))
+
+
+(def next-version+1
+  "Compute the next version with an increased git distance to take into account the
+  commit created by the docs / versionfile generation."
+  (make-next-version+x 1))
+
+(u/spec-op next-version+1
+           :deps [next-version]
+           :param {:req [::git/repo
+                         ::versioning/scheme]
+                   :opt [::versioning/bump-level
+                         ::versioning/tag-base-name]})
+
+
+(defn project-version
+  "Get a `...mbt.alpha.project/version` from a `...mbt.alpha.versioning/version`."
+  [{v ::versioning-current-version}]
+  (str v))
+
+(u/spec-op project-version
+           :param {:opt [::versioning/version]}
+           :ret ::project/version)

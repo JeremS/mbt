@@ -245,7 +245,21 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
 
 (u/spec-op commit!
            :param {:req [::git/repo
-                         ::git/commit!]})
+                         ::git/commit!]}
+           :ret ::git/commit)
+
+
+(defn last-commit
+  "Returns the last commit made on the current branch, the first commit to pop up in
+  the git log."
+  [{repo ::git/repo}]
+  (-> (git-porcelain/git-log repo :max-count 1 :jgit? true)
+      first
+      datafy-jgit-obj))
+
+(u/spec-op last-commit
+           :param {:req [::git/repo]}
+           :ret ::git/commit)
 
 
 ;;----------------------------------------------------------------------------------------------------------------------

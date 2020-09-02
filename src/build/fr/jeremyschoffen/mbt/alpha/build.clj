@@ -1,10 +1,11 @@
 (ns fr.jeremyschoffen.mbt.alpha.build
   (:require
+    [clojure.spec.test.alpha :as st]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.mbt.alpha.docs.core :as docs]
-    [clojure.spec.alpha :as s]))
+    [build :refer [add-deploy-conf]]))
 
 
 (u/pseudo-nss
@@ -23,19 +24,20 @@
   versioning)
 
 
-(def conf {::maven/group-id    'fr.jeremyschoffen
-           ::project/author    "Jeremy Schoffen"
+(def conf (-> {::maven/group-id    'fr.jeremyschoffen
+               ::project/author    "Jeremy Schoffen"
 
-           ::version-file/ns   'fr.jeremyschoffen.mbt.alpha.version
-           ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-           ::versioning/scheme mbt-defaults/git-distance-scheme
-           ::versioning/major  :alpha
+               ::version-file/ns   'fr.jeremyschoffen.mbt.alpha.version
+               ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
+               ::versioning/scheme mbt-defaults/git-distance-scheme
+               ::versioning/major  :alpha
 
-           ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
-                                 ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
-                                 ::project.license/distribution :repo
-                                 ::project.license/file (u/safer-path "LICENSE")}]})
-
+               ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
+                                     ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
+                                     ::project.license/distribution :repo
+                                     ::project.license/file (u/safer-path "LICENSE")}]}
+              add-deploy-conf
+              mbt-defaults/config))
 
 
 (defn generate-docs! [conf]
@@ -53,36 +55,6 @@
                          ::maven/group-id
                          ::project/version]
                    :opt [::maven/classifier]})
-
-
-(def next-version+1
-  "Compute the next version with an increased git distance to take into account the
-  commit created by the docs generation."
-  (mbt-defaults/versioning-make-next-version+x 1))
-
-(u/spec-op next-version+1
-           :deps [mbt-defaults/versioning-next-version]
-           :param {:req [::git/repo
-                         ::versioning/scheme]
-                   :opt [::versioning/bump-level
-                         ::versioning/tag-base-name]})
-
-
-(defn merge-version+1
-  "Assoc version info to the config."
-  [conf]
-  (-> conf
-    (u/assoc-computed ::versioning/version next-version+1
-                      ::project/version (comp str ::versioning/version))))
-
-(u/spec-op merge-version+1
-           :deps [next-version+1]
-           :param {:req [::git/repo
-                         ::versioning/scheme]
-                   :opt [::versioning/bump-level
-                         ::versioning/tag-base-name]}
-           :ret (s/keys :req [::versioning/version
-                              ::project/version]))
 
 
 (defn prebuild-generation!
@@ -118,30 +90,35 @@
                           ::versioning/tag-base-name
                           ::versioning/version}})
 
-
-(defn jar&install! [conf]
+(defn release! []
   (-> conf
+      (u/assoc-computed ::versioning/version mbt-defaults/versioning-next-version+1
+                        ::project/version mbt-defaults/versioning-project-version)
+      (u/do-side-effect! new-milestone!)
       (u/do-side-effect! mbt-defaults/build-jar!)
-      (u/do-side-effect! mbt-defaults/maven-install!)))
+      (u/do-side-effect! mbt-defaults/maven-install!)
+      u/record-build))
 
-(u/spec-op jar&install!
-           :deps [mbt-defaults/build-jar!
-                  mbt-defaults/maven-install!]
-           :param {:req #{::build.jar/allow-non-maven-deps
-                          ::build.jar/path
-                          ::maven/artefact-name
-                          ::maven/group-id
-                          ::maven.pom/path
-                          ::project/deps
-                          ::project/version
-                          ::project/working-dir},
-                   :opt #{::jar/exclude?
-                          ::jar/main-ns
-                          ::jar.manifest/overrides
-                          ::maven/classifier
-                          ::maven/scm
-                          ::maven.deploy/artefacts
-                          ::maven.install/dir
-                          ::project/author
-                          ::project/licenses
-                          ::project.deps/aliases}})
+
+
+(defn erase-local! [v]
+  (-> conf
+      (assoc ::project/version v)
+      (u/do-side-effect! mbt-defaults/build-jar!)
+      (u/do-side-effect! mbt-defaults/maven-install!)
+      u/record-build))
+
+
+(st/instrument `[mbt-core/deps-make-coord
+                 prebuild-generation!
+                 new-milestone!
+                 mbt-defaults/build-jar!
+                 mbt-defaults/maven-install!
+                 mbt-defaults/maven-deploy!])
+
+(comment
+  (erase-local! "0")
+
+  (mbt-core/clean! conf)
+
+  (erase-local!))
