@@ -52,7 +52,9 @@ Higher level apis.
      :browse (str "https://github.com/" user "/" repo)}))
 ;;----------------------------------------------------------------------------------------------------------------------
 
-(defn make-github-scm [{scm ::maven/scm :as param}]
+(defn make-github-scm
+  "Make a full `:...mbt.alpha.maven/scm` provided one containing an url for a github repo."
+  [{scm ::maven/scm :as param}]
   (let [{url ::maven.scm/url} scm
         {:keys [public-clone dev-clone browse]} (github-urls url)
         {commit-name ::git.commit/name} (mbt-core/git-last-commit param)]

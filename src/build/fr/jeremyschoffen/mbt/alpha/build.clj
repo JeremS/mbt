@@ -109,9 +109,10 @@
       u/record-build))
 
 
-(st/instrument `[mbt-core/deps-make-coord
+(st/instrument `[generate-docs!
                  prebuild-generation!
                  new-milestone!
+                 mbt-core/deps-make-coord
                  mbt-defaults/build-jar!
                  mbt-defaults/maven-install!
                  mbt-defaults/maven-deploy!])

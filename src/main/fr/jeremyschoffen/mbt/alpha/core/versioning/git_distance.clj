@@ -20,10 +20,17 @@ Building blocks of a versioning system based on git commit distance.
 (defrecord GitDistanceVersion [number qualifier distance sha dirty?]
   Object
   (toString [_]
-    (-> (str number)
-        (cond-> qualifier (str "-" (name qualifier))
-                (pos? distance) (str "-" distance "-g" sha)
-                dirty? (str "-DIRTY")))))
+    (-> (str (+ number distance))
+        (cond-> qualifier (str "-" (name qualifier))))))
+
+(comment
+  (defrecord GitDistanceVersion [number qualifier distance sha dirty?]
+    Object
+    (toString [_]
+      (-> (str number)
+          (cond-> qualifier (str "-" (name qualifier))
+                  (pos? distance) (str "-" distance "-g" sha)
+                  dirty? (str "-DIRTY"))))))
 
 
 (def version-regex #"(\d)+(?:-(.+))?")

@@ -78,7 +78,7 @@ Grouping of the different versioning utilities.
 
 (defn project-version
   "Get a `...mbt.alpha.project/version` from a `...mbt.alpha.versioning/version`."
-  [{v ::versioning-current-version}]
+  [{v ::versioning/version}]
   (str v))
 
 (u/spec-op project-version
