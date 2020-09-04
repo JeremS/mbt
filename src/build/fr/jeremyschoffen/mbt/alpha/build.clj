@@ -32,12 +32,13 @@
                ::versioning/scheme mbt-defaults/git-distance-scheme
                ::versioning/major  :alpha
 
+               ::maven.server mbt-defaults/clojars
                ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
                                      ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
                                      ::project.license/distribution :repo
                                      ::project.license/file (u/safer-path "LICENSE")}]}
-              add-deploy-conf
-              mbt-defaults/config))
+              mbt-defaults/config
+              add-deploy-conf))
 
 
 (defn generate-docs! [conf]
@@ -90,15 +91,22 @@
                           ::versioning/tag-base-name
                           ::versioning/version}})
 
+
+(defn next-version+1 [conf]
+  (let [next-v (mbt-defaults/versioning-next-version conf)]
+    (if (= next-v (mbt-defaults/versioning-initial-version conf))
+      next-v
+      (update next-v :number inc))))
+
+
 (defn release! []
   (-> conf
-      (u/assoc-computed ::versioning/version mbt-defaults/versioning-next-version+1
+      (u/assoc-computed ::versioning/version next-version+1
                         ::project/version mbt-defaults/versioning-project-version)
       (u/do-side-effect! new-milestone!)
       (u/do-side-effect! mbt-defaults/build-jar!)
       (u/do-side-effect! mbt-defaults/maven-install!)
       u/record-build))
-
 
 
 (defn erase-local! [v]
@@ -116,6 +124,7 @@
                  mbt-defaults/build-jar!
                  mbt-defaults/maven-install!
                  mbt-defaults/maven-deploy!])
+
 
 (comment
   (erase-local! "0")

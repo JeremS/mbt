@@ -16,4 +16,3 @@ pom.xml.asc
 *.iml
 .idea
 CHANGELOG.md
-tests.edn
