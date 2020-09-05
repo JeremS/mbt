@@ -46,8 +46,6 @@ Specs used in the default api.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deployment
 ;;----------------------------------------------------------------------------------------------------------------------
-(s/def ::maven.install/sync-pom? boolean?)
-(s/def ::maven.deploy/sync-pom? boolean?)
 (s/def ::maven.deploy/sign-artefacts? boolean?)
 
 

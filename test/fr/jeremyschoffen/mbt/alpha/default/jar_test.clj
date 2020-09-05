@@ -63,8 +63,7 @@
                  ::maven/artefact-name 'project-2
                  ::build.jar/name "project2.jar"
                  ::jar/exclude? intruder?)
-               config/make-base-config
-               jar/ensure-jar-defaults))
+               config/make-base-config))
 
 
 (def ctxt2-i (-> ctxt2
@@ -73,12 +72,18 @@
 
 
 (deftest simple-jar
-  (let [_ (jar/jar! ctxt2)
+  (let [_ (-> ctxt2
+              (u/do-side-effect! mbt-core/maven-sync-pom!)
+              jar/ensure-jar-defaults
+              jar/jar!)
         content (-> ctxt2
                     ::build.jar/path
                     h/jar-content)
 
-        _ (jar/jar! ctxt2-i)
+        _ (-> ctxt2-i
+              (u/do-side-effect! mbt-core/maven-sync-pom!)
+              jar/ensure-jar-defaults
+              jar/jar!)
         content+i (-> ctxt2-i
                       ::build.jar/path
                       h/jar-content)]
@@ -87,6 +92,9 @@
       (facts
         (get content "/project2/core.clj")
         => (slurp (u/safer-path project2-path "src" "project2" "core.clj"))
+
+        (edn/read-string (get content "/META-INF/maven/group/project-2/pom.xml"))
+        => (edn/read-string (slurp (u/safer-path project2-path "target" "pom.xml")))
 
         (edn/read-string (get content "/META-INF/deps/group/project-2/deps.edn"))
         => (edn/read-string (slurp (u/safer-path project2-path "deps.edn")))
@@ -137,12 +145,14 @@
                 ::build.uberjar/name "project1-standalone.jar"
                 ::jar/exclude? uberjar-exclude?}
                config/make-base-config
-               (u/assoc-computed ::project/deps get-project1-deps)
-               jar/ensure-jar-defaults))
+               (u/assoc-computed ::project/deps get-project1-deps)))
 
 (deftest uberjar
   (try
-    (let [_ (jar/uberjar! ctxt1)
+    (let [_ (-> ctxt1
+                (u/do-side-effect! mbt-core/maven-sync-pom!)
+                jar/ensure-jar-defaults
+                jar/uberjar!)
           content (-> ctxt1
                       ::build.uberjar/path
                       h/jar-content)

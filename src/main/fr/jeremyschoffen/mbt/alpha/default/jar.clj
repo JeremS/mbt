@@ -62,14 +62,14 @@ Apis providing the jar sources used by default.
 
 (defn make-pom-entry
   "Make a `:fr...mbt.alpha.jar/entry` for a `pom.xml` file."
-  [{pom ::maven.pom/xml
+  [{pom-path ::maven.pom/path
     group-id ::maven/group-id
     artefact-id ::maven/artefact-name}]
-  {::jar.entry/src (xml/indent-str pom)
+  {::jar.entry/src pom-path
    ::jar.entry/dest (make-pom-path group-id artefact-id)})
 
 (u/spec-op make-pom-entry
-           :param {:req [::maven.pom/xml
+           :param {:req [::maven.pom/path
                          ::maven/group-id
                          ::maven/artefact-name]})
 
@@ -102,14 +102,14 @@ Apis providing the jar sources used by default.
 
 (defn make-deps-entry
   "Make a `:fr...mbt.alpha.jar/entry` for a `deps.edn` file."
-  [{deps ::project/deps
+  [{deps-file ::project.deps/file
     group-id ::maven/group-id
     artefact-id ::maven/artefact-name}]
-  {::jar.entry/src (pr-str deps)
+  {::jar.entry/src deps-file
    ::jar.entry/dest (make-jar-deps-path group-id artefact-id)})
 
 (u/spec-op make-deps-entry
-           :param {:req [::project/deps
+           :param {:req [::project.deps/file
                          ::maven/group-id
                          ::maven/artefact-name]})
 
@@ -240,24 +240,24 @@ Apis providing the jar sources used by default.
   [p]
   (u/ensure-computed p
     ::classpath/index mbt-core/classpath-indexed
-    ::maven.pom/xml mbt-core/maven-get-pom
+    ::maven.pom/xml mbt-core/maven-read-pom
     ::maven.pom/properties mbt-core/maven-new-pom-properties
     ::jar/manifest mbt-core/manifest))
 
 (u/spec-op ensure-jar-defaults
            :deps [mbt-core/classpath-indexed
-                  mbt-core/maven-get-pom
+                  mbt-core/maven-read-pom
                   mbt-core/maven-new-pom-properties
                   mbt-core/manifest]
            :param {:req #{::maven/artefact-name
                           ::maven/group-id
+                          ::maven.pom/path
                           ::project/deps
                           ::project/working-dir
                           ::project/version}
                    :opt #{::jar/main-ns
                           ::jar.manifest/overrides
                           ::maven/scm
-                          ::maven.pom/path
                           ::project/author
                           ::project.deps/aliases
                           ::project/licenses}}

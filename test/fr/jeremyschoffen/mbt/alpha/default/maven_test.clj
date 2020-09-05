@@ -48,7 +48,6 @@
                ::maven.install/dir install-dir
                ::maven/server {::maven.server/url (fs/url deploy-dir)}}
               config/make-base-config
-              jar/ensure-jar-defaults
               (->> (into (sorted-map)))))
 
 (def jar-out (::build.jar/path conf))
@@ -76,8 +75,9 @@
 (deftest testing-install-deploy
   (try
     (-> conf
-        (u/do-side-effect! jar/jar!)
         (u/do-side-effect! mbt-core/maven-sync-pom!)
+        jar/ensure-jar-defaults
+        (u/do-side-effect! jar/jar!)
         (u/do-side-effect! default-maven/install!)
         (u/do-side-effect! default-maven/deploy!))
 

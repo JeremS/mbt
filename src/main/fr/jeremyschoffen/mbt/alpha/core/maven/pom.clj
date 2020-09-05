@@ -4,7 +4,6 @@ Api providing maven pom.xml files generation.
       "}
   fr.jeremyschoffen.mbt.alpha.core.maven.pom
   (:require
-    [clojure.spec.alpha :as s]
     [clojure.java.io :as jio]
     [clojure.data.xml :as xml]
     [clojure.data.xml.tree :as tree]
@@ -12,6 +11,7 @@ Api providing maven pom.xml files generation.
     [clojure.zip :as zip]
     [clojure.tools.deps.alpha.util.maven :as tools-maven]
     [clojure.tools.deps.alpha.util.io :refer [printerrln]]
+    [cognitect.anomalies :as anom]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core.specs]
     [fr.jeremyschoffen.mbt.alpha.utils :as u])
@@ -34,6 +34,10 @@ Api providing maven pom.xml files generation.
 
 (xml/alias-uri 'pom "http://maven.apache.org/POM/4.0.0")
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; Generation
+;;----------------------------------------------------------------------------------------------------------------------
 
 (defn- maybe-tag
   ([n v]
@@ -157,7 +161,9 @@ Api providing maven pom.xml files generation.
                          ::project/licenses]}
            :ret ::maven.pom/xml)
 
-
+;;----------------------------------------------------------------------------------------------------------------------
+;; Update
+;;----------------------------------------------------------------------------------------------------------------------
 (defn- make-xml-element
   [{:keys [tag attrs] :as node} children]
   (with-meta
@@ -255,6 +261,9 @@ Api providing maven pom.xml files generation.
            :ret ::maven.pom/xml)
 
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Sync
+;;----------------------------------------------------------------------------------------------------------------------
 (defn- parse-xml
   [^Reader rdr]
   (let [roots (tree/seq-tree event/event-element event/event-exit? event/event-node
@@ -268,29 +277,17 @@ Api providing maven pom.xml files generation.
     (parse-xml rdr)))
 
 
-(defn get-pom
-  "If `:fr...mbt.alpha.maven.pom/path` is specified and the pom.xml file exists
-  fetch its content and updates it with the config passed as `param`.
-  If not generate a fresh pom."
-  [{pom-path ::maven.pom/path
-    :as param}]
-  (let [current-pom (if (fs/exists? pom-path)
-                      (read-xml pom-path))]
-    (if current-pom
-      (-> param
-          (assoc ::maven.pom/xml current-pom)
-          update-pom)
-      (new-pom param))))
+(defn read-pom
+  "Read a `pom.xml` file at `:fr...mbt.alpha.maven.pom/path` and turns it into xml data."
+  [{pom-path ::maven.pom/path}]
+  (if (fs/exists? pom-path)
+    (read-xml pom-path)
+    (throw (ex-info "Pom file doesn't exist."
+                    {::anom/category ::anom/not-found
+                     :path pom-path}))))
 
-(u/spec-op get-pom
-           :deps [new-pom update-pom]
-           :param {:req [::maven/artefact-name
-                         ::maven/group-id
-                         ::project/deps
-                         ::project/version]
-                   :opt [::maven.pom/path
-                         ::maven/scm
-                         ::project/licenses]}
+(u/spec-op read-pom
+           :param {:req [::maven.pom/path]}
            :ret ::maven.pom/xml)
 
 
@@ -299,20 +296,27 @@ Api providing maven pom.xml files generation.
   This function fills the maven coordinates for the project, the licenses and scm parts.
 
   Also returns the map version of the synced xml."
-  [{pom ::maven.pom/path
-    :as param}]
-  (u/ensure-parent! pom)
-  (let [up-to-date-pom (get-pom param)]
-    (spit pom (xml/indent-str up-to-date-pom))
-    up-to-date-pom))
+  [{pom-path ::maven.pom/path
+    :as      param}]
+  (u/ensure-parent! pom-path)
+  (let [xml (if (fs/exists? pom-path)
+              (-> param
+                  (u/assoc-computed ::maven.pom/xml read-pom)
+                  update-pom)
+              (new-pom param))]
+    (->> xml
+         xml/indent-str
+         (spit pom-path))))
 
 (u/spec-op sync-pom!
-           :deps [get-pom]
-           :param {:req [::maven.pom/path
-                         ::maven/artefact-name
+           :deps [read-pom
+                  update-pom
+                  new-pom]
+           :param {:req [::maven/artefact-name
                          ::maven/group-id
-                         ::project/version
-                         ::project/deps]
+                         ::maven.pom/path
+                         ::project/deps
+                         ::project/version]
                    :opt [::maven/scm
                          ::project/licenses]}
            :ret ::maven.pom/xml)

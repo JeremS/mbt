@@ -82,7 +82,7 @@ Facade grouping the core apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Maven
 ;;----------------------------------------------------------------------------------------------------------------------
-(u/def-clone maven-get-pom pom/get-pom)
+(u/def-clone maven-read-pom pom/read-pom)
 (u/def-clone maven-new-pom-properties pom/new-pom-properties)
 (u/def-clone maven-sync-pom! pom/sync-pom!)
 

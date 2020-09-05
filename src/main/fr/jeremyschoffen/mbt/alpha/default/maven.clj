@@ -61,12 +61,10 @@ Api providing default behaviour for maven tasks.
   After checking the actual existence of the deployment artefacts uses maven to install them.
   "
   [param]
-  (let [sync-pom? (::maven.install/sync-pom? param)]
-    (-> param
-        (cond-> sync-pom? (u/do-side-effect! mbt-core/maven-sync-pom!))
-        (u/ensure-computed ::maven.deploy/artefacts make-usual-artefacts)
-        (u/check check-artefacts-exist)
-        mbt-core/maven-install!)))
+  (-> param
+      (u/ensure-computed ::maven.deploy/artefacts make-usual-artefacts)
+      (u/check check-artefacts-exist)
+      mbt-core/maven-install!))
 
 (u/spec-op install!
            :deps [mbt-core/maven-sync-pom!
@@ -122,12 +120,10 @@ Api providing default behaviour for maven tasks.
   After checking the actual existence of the deployment artefacts uses maven to install them.
   "
   [param]
-  (let [sync-pom? (::maven.deploy/sync-pom?  param)]
-    (-> param
-        (cond-> sync-pom? (u/do-side-effect! mbt-core/maven-sync-pom!))
-        ensure-deploy-artefacts
-        (u/check check-artefacts-exist)
-        mbt-core/maven-deploy!)))
+  (-> param
+      ensure-deploy-artefacts
+      (u/check check-artefacts-exist)
+      mbt-core/maven-deploy!))
 
 (u/spec-op deploy!
            :deps [mbt-core/maven-sync-pom!
