@@ -3,20 +3,23 @@
     [clojure.spec.test.alpha :as st]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default :as mbt-defaults]
+    [fr.jeremyschoffen.mbt.alpha.mbt-style :as mbt-build]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.mbt.alpha.docs.core :as docs]
-    [build :refer [add-deploy-conf]]))
+    [build :refer [token]]))
 
 
 (u/pseudo-nss
+  build
   build.jar
   git
   jar
   jar.manifest
   maven
-  maven.pom
+  maven.credentials
   maven.deploy
   maven.install
+  maven.pom
   project
   project.deps
   project.license
@@ -33,12 +36,15 @@
                ::versioning/major  :alpha
 
                ::maven.server mbt-defaults/clojars
+               ::maven/credentials {::maven.credentials/user-name "jeremys"
+                                    ::maven.credentials/password token}
+
                ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
                                      ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
                                      ::project.license/distribution :repo
                                      ::project.license/file (u/safer-path "LICENSE")}]}
-              mbt-defaults/config
-              add-deploy-conf))
+              mbt-defaults/config))
+
 
 
 (defn generate-docs! [conf]
@@ -73,61 +79,30 @@
                          ::version-file/path]})
 
 
-(defn new-milestone!
-  "Generate docs then tag a new version."
-  [conf]
+(defn bump-project! []
   (-> conf
-      (u/do-side-effect! prebuild-generation!)
-      (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
-
-(u/spec-op new-milestone!
-           :deps [prebuild-generation!
-                  mbt-defaults/versioning-tag-new-version!]
-           :param {:req #{::git/repo
-                          ::project/version
-                          ::project/working-dir
-                          ::version-file/ns
-                          ::version-file/path
-                          ::versioning/tag-base-name
-                          ::versioning/version}})
+      (assoc ::build/prebuild-generation prebuild-generation!)
+      (u/do-side-effect! mbt-build/bump-project!)))
 
 
-(defn next-version+1 [conf]
-  (let [next-v (mbt-defaults/versioning-next-version conf)]
-    (if (= next-v (mbt-defaults/versioning-initial-version conf))
-      next-v
-      (update next-v :number inc))))
-
-
-(defn release! []
+(defn build! []
   (-> conf
-      (u/assoc-computed ::versioning/version next-version+1
+      (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
                         ::project/version mbt-defaults/versioning-project-version)
-      (u/do-side-effect! new-milestone!)
-      (u/do-side-effect! mbt-defaults/build-jar!)
-      (u/do-side-effect! mbt-defaults/maven-install!)
-      u/record-build))
-
-
-(defn erase-local! [v]
-  (-> conf
-      (assoc ::project/version v)
-      (u/do-side-effect! mbt-defaults/build-jar!)
-      (u/do-side-effect! mbt-defaults/maven-install!)
-      u/record-build))
+      mbt-build/build!))
 
 
 (st/instrument `[generate-docs!
                  prebuild-generation!
-                 new-milestone!
                  mbt-core/deps-make-coord
-                 mbt-defaults/build-jar!
+                 mbt-build/build!
                  mbt-defaults/maven-install!
-                 mbt-defaults/maven-deploy!])
+                 mbt-defaults/maven-deploy!
+                 mbt-defaults/versioning-last-version])
 
 
 (comment
-  (erase-local! "0")
+
 
   (mbt-core/clean! conf)
 
