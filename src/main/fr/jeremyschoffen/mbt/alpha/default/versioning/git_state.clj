@@ -97,8 +97,8 @@ Api containing the default logic for using git state as a versioning mechanism.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Buidling tags
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn- tag-name [{base ::versioning/tag-base-name
-                  v    ::versioning/version}]
+(defn tag-name [{base ::versioning/tag-base-name
+                 v    ::versioning/version}]
   (str base "-v" v))
 
 (u/spec-op tag-name

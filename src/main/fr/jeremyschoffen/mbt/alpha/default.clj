@@ -7,6 +7,7 @@ Facade grouping the default apis in one place.
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.config :as config]
+    [fr.jeremyschoffen.mbt.alpha.default.deps :as deps]
     [fr.jeremyschoffen.mbt.alpha.default.maven :as maven]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.tasks :as tasks]
@@ -24,6 +25,11 @@ Facade grouping the default apis in one place.
 (u/def-clone config-compute config/compute-conf)
 (u/def-clone config-print-deps config/pprint-deps)
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Deps
+;;----------------------------------------------------------------------------------------------------------------------
+(u/def-clone deps-make-maven-coords deps/make-maven-deps-coords)
+(u/def-clone deps-make-git-coords deps/make-git-deps-coords)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Versioning schemes
@@ -47,7 +53,8 @@ Facade grouping the default apis in one place.
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone write-version-file! versioning/write-version-file!)
-(u/def-clone maven-make-github-scm tasks/make-github-scm)
+(u/def-clone github-scm tasks/make-github-scm)
+(u/def-clone github-coords tasks/make-github-coords)
 (u/def-clone build-before-bump! tasks/generate-before-bump!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)

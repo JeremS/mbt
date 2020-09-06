@@ -44,7 +44,7 @@ Api providing some utilities working with `clojure.tools.deps`.
            :ret (s/coll-of symbol? :kind set?))
 
 
-(defn make-symbolic-coord
+(defn make-symbolic-name
   "Create a Clojure symbol following the clojure tools deps format used to specified maven dependencies.
 
   For instance the hypothetical:
@@ -62,33 +62,8 @@ Api providing some utilities working with `clojure.tools.deps`.
   (symbol (str group-id) (str name (when classifier
                                      (str "$" classifier)))))
 
-(u/spec-op make-symbolic-coord
+(u/spec-op make-symbolic-name
            :param {:req [::maven/group-id
                          ::maven/artefact-name]
                    :opt [::maven/classifier]}
            :ret ::deps-specs/lib)
-
-
-(defn make-deps-coords
-  "Make the map representation of a dependency in a `deps.edn` file.
-
-  For instance:
-  ```clojure
-  (make-deps-coord
-    {::fr...mbt.alpha.maven/group-id 'org.clojure
-     ::fr...mbt.alpha.maven/artefact-name 'clojure
-     ::fr...mbt.alpha.project/version \"10.0.1\"})
-  ;=> {:org.clojure/clojure {:mvn/version \"10.0.1\"}}
-  ```
-  "
-  [{v ::project/version
-    :as param}]
-  {(make-symbolic-coord param) {:mvn/version v}})
-
-(u/spec-op make-deps-coords
-           :deps [make-symbolic-coord]
-           :param {:req [::maven/group-id
-                         ::maven/artefact-name
-                         ::project/version]
-                   :opt [::maven/classifier]}
-           :ret (s/map-of ::deps-specs/lib :mvn/coord))

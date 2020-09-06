@@ -27,7 +27,7 @@ Grouping of the different versioning utilities.
 (u/def-clone current-version git-state/current-version)
 (u/def-clone next-version git-state/next-version)
 
-(u/def-clone tag! git-state/tag!)
+(u/def-clone tag-name git-state/tag-name)
 (u/def-clone check-repo-in-order git-state/check-repo-in-order)
 (u/def-clone tag-new-version! git-state/tag-new-version!)
 

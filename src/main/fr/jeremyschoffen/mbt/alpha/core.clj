@@ -57,8 +57,9 @@ Facade grouping the core apis in one place.
 ;; Deps
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone deps-get deps/get-deps)
-(u/def-clone deps-make-coord deps/make-deps-coords)
+(u/def-clone deps-symbolic-name deps/make-symbolic-name)
 (u/def-clone deps-non-maven deps/non-maven-deps)
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; GPG
 ;;----------------------------------------------------------------------------------------------------------------------

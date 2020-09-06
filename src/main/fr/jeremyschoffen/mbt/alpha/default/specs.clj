@@ -26,6 +26,8 @@ Specs used in the default api.
 
 (s/def ::project/name string?)
 (s/def ::project/output-dir fs/path?)
+(s/def ::project/git-url string?)
+
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building

@@ -61,10 +61,11 @@ Api providing git utilities. Mostly a wrapper for some functionality from `clj-j
                         :time (.getTimeZone this)})
   RevTag
   (datafy-jgit* [this]
-    {::git.commit/name (.getName this)
-     ::git.tag/name (.getTagName this)
-     ::git.tag/message (.getFullMessage this)
-     ::git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))})
+    (let [commit (.getObject this)]
+      {::git.commit/name (.getName ^RevCommit commit)
+       ::git.tag/name (.getTagName this)
+       ::git.tag/message (.getFullMessage this)
+       ::git.tag/tagger (datafy-jgit-obj (.getTaggerIdent this))}))
 
   RevCommit
   (datafy-jgit* [this] {::git.commit/name (.getName this)
