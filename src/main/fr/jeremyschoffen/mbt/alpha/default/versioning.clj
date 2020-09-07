@@ -40,7 +40,8 @@ Grouping of the different versioning utilities.
   [param]
   (-> param
       current-version
-      (assoc :distance 0)))
+      (assoc :distance 0
+             :dirty? false)))
 
 (u/spec-op last-version
            :deps [current-version]
