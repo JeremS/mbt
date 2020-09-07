@@ -28,8 +28,8 @@
                  mbt-core/git-add-all!
                  mbt-default/versioning-last-version
                  mbt-default/versioning-get-tag
-                 mbt-build/bump-project!
-                 mbt-build/update-scm-tag])
+                 mbt-build/bump-project-with-version-file!
+                 mbt-default/versioning-update-scm-tag])
 
 
 (def project-name "mbt-style")
@@ -83,7 +83,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; First bump
 ;;----------------------------------------------------------------------------------------------------------------------
-(mbt-build/bump-project! conf)
+(mbt-build/bump-project-with-version-file! conf)
 
 (def commit-after-first-bump (mbt-core/git-last-commit conf))
 (def last-version-after-first-bump (mbt-default/versioning-last-version conf))
@@ -107,7 +107,7 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; second bump
 ;;----------------------------------------------------------------------------------------------------------------------
-(mbt-build/bump-project! conf)
+(mbt-build/bump-project-with-version-file! conf)
 
 (def commit-after-second-bump (mbt-core/git-last-commit conf))
 (def last-version-after-second-bump (mbt-default/versioning-last-version conf))
@@ -151,7 +151,7 @@
 
     (-> conf
         (assoc ::versioning/version version-at-bump)
-        mbt-build/update-scm-tag
+        mbt-default/versioning-update-scm-tag
         ::maven/scm
         ::maven.scm/tag)
     => (::git.commit/name tag-at-bump)))

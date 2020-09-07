@@ -14,6 +14,9 @@ Grouping of the different versioning utilities.
 
 (u/pseudo-nss
   git
+  git.commit
+  maven
+  maven.scm
   project
   versioning)
 
@@ -59,3 +62,19 @@ Grouping of the different versioning utilities.
 (u/spec-op project-version
            :param {:opt [::versioning/version]}
            :ret ::project/version)
+
+
+(defn update-scm-tag
+  "Update the `[:...mbt.alpha.maven/scm :...mbt.alpha.maven.scm/tag]` part of the config
+  with th name of the commit whose last version tag points to."
+  [conf]
+  (let [commit (-> conf
+                   get-tag
+                   ::git.commit/name)]
+    (update conf ::maven/scm assoc ::maven.scm/tag commit)))
+
+(u/spec-op update-scm-tag
+           :deps [get-tag]
+           :param {:req [::git/repo
+                         ::versioning/tag-base-name
+                         ::versioning/version]})

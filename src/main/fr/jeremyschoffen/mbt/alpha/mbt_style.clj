@@ -21,6 +21,22 @@
   versioning
   version-file)
 
+(defn bump-project!
+  "Generate a new version and tag the repo."
+  [conf]
+  (-> conf
+      (u/assoc-computed ::versioning/version mbt-defaults/versioning-next-version
+                        ::project/version mbt-defaults/versioning-project-version)
+      (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
+
+(u/spec-op bump-project!
+           :deps [mbt-defaults/versioning-next-version
+                  mbt-defaults/versioning-tag-new-version!]
+           :param {:req [::git/repo
+                         ::project/working-dir
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::versioning/bump-level]})
 
 (defn next-version+1
   "Compute the next project version anticipating the commit adding the version file.
@@ -45,11 +61,9 @@
                    :opt [::versioning/bump-level]})
 
 
-(defn bump-project!
-  "Generate new version, docs version file... The doc generation is passed as a function under the key
-   `:...mbt.alpha.build/prebuild-generation`.
-
-  The repo is then tagged with the new version."
+(defn bump-project-with-version-file!
+  "Generate a new version file then tags a new version. The additionnal commit for the version file
+  is taken into account when computing the new version."
   [conf]
   (-> conf
       (u/assoc-computed ::versioning/version next-version+1
@@ -58,7 +72,7 @@
       (mbt-defaults/generate-then-commit! (u/do-side-effect! mbt-defaults/write-version-file!))
       (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
 
-(u/spec-op bump-project!
+(u/spec-op bump-project-with-version-file!
            :deps [next-version+1
                   mbt-defaults/write-version-file!
                   mbt-defaults/versioning-tag-new-version!]
@@ -71,24 +85,12 @@
                    :opt [::versioning/bump-level]})
 
 
-(defn update-scm-tag [conf]
-  (let [commit (-> conf
-                   mbt-defaults/versioning-get-tag
-                   ::git.commit/name)]
-    (update conf ::maven/scm #(assoc % ::maven.scm/tag commit))))
-
-(u/spec-op update-scm-tag
-           :deps [mbt-defaults/versioning-get-tag]
-           :param {:req [::git/repo
-                         ::versioning/tag-base-name
-                         ::versioning/version]})
-
 (defn build!
   [conf]
   (-> conf
       (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
                         ::project/version mbt-defaults/versioning-project-version)
-      update-scm-tag
+      mbt-defaults/versioning-update-scm-tag
       (u/do-side-effect! mbt-defaults/maven-sync-pom!)
       (u/do-side-effect! mbt-defaults/build-jar!)))
 
