@@ -54,7 +54,7 @@ Facade grouping the default apis in one place.
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone write-version-file! versioning/write-version-file!)
-(u/def-clone build-before-bump! tasks/generate-before-bump!)
+(u/def-clone generate-then-commit! tasks/generate-then-commit!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)
 (u/def-clone maven-sync-pom! mbt-core/maven-sync-pom!)

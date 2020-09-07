@@ -13,6 +13,7 @@
   build
   build.jar
   git
+  git.commit
   jar
   jar.manifest
   maven
@@ -29,6 +30,7 @@
 
 (def conf (-> {::maven/group-id    'fr.jeremyschoffen
                ::project/author    "Jeremy Schoffen"
+               ::project/git-url   "https://github.com/JeremS/mbt"
 
                ::version-file/ns   'fr.jeremyschoffen.mbt.alpha.version
                ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
@@ -46,43 +48,41 @@
               mbt-defaults/config))
 
 
+(defn bump-project! []
+  (-> conf
+      (u/do-side-effect! mbt-build/bump-project!)))
+
 
 (defn generate-docs! [conf]
   (-> conf
-      (u/assoc-computed ::project/maven-coords mbt-core/deps-make-coord)
-      (u/do-side-effect! docs/make-readme!)
-      (u/do-side-effect! docs/make-rationale!)
-      (u/do-side-effect! docs/make-design-doc!)
-      (u/do-side-effect! docs/make-config-doc!)))
+      (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
+                        ::project/version mbt-defaults/versioning-project-version
+                        ::project/maven-coords mbt-defaults/deps-make-maven-coords
+                        ::project/git-coords mbt-defaults/deps-make-git-coords)
+      (assoc-in [::git/commit! ::git.commit/message] "Generated the docs.")
+      (mbt-defaults/generate-then-commit!
+        (u/do-side-effect! docs/make-readme!)
+        (u/do-side-effect! docs/make-rationale!)
+        (u/do-side-effect! docs/make-design-doc!)
+        (u/do-side-effect! docs/make-config-doc!))))
 
 
 (u/spec-op generate-docs!
-           :deps [mbt-core/deps-make-coord]
-           :param {:req [::maven/artefact-name
+           :deps [mbt-defaults/versioning-last-version
+                  mbt-defaults/versioning-project-version
+                  mbt-defaults/deps-make-maven-coords
+                  mbt-defaults/deps-make-git-coords]
+           :param {:req [::git/repo
+                         ::maven/artefact-name
                          ::maven/group-id
-                         ::project/version]
-                   :opt [::maven/classifier]})
+                         ::project/git-url
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::maven/classifier
+                         ::versioning/tag-base-name
+                         ::versioning/version]})
+(u/param-suggestions generate-docs!)
 
-
-(defn prebuild-generation!
-  "Build the docs and version file then commit."
-  [conf]
-  (-> conf
-      (mbt-defaults/build-before-bump! (u/do-side-effect! generate-docs!)
-                                       (u/do-side-effect! mbt-defaults/write-version-file!))))
-
-(u/spec-op prebuild-generation!
-           :deps [generate-docs!
-                  mbt-defaults/write-version-file!]
-           :param {:req [::project/version
-                         ::version-file/ns
-                         ::version-file/path]})
-
-
-(defn bump-project! []
-  (-> conf
-      (assoc ::build/prebuild-generation prebuild-generation!)
-      (u/do-side-effect! mbt-build/bump-project!)))
 
 
 (defn build! []
@@ -93,8 +93,9 @@
 
 
 (st/instrument `[generate-docs!
-                 prebuild-generation!
-                 mbt-core/deps-make-coord
+                 mbt-defaults/generate-then-commit!
+                 mbt-defaults/deps-make-maven-coords
+                 mbt-defaults/deps-make-git-coords
                  mbt-build/build!
                  mbt-defaults/maven-install!
                  mbt-defaults/maven-deploy!

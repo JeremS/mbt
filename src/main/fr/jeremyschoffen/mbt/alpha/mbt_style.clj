@@ -10,24 +10,20 @@
   build
   build.jar
   git
+  git.commit
   jar
   jar.manifest
   maven
   maven.pom
+  maven.scm
   project
   project.deps
   versioning
   version-file)
 
 
-(s/def ::build/prebuild-generation
-  (s/fspec :args (s/keys :req [::project/version]
-                         :opt [::version-file/ns
-                               ::version-file/path])))
-
-
 (defn next-version+1
-  "Compute the next project version anticipating the commit adding the docs.
+  "Compute the next project version anticipating the commit adding the version file.
   Using git-distance is expected here."
   [{scheme ::versioning/scheme :as conf}]
   (when-not (= scheme mbt-defaults/git-distance-scheme)
@@ -44,9 +40,9 @@
            :deps [mbt-defaults/versioning-next-version
                   mbt-defaults/versioning-initial-version]
            :param {:req [::git/repo
-                         ::versioning/scheme]
-                   :opt [::versioning/bump-level
-                         ::versioning/tag-base-name]})
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::versioning/bump-level]})
 
 
 (defn bump-project!
@@ -54,38 +50,50 @@
    `:...mbt.alpha.build/prebuild-generation`.
 
   The repo is then tagged with the new version."
-  [{prebuild-generation! ::build/prebuild-generation
-    :as conf}]
+  [conf]
   (-> conf
       (u/assoc-computed ::versioning/version next-version+1
                         ::project/version mbt-defaults/versioning-project-version)
-      (u/do-side-effect-named! prebuild-generation! 'prebuild-generation!)
+      (assoc-in [::git/commit! ::git.commit/message] "Bump project - Added version file.")
+      (mbt-defaults/generate-then-commit! (u/do-side-effect! mbt-defaults/write-version-file!))
       (u/do-side-effect! mbt-defaults/versioning-tag-new-version!)))
 
 (u/spec-op bump-project!
            :deps [next-version+1
+                  mbt-defaults/write-version-file!
                   mbt-defaults/versioning-tag-new-version!]
-           :param {:req [::build/prebuild-generation
-                         ::git/repo
+           :param {:req [::git/repo
                          ::project/working-dir
+                         ::version-file/ns
+                         ::version-file/path
                          ::versioning/scheme
-                         ::versioning/tag-base-name
-                         ::versioning/version]
-                   :opt [::version-file/ns
-                         ::version-file/path]})
-(u/param-suggestions bump-project!)
+                         ::versioning/tag-base-name]
+                   :opt [::versioning/bump-level]})
 
+
+(defn update-scm-tag [conf]
+  (let [commit (-> conf
+                   mbt-defaults/versioning-get-tag
+                   ::git.commit/name)]
+    (update conf ::maven/scm #(assoc % ::maven.scm/tag commit))))
+
+(u/spec-op update-scm-tag
+           :deps [mbt-defaults/versioning-get-tag]
+           :param {:req [::git/repo
+                         ::versioning/tag-base-name
+                         ::versioning/version]})
 
 (defn build!
   [conf]
   (-> conf
-      mbt-defaults/maven-make-github-scm
+      (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
+                        ::project/version mbt-defaults/versioning-project-version)
+      update-scm-tag
       (u/do-side-effect! mbt-defaults/maven-sync-pom!)
       (u/do-side-effect! mbt-defaults/build-jar!)))
 
 (u/spec-op build!
-           :deps [mbt-defaults/maven-make-github-scm
-                  mbt-defaults/maven-sync-pom!
+           :deps [mbt-defaults/maven-sync-pom!
                   mbt-defaults/build-jar!]
            :param {:req [::build.jar/allow-non-maven-deps
                          ::build.jar/path

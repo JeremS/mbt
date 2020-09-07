@@ -35,7 +35,7 @@ Higher level apis.
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn- commit-generated! [conf]
   (-> conf
-      (u/augment-v ::git/commit! {::git.commit/message "Added generated files."})
+      (update ::git/commit! u/ensure-v ::git.commit/message "Added generated files.")
       mbt-core/git-commit!))
 
 (u/spec-op commit-generated!
@@ -44,14 +44,12 @@ Higher level apis.
                          ::git/commit!]})
 
 
-(defn generate-before-bump!
-  "Helper function intended to be used just before tagging a new version. The idea here is that when we want to release
-  a new version, we want to generate some docs or a version file for instance. These files will need to be generated,
-  added and committed to the repo. Also, adding this commit may influence the version number of the realease.
+(defn generate-then-commit!
+  "Helper function intended to be used to automatically commit some generated files.
 
-  This function attemps to provide a way to encapsulate this logic. It is performed in several steps:
+  Several steps are taken:
 
-  1) Checks the repo using [[fr.jeremyschoffen.mbt.alpha.default.versioning/check-repo-in-order]].
+  1) Check the repo using [[fr.jeremyschoffen.mbt.alpha.default.versioning/check-repo-in-order]].
   2) Thread `conf` through `fns` using [[fr.jeremyschoffen.mbt.alpha.utils//thread-fns]].
   3) Add all the new files to git using [[fr.jeremyschoffen.mbt.alpha.core/git-add-all!]]
   4) Commit all the generated files.
@@ -67,7 +65,7 @@ Higher level apis.
       (u/do-side-effect! mbt-core/git-add-all!)
       (u/do-side-effect! commit-generated!)))
 
-(s/fdef generate-before-bump!
+(s/fdef generate-then-commit!
         :args (s/cat :param (s/keys :req [::git/repo
                                           ::project/version
                                           ::versioning/scheme]

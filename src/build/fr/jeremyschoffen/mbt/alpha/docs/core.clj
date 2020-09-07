@@ -17,11 +17,13 @@
 
 (def readme-src (page-resource "README.md.tp"))
 
-(defn make-readme! [{wd ::project/working-dir
-                     coords ::project/maven-coords}]
+(defn make-readme! [{wd           ::project/working-dir
+                     maven-coords ::project/maven-coords
+                     git-coords ::project/git-coords}]
   (spit (u/safer-path wd "README.md")
         (doc/make-document readme-src
-                           {:project/maven-coords coords})))
+                           {:project/maven-coords maven-coords
+                            :project/git-coords git-coords})))
 
 
 (def rationale-src (page-resource "rationale.md.tp"))
