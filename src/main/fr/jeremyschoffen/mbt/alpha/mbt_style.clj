@@ -85,11 +85,27 @@
                    :opt [::versioning/bump-level]})
 
 
-(defn build!
+(defn merge-last-version
+  "Add to a config map the keys `::versioning/version` and `::project/version`"
   [conf]
   (-> conf
       (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
-                        ::project/version mbt-defaults/versioning-project-version)
+                        ::project/version mbt-defaults/versioning-project-version)))
+
+(u/spec-op merge-last-version
+           :deps [mbt-defaults/versioning-last-version
+                  mbt-defaults/versioning-project-version]
+           :param {:req [::git/repo
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]}
+           :ret (s/keys :req [::versioning/version
+                              ::project/version]))
+
+
+(defn build!
+  [conf]
+  (-> conf
+      merge-last-version
       mbt-defaults/versioning-update-scm-tag
       (u/do-side-effect! mbt-defaults/maven-sync-pom!)
       (u/do-side-effect! mbt-defaults/build-jar!)))
