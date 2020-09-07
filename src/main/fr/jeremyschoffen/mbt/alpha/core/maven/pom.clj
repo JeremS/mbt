@@ -181,9 +181,18 @@ Api providing maven pom.xml files generation.
             (if (seq more-tags)
               (recur more-tags child (zip/down child))
               (zip/edit child (constantly replace-node)))
-            (recur tags parent (zip/right child)))
-          (zip/append-child parent replace-node))))))
-
+            (if-let [next-sibling (zip/right child)]
+              (recur tags parent next-sibling)
+              (if (seq more-tags)
+                (let [new-parent (zip/append-child parent (xml/sexp-as-element tag))
+                      new-child (zip/rightmost (zip/down new-parent))]
+                  (recur more-tags new-child (zip/down new-child)))
+                (zip/append-child parent replace-node))))
+          (if (seq more-tags)
+            (let [new-parent (zip/append-child parent (xml/sexp-as-element tag))
+                  new-child (zip/rightmost (zip/down new-parent))]
+              (recur more-tags new-child (zip/down new-child)))
+            (zip/append-child parent replace-node)))))))
 
 (defn- replace-info [pom i v]
   (xml-update pom [i] (xml/sexp-as-element [i v])))
@@ -342,6 +351,7 @@ Api providing maven pom.xml files generation.
 
 
 (comment
+  'clojure.tools.deps.alpha.gen.pom
   (require '[clojure.tools.deps.alpha :as deps-reader])
 
   (def ctxt {::maven/group-id 'group
