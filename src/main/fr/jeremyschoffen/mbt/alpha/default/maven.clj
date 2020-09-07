@@ -9,7 +9,6 @@ Api providing default behaviour for maven tasks.
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.maven.common :as mc]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
-    [fr.jeremyschoffen.mbt.alpha.default.versioning :as v]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
 
@@ -67,21 +66,16 @@ Api providing default behaviour for maven tasks.
       mbt-core/maven-install!))
 
 (u/spec-op install!
-           :deps [mbt-core/maven-sync-pom!
-                  make-usual-artefacts
+           :deps [make-usual-artefacts
                   mbt-core/maven-install!]
            :param {:req #{::build.jar/path
                           ::maven/artefact-name
                           ::maven/group-id
                           ::maven.pom/path
-                          ::project/deps
                           ::project/version}
                    :opt #{::maven.deploy/artefacts
                           ::maven/classifier
-                          ::maven/scm
-                          ::maven.install/dir
-                          ::project/licenses}})
-
+                          ::maven.install/dir}})
 
 (defn ensure-deploy-artefacts
   "Ensure that the key `:fr...mbt.alpha.maven.deploy/artefacts` has a value
@@ -101,7 +95,8 @@ Api providing default behaviour for maven tasks.
 (u/spec-op ensure-deploy-artefacts
            :deps [make-usual-artefacts
                   make-usual-artefacts+signatures!]
-           :param {:req [::maven.pom/path
+           :param {:req [::maven.deploy/sign-artefacts?
+                         ::maven.pom/path
                          ::build.jar/path]
                    :opt #{::gpg/command
                           ::gpg/home-dir
@@ -126,15 +121,14 @@ Api providing default behaviour for maven tasks.
       mbt-core/maven-deploy!))
 
 (u/spec-op deploy!
-           :deps [mbt-core/maven-sync-pom!
-                  ensure-deploy-artefacts
+           :deps [ensure-deploy-artefacts
                   mbt-core/maven-deploy!]
            :param {:req [::build.jar/path
                          ::maven/artefact-name
                          ::maven/group-id
                          ::maven/server
+                         ::maven.deploy/sign-artefacts?
                          ::maven.pom/path
-                         ::project/deps
                          ::project/version]
                    :opt [::gpg/command
                          ::gpg/home-dir
@@ -142,11 +136,8 @@ Api providing default behaviour for maven tasks.
                          ::gpg/pass-phrase
                          ::gpg/version
                          ::maven.deploy/artefacts
-                         ::maven.deploy/sign-artefacts?
                          ::maven/classifier
                          ::maven/credentials
                          ::maven/local-repo
-                         ::maven/scm
                          ::maven.settings/file
-                         ::project/licenses
                          ::project/working-dir]})
