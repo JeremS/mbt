@@ -11,7 +11,7 @@
         lambdaisland/regal              {:mvn/version "0.0.89"}
 
         fr.jeremyschoffen/dolly         {:mvn/version "0"}
-        fr.jeremyschoffen/clj-nio-alpha {:mvn/version "0"}
+        fr.jeremyschoffen/clj-nio-alpha {:mvn/version "7"}
         fr.jeremyschoffen/mapiform-alpha {:mvn/version "0"}}
 
 
