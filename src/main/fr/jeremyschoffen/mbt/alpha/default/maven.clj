@@ -24,6 +24,8 @@ Api providing default behaviour for maven tasks.
   project)
 
 
+
+(u/def-clone make-github-like-scm-map mc/make-github-like-scm-map)
 (u/def-clone make-usual-artefacts mc/make-usual-artefacts)
 (u/def-clone make-usual-artefacts+signatures! mc/make-usual-artefacts+signatures!)
 

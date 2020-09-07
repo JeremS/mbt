@@ -29,48 +29,6 @@ Higher level apis.
   project.deps
   versioning)
 
-;;----------------------------------------------------------------------------------------------------------------------
-;; Scm info
-;;----------------------------------------------------------------------------------------------------------------------
-
-;;----------------------------------------------------------------------------------------------------------------------
-;; from https://github.com/technomancy/leiningen/blob/master/src/leiningen/pom.clj#L83
-(defn- parse-github-url
-  "Parses a GitHub URL returning a [username repo] pair."
-  [url]
-  (if url
-    (next
-      (or (re-matches #"(?:[A-Za-z-]{2,}@)?github.com:([^/]+)/([^/]+).git" url)
-          (re-matches #"[^:]+://(?:[A-Za-z-]{2,}@)?github.com/([^/]+)/([^/]+?)(?:.git)?" url)))))
-
-
-
-(defn- github-urls [url]
-  (if-let [[user repo] (parse-github-url url)]
-    {:public-clone (str "scm:git:git://github.com/" user "/" repo ".git")
-     :dev-clone (str "scm:git:ssh://git@github.com/" user "/" repo ".git")
-     :browse (str "https://github.com/" user "/" repo)}))
-;;----------------------------------------------------------------------------------------------------------------------
-
-(defn make-github-scm
-  "Make a full `:...mbt.alpha.maven/scm` provided one containing an url for a github repo."
-  [{scm ::maven/scm :as param}]
-  (let [{url ::maven.scm/url} scm
-        {:keys [public-clone dev-clone browse]} (github-urls url)
-        {commit-name ::git.commit/name} (mbt-core/git-last-commit param)]
-    (if url
-      (-> scm
-          (cond-> browse (u/ensure-v ::maven.scm/url browse)
-                  public-clone (u/ensure-v ::maven.scm/connection public-clone)
-                  dev-clone (u/ensure-v ::maven.scm/developer-connection dev-clone))
-          (assoc ::maven.scm/tag commit-name))
-      scm)))
-
-(u/spec-op make-github-scm
-           :deps [mbt-core/git-last-commit]
-           :param {:req [::git/repo]}
-           :ret ::maven/scm)
-
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Pre bump generation

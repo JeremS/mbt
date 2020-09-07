@@ -4,6 +4,7 @@
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
+    [fr.jeremyschoffen.mbt.alpha.default.maven :as default-maven]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 (u/pseudo-nss
@@ -91,5 +92,6 @@
            ::maven/local-repo (impl/calc maven-local-repo)
            ::maven.install/dir (impl/calc maven-install-dir)
            ::maven.settings/file (impl/calc maven-settings-file)
+           ::maven/scm (impl/calc default-maven/make-github-like-scm-map ::project/git-url)
 
            ::maven.deploy/sign-artefacts? false})

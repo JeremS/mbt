@@ -54,8 +54,6 @@ Facade grouping the default apis in one place.
 ;; Premade
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone write-version-file! versioning/write-version-file!)
-(u/def-clone github-scm tasks/make-github-scm)
-(u/def-clone github-coords tasks/make-github-coords)
 (u/def-clone build-before-bump! tasks/generate-before-bump!)
 (u/def-clone build-jar! tasks/jar!)
 (u/def-clone build-uberjar! tasks/uberjar!)
