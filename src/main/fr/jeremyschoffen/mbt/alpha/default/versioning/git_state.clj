@@ -225,3 +225,19 @@ Api containing the default logic for using git state as a versioning mechanism.
                          ::versioning/tag-base-name
                          ::versioning/version]}
            :ret ::git/tag)
+
+
+(defn get-tag
+  "Recover a git tag based on a version and a tag base name."
+  [param]
+  (-> param
+      (u/assoc-computed ::git.tag/name tag-name)
+      mbt-core/git-get-tag))
+
+(u/spec-op get-tag
+           :deps [tag-name
+                  mbt-core/git-get-tag]
+           :param {:req [::git/repo
+                         ::versioning/tag-base-name
+                         ::versioning/version]}
+           :ret ::git/tag)

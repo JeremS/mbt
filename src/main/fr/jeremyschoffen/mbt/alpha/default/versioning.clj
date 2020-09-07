@@ -30,6 +30,7 @@ Grouping of the different versioning utilities.
 (u/def-clone tag-name git-state/tag-name)
 (u/def-clone check-repo-in-order git-state/check-repo-in-order)
 (u/def-clone tag-new-version! git-state/tag-new-version!)
+(u/def-clone get-tag git-state/get-tag)
 
 (u/def-clone write-version-file! vf/write-version-file!)
 
@@ -45,7 +46,7 @@ Grouping of the different versioning utilities.
            :deps [current-version]
            :param {:req [::git/repo
                          ::versioning/scheme]
-                   :opt [:versioning/tag-base-name]}
+                   :opt [::versioning/tag-base-name]}
            :ret ::versioning/version)
 
 

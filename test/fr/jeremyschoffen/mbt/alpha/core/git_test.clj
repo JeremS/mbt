@@ -171,15 +171,16 @@
                                        ::git.commit/committer {::git.identity/name committer-name
                                                                ::git.identity/email committer-email}}))
 
-    (let [last-commit (first (clj-jgit.porcelain/git-log repo))
-          {:keys [author committer]} last-commit]
+    (let [last-commit (core-git/last-commit ctxt)
+          {::git.commit/keys [author committer]} last-commit]
 
       (facts
-        (:name author)  => author-name
-        (:email author) => author-email
+        (::git.identity/name author) => author-name
+        (::git.identity/email author) => author-email
 
-        (:name committer)  => committer-name
-        (:email committer) => committer-email))))
+        (::git.identity/name committer)  => committer-name
+        (::git.identity/email committer) => committer-email))))
+
 
 
 (deftest tag

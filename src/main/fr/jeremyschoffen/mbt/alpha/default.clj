@@ -48,6 +48,7 @@ Facade grouping the default apis in one place.
 (u/def-clone versioning-next-version versioning/next-version)
 (u/def-clone versioning-tag-new-version! versioning/tag-new-version!)
 (u/def-clone versioning-project-version versioning/project-version)
+(u/def-clone versioning-get-tag versioning/get-tag)
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Premade
