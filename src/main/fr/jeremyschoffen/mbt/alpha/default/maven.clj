@@ -13,20 +13,15 @@ Api providing default behaviour for maven tasks.
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
 
 (u/pseudo-nss
-  build
   build.jar
-  git
   gpg
-  jar
   maven
   maven.deploy
   maven.deploy.artefact
   maven.install
   maven.pom
   maven.settings
-  project
-  project.deps
-  versioning)
+  project)
 
 
 (u/def-clone make-usual-artefacts mc/make-usual-artefacts)
