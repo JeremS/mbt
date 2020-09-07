@@ -2,7 +2,11 @@
   (:require
     [fr.jeremyschoffen.textp.alpha.lib.compilation :refer [emit!]]
     [fr.jeremyschoffen.textp.alpha.doc.markdown-compiler :as md]
-    [fr.jeremyschoffen.textp.alpha.html.compiler :as html-compiler]))
+    [fr.jeremyschoffen.textp.alpha.html.compiler :as html-compiler]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
+
+(u/pseudo-nss
+  docs.tags)
 
 
 (defmethod html-compiler/emit-tag! [::md/md :h2]
@@ -36,13 +40,13 @@
   (emit! "- ") (html-compiler/compile! (:content node)) (emit! "\n"))
 
 
-(defmethod html-compiler/emit-tag! [::md/md :docs.config.tags/config-key]
+(defmethod html-compiler/emit-tag! [::md/md ::docs.tags/config-key]
   [node]
   (html-compiler/compile! (:content node)))
 
 
 (comment
-  (require '[docs.config.tags])
+  (require '[fr.jeremyschoffen.mbt.alpha.docs.config.tags])
 
 
   (def ex [{:tag :tag-args-clj
@@ -50,4 +54,4 @@
            {:tag :tag-args-txt
             :content ["a description"]}])
   (println
-    (md/doc->md (apply docs.config.tags/config-key ex))))
+    (md/doc->md (apply fr.jeremyschoffen.mbt.alpha.docs.config.tags/config-key ex))))

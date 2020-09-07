@@ -10,54 +10,41 @@
 
 
 (u/pseudo-nss
-  build
-  build.jar
   git
   git.commit
-  jar
-  jar.manifest
   maven
   maven.credentials
-  maven.deploy
-  maven.install
-  maven.pom
   project
-  project.deps
   project.license
   version-file
   versioning)
 
 
-(def conf (-> {::maven/group-id    'fr.jeremyschoffen
-               ::project/author    "Jeremy Schoffen"
-               ::project/git-url   "https://github.com/JeremS/mbt"
+(def conf (mbt-defaults/config
+            {::maven/group-id    'fr.jeremyschoffen
+             ::project/author    "Jeremy Schoffen"
+             ::project/git-url   "https://github.com/JeremS/mbt"
 
-               ::version-file/ns   'fr.jeremyschoffen.mbt.alpha.version
-               ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
-               ::versioning/scheme mbt-defaults/git-distance-scheme
-               ::versioning/major  :alpha
+             ::version-file/ns   'fr.jeremyschoffen.mbt.alpha.version
+             ::version-file/path (u/safer-path "src" "main" "fr" "jeremyschoffen" "mbt" "alpha" "version.clj")
+             ::versioning/scheme mbt-defaults/git-distance-scheme
+             ::versioning/major  :alpha
 
-               ::maven.server mbt-defaults/clojars
-               ::maven/credentials {::maven.credentials/user-name "jeremys"
-                                    ::maven.credentials/password token}
+             ::maven.server mbt-defaults/clojars
+             ::maven/credentials {::maven.credentials/user-name "jeremys"
+                                  ::maven.credentials/password token}
 
-               ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
-                                     ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
-                                     ::project.license/distribution :repo
-                                     ::project.license/file (u/safer-path "LICENSE")}]}
-              mbt-defaults/config))
+             ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
+                                   ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
+                                   ::project.license/distribution :repo
+                                   ::project.license/file (u/safer-path "LICENSE")}]}))
 
-
-(defn bump-project! []
-  (-> conf
-      (u/do-side-effect! mbt-build/bump-project!)))
 
 
 (defn generate-docs! [conf]
   (-> conf
-      (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
-                        ::project/version mbt-defaults/versioning-project-version
-                        ::project/maven-coords mbt-defaults/deps-make-maven-coords
+      mbt-build/merge-last-version
+      (u/assoc-computed ::project/maven-coords mbt-defaults/deps-make-maven-coords
                         ::project/git-coords mbt-defaults/deps-make-git-coords)
       (assoc-in [::git/commit! ::git.commit/message] "Generated the docs.")
       (mbt-defaults/generate-then-commit!
@@ -68,8 +55,7 @@
 
 
 (u/spec-op generate-docs!
-           :deps [mbt-defaults/versioning-last-version
-                  mbt-defaults/versioning-project-version
+           :deps [mbt-build/merge-last-version
                   mbt-defaults/deps-make-maven-coords
                   mbt-defaults/deps-make-git-coords]
            :param {:req [::git/repo
@@ -81,30 +67,31 @@
                    :opt [::maven/classifier
                          ::versioning/tag-base-name
                          ::versioning/version]})
-(u/param-suggestions generate-docs!)
 
 
-
-(defn build! []
+(defn bump-project! []
   (-> conf
-      (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
-                        ::project/version mbt-defaults/versioning-project-version)
-      mbt-build/build!))
+      (u/do-side-effect! mbt-build/bump-project-with-version-file!)
+      (u/do-side-effect! generate-docs!)))
 
 
 (st/instrument `[generate-docs!
                  mbt-defaults/generate-then-commit!
                  mbt-defaults/deps-make-maven-coords
                  mbt-defaults/deps-make-git-coords
+                 mbt-build/merge-last-version
                  mbt-build/build!
-                 mbt-defaults/maven-install!
-                 mbt-defaults/maven-deploy!
-                 mbt-defaults/versioning-last-version])
+                 mbt-build/install!
+                 mbt-build/deploy!])
 
 
 (comment
-
-
   (mbt-core/clean! conf)
 
-  (erase-local!))
+  (bump-project!)
+
+  (mbt-build/build! conf)
+
+  (mbt-build/install! conf))
+
+  ;(mbt-build/deploy! conf))

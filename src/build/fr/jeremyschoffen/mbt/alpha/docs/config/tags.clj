@@ -3,8 +3,11 @@
     [clojure.spec.alpha :as s]
     [clojure.data.xml :as xml]
     [fr.jeremyschoffen.textp.alpha.lib.tag-utils :as textp-lib]
-    [fr.jeremyschoffen.mbt.alpha.docs.config.data :as config-data]))
+    [fr.jeremyschoffen.mbt.alpha.docs.config.data :as config-data]
+    [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
+(u/pseudo-nss
+  docs.tags)
 
 (s/def ::config-key-args (s/cat :config-key (s/? ::textp-lib/tag-clj-arg)
                                 :doc (s/? ::textp-lib/tag-txt-arg)))
@@ -33,7 +36,7 @@
 (defn config-key [& args]
   (let [{:config-key/keys [name constructors spec documentation]}
         (config-key-args->full-description args)]
-    (xml/sexp-as-element [::config-key
+    (xml/sexp-as-element [::docs.tags/config-key
                           [:h2 (format " `%s`" name)]
 
                           [:h3 "Spec:"]

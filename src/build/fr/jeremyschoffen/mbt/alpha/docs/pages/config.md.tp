@@ -352,11 +352,9 @@ The deps map of the project.
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.project/git-coords]{
 Coordinates of a project tools deps style for a git dependency.
 }
-
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.project/git-url]{
-Url pointing to the git repo of the project for instance: "https://github.com/JeremS/mbt"
+Url pointing to the git repo of the project for instance: "https://github.com/JeremS/mbt".
 }
-
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.project/license]{
 Data for a license entry in pom files.
 }
@@ -366,7 +364,6 @@ Collection of the license entries for the pom file.
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.project/maven-coords]{
 Coordinates of a project tools deps style for a maven dependency.
 }
-
 ◊config-key[:fr.jeremyschoffen.mbt.alpha.project/name]{
 Name of the project. Used to generate git tags and maven artefact id.
 }

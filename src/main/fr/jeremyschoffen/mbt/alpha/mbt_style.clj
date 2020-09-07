@@ -11,11 +11,15 @@
   build.jar
   git
   git.commit
+  gpg
   jar
   jar.manifest
   maven
+  maven.deploy
+  maven.install
   maven.pom
   maven.scm
+  maven.settings
   project
   project.deps
   versioning
@@ -120,8 +124,6 @@
                          ::maven/group-id
                          ::maven/scm
                          ::maven.pom/path
-                         ::project/deps
-                         ::project/version
                          ::project/working-dir]
                    :opt [::jar/exclude?
                          ::jar/main-ns
@@ -130,3 +132,52 @@
                          ::project/licenses
                          ::project.deps/aliases]})
 
+
+(defn install! [conf]
+  (-> conf
+      merge-last-version
+      mbt-defaults/maven-install!))
+
+(u/spec-op install!
+           :deps [merge-last-version
+                  mbt-defaults/maven-install!]
+           :param {:req [::build.jar/path
+                         ::git/repo
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::maven.pom/path
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::maven/classifier
+                         ::maven.deploy/artefacts
+                         ::maven.install/dir]})
+
+
+(defn deploy! [conf]
+  (-> conf
+      merge-last-version
+      mbt-defaults/maven-deploy!))
+
+(u/spec-op deploy!
+           :deps [merge-last-version
+                  mbt-defaults/maven-deploy!]
+           :param {:req [::build.jar/path
+                         ::git/repo
+                         ::maven/artefact-name
+                         ::maven/group-id
+                         ::maven/server
+                         ::maven.deploy/sign-artefacts?
+                         ::maven.pom/path
+                         ::versioning/scheme
+                         ::versioning/tag-base-name]
+                   :opt [::gpg/command
+                         ::gpg/home-dir
+                         ::gpg/key-id
+                         ::gpg/pass-phrase
+                         ::gpg/version
+                         ::maven/classifier
+                         ::maven/credentials
+                         ::maven/local-repo
+                         ::maven.deploy/artefacts
+                         ::maven.settings/file
+                         ::project/working-dir]})
