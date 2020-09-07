@@ -1,9 +1,8 @@
 (ns fr.jeremyschoffen.mbt.alpha.default.deps
   (:require
     [clojure.spec.alpha :as s]
-    [clojure.tools.deps.alpha.specs :as deps-specs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbtcore]
-    [fr.jeremyschoffen.mbt.alpha.default.versioning :as default-versioning]
+    [fr.jeremyschoffen.mbt.alpha.default.versioning.git-state :as git-state]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
@@ -37,7 +36,7 @@
                          ::maven/artefact-name
                          ::project/version]
                    :opt [::maven/classifier]}
-           :ret (s/map-of ::deps-specs/lib :mvn/coord))
+           :ret ::project/maven-coords)
 
 
 (defn make-git-deps-coords
@@ -59,14 +58,12 @@
   [{u ::project/git-url
     :as param}]
   (let [commit-name (-> param
-                        (u/assoc-computed ::git.tag/name default-versioning/tag-name)
-                        mbtcore/git-get-tag
+                        git-state/get-tag
                         ::git.commit/name)]
     {(mbtcore/deps-symbolic-name param) {:git/url u :sha commit-name}}))
 
 (u/spec-op make-git-deps-coords
-           :deps [default-versioning/tag-name
-                  mbtcore/git-get-tag
+           :deps [git-state/get-tag
                   mbtcore/deps-symbolic-name]
            :param {:req [::git/repo
                          ::maven/artefact-name
@@ -75,4 +72,4 @@
                          ::versioning/tag-base-name
                          ::versioning/version]
                    :opt [::maven/classifier]}
-           :ret (s/map-of ::deps-specs/lib :git/coord))
+           :ret ::project/git-coords)

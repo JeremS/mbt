@@ -5,6 +5,7 @@ Specs used in the default api.
   fr.jeremyschoffen.mbt.alpha.default.specs
   (:require
     [clojure.spec.alpha :as s]
+    [clojure.tools.deps.alpha.specs :as deps-specs]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
 
     [fr.jeremyschoffen.mbt.alpha.core.specs]
@@ -28,6 +29,8 @@ Specs used in the default api.
 (s/def ::project/output-dir fs/path?)
 (s/def ::project/git-url string?)
 
+(s/def ::project/maven-coords (s/map-of ::deps-specs/lib :mvn/coord))
+(s/def ::project/git-coords (s/map-of ::deps-specs/lib :git/coord))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Jar building
