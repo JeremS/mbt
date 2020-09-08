@@ -1,3 +1,3 @@
 (ns fr.jeremyschoffen.mbt.alpha.version)
 
-(def version "")
+(def version "0")
