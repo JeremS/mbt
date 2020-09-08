@@ -30,7 +30,7 @@
              ::versioning/scheme mbt-defaults/git-distance-scheme
              ::versioning/major  :alpha
 
-             ::maven.server mbt-defaults/clojars
+             ::maven/server mbt-defaults/clojars
              ::maven/credentials {::maven.credentials/user-name "jeremys"
                                   ::maven.credentials/password token}
 
@@ -92,6 +92,6 @@
 
   (mbt-build/build! conf)
 
-  (mbt-build/install! conf))
+  (mbt-build/install! conf)
 
-  ;(mbt-build/deploy! conf))
+  (mbt-build/deploy! conf))
