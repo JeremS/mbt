@@ -17,7 +17,7 @@ Api providing utilities when manipulating classpaths generated using `clojure.to
   project
   project.deps)
 
-
+;; TODO: deps/make-classpath-map may be subject to change in the future, keep up!
 (defn deps-classpath-map
   "Facade to the [[clojure.tools.deps.alpha/make-classpath-map]] function."
   [{project-deps ::project/deps

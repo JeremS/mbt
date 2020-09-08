@@ -35,9 +35,3 @@
          :extra-deps {metosin/testit {:mvn/version "0.4.0"}
                       lambdaisland/kaocha {:mvn/version "0.0-541"}
                       org.clojure/test.check {:mvn/version "0.10.0"}}}}}
-
-
-
-
-
-

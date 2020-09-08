@@ -30,6 +30,18 @@ Api providing some utilities working with `clojure.tools.deps`.
            :ret ::project/deps)
 
 
+(defn get-whole-deps
+  "Get the system-wide, user wide and project wide deps merged together
+  The deps file's path of the project's deps is passed under the key `:...mbt.alpha.project.deps/file`."
+  [{p ::project.deps/file}]
+  (let [{:keys [root-edn user-edn project-edn]} (deps/find-edn-maps p)]
+    (deps/merge-edns (filterv some? [root-edn user-edn project-edn]))))
+
+(u/spec-op get-deps
+           :param {:req [::project.deps/file]}
+           :ret ::project/deps)
+
+
 (defn non-maven-deps
   "Utility signaling non maven deps. These deps can't go into a pom file."
   [{deps-map ::project/deps}]

@@ -72,4 +72,4 @@
            ::project/author (impl/calc project-author)
            ::project/name  (impl/calc project-name ::project/working-dir)
            ::project.deps/file (impl/calc deps-file ::project/working-dir)
-           ::project/deps (impl/calc mbt-core/deps-get ::project.deps/file)})
+           ::project/deps (impl/calc mbt-core/deps-get-all ::project.deps/file)})
