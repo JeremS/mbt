@@ -60,7 +60,7 @@ Mbt's own build can give an idea:
              ::versioning/scheme mbt-defaults/git-distance-scheme
              ::versioning/major  :alpha
 
-             ::maven.server mbt-defaults/clojars
+             ::maven/server mbt-defaults/clojars
              ::maven/credentials {::maven.credentials/user-name "jeremys"
                                   ::maven.credentials/password token}
 
