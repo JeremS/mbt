@@ -17,7 +17,7 @@ Lein coords:
 ```
 Git coords:
 ```clojure
-{fr.jeremyschoffen/mbt-alpha {:git/url "https://github.com/JeremS/mbt", :sha "8f08c46215d94178aa18d3161c884e9793e0aa81"}}
+{fr.jeremyschoffen/mbt-alpha {:git/url "https://github.com/JeremS/mbt", :sha "f74159a2ff3d24d660024f41d6941245fbb8da27"}}
 ```
 
 ## Usage
