@@ -1,6 +1,6 @@
 (ns ^{:author "Jeremy Schoffen"
       :doc "
-Apis providing the jar sources used by default.
+Apis providing the jar sources used by default and the utilities to build jars and uberjars.
       "}
   fr.jeremyschoffen.mbt.alpha.default.jar
   (:require

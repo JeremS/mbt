@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.git
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to git utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.git
   (:require
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]
     [fr.jeremyschoffen.mbt.alpha.default.specs]

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.cleaning
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to the cleaning utility..
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.cleaning
   (:require
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
     [fr.jeremyschoffen.mbt.alpha.default.specs]

@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.deps
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Utilities used to generate deps coordintes for the project.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.deps
   (:require
     [clojure.spec.alpha :as s]
     [fr.jeremyschoffen.mbt.alpha.core :as mbtcore]
@@ -40,14 +44,14 @@
 
 
 (defn make-git-deps-coords
-  "Make the map representation of a git dependency in a `deps.edn` file.
+  "Make the map representation of a git dependency in a `deps.edn` file. Here the git tag
+  corresponding to the version is used to recover the commit's sha associated with it.
 
   For instance:
   ```clojure
   (make-deps-coord
     {:...mbt.alpha.maven/group-id 'org.something
      :...mbt.alpha.maven/artefact-name 'my-lib
-     :...mbt.alpha.project/version \"10.0.1\"
      :...mbt.alpha.project/git-url \"https://github.com/yourname/my-lib\"
      :...mbt.alpha.versioning/tag-base-name \"my-lib\"
      :...mbt.alpha.versioning/version a-version})

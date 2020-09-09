@@ -1,9 +1,10 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.impl
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+The implementation details of the config API.
+      "}fr.jeremyschoffen.mbt.alpha.default.config.impl
   (:require
     [ubergraph.core :as graph]
     [ubergraph.alg :as graph-alg]
-    [medley.core :as medley]
-    [fr.jeremyschoffen.dolly.core :as dolly]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 
@@ -16,7 +17,7 @@
   "Define a computation to be made in the config.
 
   args:
-  - `f`: a function of 1 argument (the config map) that returns a value to be placed in the config.
+  - `f`: a function of 1 argument (map whose keys are the `deps`) that returns a value to be placed in the config.
   - `deps`: keywords declaring which keys of the config the computation depends on."
   [f & deps]
   (Calc. f deps))

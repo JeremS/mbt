@@ -100,7 +100,7 @@
 
 
 (defn format-recording
-  "Transform a record of side effects into a tree that models the succession od events better."
+  "Transform a record of side effects into a tree that models the succession of events better."
   {:arglists '([recorded-side-effects])}
   ([recorded-ses]
    (format-recording recorded-ses []))

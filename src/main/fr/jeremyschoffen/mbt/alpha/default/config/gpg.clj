@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.gpg
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to gpg utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.gpg
   (:require
     [clojure.spec.alpha :as s]
     [clojure.java.shell :as sh]

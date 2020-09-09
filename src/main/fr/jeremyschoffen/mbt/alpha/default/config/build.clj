@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.build
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to building utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.build
   (:require
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
@@ -12,7 +16,9 @@
   project)
 
 
-(defn jar-out-dir [{general-out ::project/output-dir}]
+(defn jar-out-dir
+  "Returns `...mbt.alpha.project/output-dir`"
+  [{general-out ::project/output-dir}]
   general-out)
 
 (u/spec-op jar-out-dir
@@ -21,7 +27,7 @@
 
 
 (defn jar-name
-  "\"artefact-name.jar\""
+  "Make the default name of skinny jars."
   [{artefact-name ::maven/artefact-name}]
   (str artefact-name ".jar"))
 
@@ -31,7 +37,7 @@
 
 
 (defn jar-out
-  "Make the jar path given the `:fr...mbt.alpha.build.jar/output-dir` and `:fr...mbt.alpha.build/jar-name`."
+  "Make the path at which skinny jar are built by default."
   [{jar-name ::build.jar/name
     out ::build/jar-output-dir}]
   (u/safer-path out jar-name))
@@ -43,7 +49,7 @@
 
 
 (defn uberjar-name
-  "\"artefact-name-standalone.jar\""
+  "Make the default name of skinny jars."
   [{artefact-name ::maven/artefact-name}]
   (str artefact-name "-standalone.jar"))
 
@@ -53,7 +59,7 @@
 
 
 (defn uberjar-out
-  "Make the uberjar path given the `:fr...mbt.alpha.build.jar/output-dir` and `:fr...mbt.alpha.build/jar-name`."
+  "Make path at which uberjar are built by default."
   [{jar-name ::build.uberjar/name
     out ::build/jar-output-dir}]
   (u/safer-path out jar-name))

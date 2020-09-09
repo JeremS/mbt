@@ -1,4 +1,7 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.maven
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to maven utilities.
+      "}fr.jeremyschoffen.mbt.alpha.default.config.maven
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.core :as mbt-core]

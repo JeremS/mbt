@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.compilation
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining compilation utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.compilation
   (:require
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
     [fr.jeremyschoffen.mbt.alpha.default.specs]

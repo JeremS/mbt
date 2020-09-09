@@ -1,4 +1,7 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.project
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to general project value.
+      "}fr.jeremyschoffen.mbt.alpha.default.config.project
   (:require
     [clojure.string :as string]
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]
@@ -59,7 +62,9 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Deps
 ;;----------------------------------------------------------------------------------------------------------------------
-(defn deps-file [{wd ::project/working-dir}]
+(defn deps-file
+  "Default location of the `deps.edn` file base on `:...mbt.alpha.project/working-dir`."
+  [{wd ::project/working-dir}]
   (u/safer-path wd "deps.edn"))
 
 (u/spec-op deps-file

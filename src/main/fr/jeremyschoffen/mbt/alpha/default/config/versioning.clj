@@ -1,4 +1,8 @@
-(ns fr.jeremyschoffen.mbt.alpha.default.config.versioning
+(ns ^{:author "Jeremy Schoffen"
+      :doc "
+Default config pertaining to versioning utilities.
+      "}
+  fr.jeremyschoffen.mbt.alpha.default.config.versioning
   (:require
     [fr.jeremyschoffen.mbt.alpha.default.specs]
     [fr.jeremyschoffen.mbt.alpha.default.config.impl :as impl]
@@ -11,7 +15,7 @@
 
 
 (defn tag-base-name
-  "Defaults to `project/name` + suffixes depending on `:versioning/major` and `:versioning/stable`."
+  "Defaults to `project/name` + a suffix depending on `:...mbt.alpha.versioning/major`."
   [{p-name  ::project/name
     major   ::versioning/major}]
   (-> p-name

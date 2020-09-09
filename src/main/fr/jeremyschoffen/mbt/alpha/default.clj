@@ -22,6 +22,7 @@ Facade grouping the default apis in one place.
 ;;----------------------------------------------------------------------------------------------------------------------
 (u/def-clone config config/make-base-config)
 (u/def-clone config-calc config/calc)
+(u/def-clone config-clone-key config/clone-key)
 (u/def-clone config-compute config/compute-conf)
 (u/def-clone config-print-deps config/pprint-deps)
 

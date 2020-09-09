@@ -93,14 +93,48 @@ Utilities used in the whole project.
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Additional map utils
 ;;----------------------------------------------------------------------------------------------------------------------
-(dolly/def-clone assoc-computed mc/assoc-computed)
-(dolly/def-clone ensure-computed mc/ensure-computed)
-(dolly/def-clone ensure-v mc/ensure-v)
-(dolly/def-clone augment-computed mc/augment-computed)
-(dolly/def-clone augment-v mc/augment-v)
+(dolly/def-clone
+  ^{:arglist '([m k f & kfs])
+    :doc "
+Function that perform a series of `(assoc m k (f m))`.
+  "}
+  assoc-computed
+  mc/assoc-computed)
 
 
-(defn strip-keys-nss [m]
+(dolly/def-clone ^{:arglist '([m k f & kfs])
+                   :doc "
+Function similar to [[fr.jeremyschoffen.mbt.alpha.utils/assoc-computed]] except that it performs
+the association to a key only if the map doesn't contains this key yet.
+  "}
+  ensure-computed mc/ensure-computed)
+
+
+(dolly/def-clone ^{:arglist '([m k v & kvs])
+                   :doc "
+Function similar to `assoc` except that it performs the association to a key only if the map doesn't contains
+this key yet.
+  "}
+  ensure-v mc/ensure-v)
+
+
+(dolly/def-clone ^{:arglist '([m k f & kfs])
+                   :doc "
+Function that perform a series of `(update m k deep-merge (f m))`.
+  "}
+  augment-computed mc/augment-computed)
+
+
+(dolly/def-clone ^{:arglist '([m k v & kvs])
+                   :doc "
+Function that perform a series of `(update m k deep-merge v)`.
+  "}
+  augment-v mc/augment-v)
+
+
+(defn strip-keys-nss
+  "Strip the namespaces of a map's keys."
+  [m]
   (medley/map-keys #(-> % name keyword) m))
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Threading context utils
@@ -118,6 +152,7 @@ Utilities used in the whole project.
 (dolly/def-clone do-side-effect! tu/do-side-effect!)
 
 (dolly/def-clone record-build tu/record)
+(dolly/def-clone format-recording tu/format-recording)
 (dolly/def-clone mark-dry-run tu/make-dry-run)
 
 ;;----------------------------------------------------------------------------------------------------------------------

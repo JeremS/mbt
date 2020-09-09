@@ -1,4 +1,6 @@
-(ns fr.jeremyschoffen.mbt.alpha.mbt-style
+(ns ^{:author "Jeremy Schoffen"
+      :doc "This namespace distills mbt's API to build mbt itself."}
+  fr.jeremyschoffen.mbt.alpha.mbt-style
   (:require
     [clojure.spec.alpha :as s]
     [cognitect.anomalies :as anom]
@@ -66,8 +68,8 @@
 
 
 (defn bump-project-with-version-file!
-  "Generate a new version file then tags a new version. The additionnal commit for the version file
-  is taken into account when computing the new version."
+  "Generate a new version file then tag a new version. The additional commit for the version file
+  is taken into account when computing the new version (which is a commit count)."
   [conf]
   (-> conf
       (u/assoc-computed ::versioning/version next-version+1
@@ -90,7 +92,8 @@
 
 
 (defn merge-last-version
-  "Add to a config map the keys `::versioning/version` and `::project/version`"
+  "Add to a config map the keys `::versioning/version` and `::project/version` based on the result of
+  [[fr.jeremyschoffen.mbt.alpha.default/versioning-last-version]]."
   [conf]
   (-> conf
       (u/assoc-computed ::versioning/version mbt-defaults/versioning-last-version
@@ -107,6 +110,9 @@
 
 
 (defn build!
+  "Build a skinny jar. First the last version is added to the config map. Then using that version, the last tag is
+  recovered to update the ::...maven.scm/tag part of the config is updated. Finally the project's `pom.xml` file is
+  synced and the skinny jar is generated."
   [conf]
   (-> conf
       merge-last-version
@@ -133,7 +139,10 @@
                          ::project.deps/aliases]})
 
 
-(defn install! [conf]
+(defn install!
+  "Install the project's jar, the version attributed to it is recovered with
+  [[fr.jeremyschoffen.mbt.alpha.mbt-style/merge-last-version]]."
+  [conf]
   (-> conf
       merge-last-version
       mbt-defaults/maven-install!))
@@ -154,6 +163,8 @@
 
 
 (defn deploy! [conf]
+  "Deploy the project's jar, the version attributed to it is recovered with
+  [[fr.jeremyschoffen.mbt.alpha.mbt-style/merge-last-version]]."
   (-> conf
       merge-last-version
       mbt-defaults/maven-deploy!))

@@ -78,7 +78,7 @@ Higher level apis.
 ;; Building jars
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn check-incompatible-deps
-  "Checks wheter or not the jar being built uses deps incompatible with maven (git libs, local deps)."
+  "Check whether or not the jar being built uses dependencies incompatible with maven (git libs, local deps)."
   [{allowed? ::build.jar/allow-non-maven-deps
     :as conf}]
   (let [non-maven-deps (mbt-core/deps-non-maven conf)]
@@ -123,9 +123,8 @@ Higher level apis.
 
 
 (defn uberjar!
-  "Build an uberjar for the project. Ensure that the `:fr...mbt.alpha.project/version` is present int the config with
-  [[fr.jeremyschoffen.mbt.alpha.default.versioning/current-project-version]].
-  Also ensure other keys using [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
+  "Build an uberjar for the project. Ensure several config keys using
+  [[fr.jeremyschoffen.mbt.alpha.default.building/ensure-jar-defaults]]."
   [param]
   (-> param
       default-jar/ensure-jar-defaults
