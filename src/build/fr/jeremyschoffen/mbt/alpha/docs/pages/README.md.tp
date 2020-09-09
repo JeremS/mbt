@@ -107,7 +107,7 @@ The project is designed as follow:
 - We can chain build operations using the `->` macro and some utilities.
 
 Three namespaces gather the functionality:
-- `...mbt.alpha.core`:  the core API which is a build tools box?
+- `...mbt.alpha.core`:  the core API which is a build tools box.
 - `...mbt.alpha.default`: API  siting on top of the first one, trying to tie together the different parts of the
 core API.
 - `...mbt.alpha.utils`: utils used throughout the APIs providing useful building blocks to make build scripts.
