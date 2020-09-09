@@ -6,6 +6,7 @@
     [fr.jeremyschoffen.java.nio.alpha.file :as fs]))
 
 (u/pseudo-nss
+  maven
   project)
 
 (def pages-dir (fs/path "fr/jeremyschoffen/mbt/alpha/docs/pages"))
@@ -42,9 +43,10 @@
 
 (def config-src (page-resource "config.md.tp"))
 
-(defn make-config-doc! [{wd ::project/working-dir}]
+(defn make-config-doc! [{wd ::project/working-dir :as conf}]
   (spit (u/safer-path wd "doc" "config.md")
-        (doc/make-document config-src {})))
+        (doc/make-document config-src
+                           (select-keys conf #{::maven/group-id ::maven/artefact-name}))))
 
 (comment
   (doc/make-document

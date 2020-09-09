@@ -17,7 +17,7 @@ The dir into which build jars.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.build#jar-out-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/allow-non-maven-deps`
@@ -51,7 +51,7 @@ The file name of the skinny jar to build.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.build/jar-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.build#jar-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.jar/path`
@@ -68,7 +68,7 @@ The definitive location of the jar to build : jar.output/dir + jar/name
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.build/jar-out`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.build#jar-out)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/name`
@@ -85,7 +85,7 @@ The file name of the uberjar to build.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.build#uberjar-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.build.uberjar/path`
@@ -102,7 +102,7 @@ The definitive location of the jar to build : jar.output/dir + uberjar/name
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-out]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.build/uberjar-out`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.build#uberjar-out)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.classpath/index`
@@ -119,8 +119,8 @@ An indexed classpath used to derive jar sources.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/classpath-indexed]]
-- [[fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath]]
+- [`fr.jeremyschoffen.mbt.alpha.core/classpath-indexed`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#classpath-indexed)
+- [`fr.jeremyschoffen.mbt.alpha.core.classpath/indexed-classpath`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.classpath#indexed-classpath)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.classpath/raw`
@@ -137,8 +137,8 @@ A classpath string.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/classpath-raw]]
-- [[fr.jeremyschoffen.mbt.alpha.core.classpath/raw-classpath]]
+- [`fr.jeremyschoffen.mbt.alpha.core/classpath-raw`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#classpath-raw)
+- [`fr.jeremyschoffen.mbt.alpha.core.classpath/raw-classpath`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.classpath#raw-classpath)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.cleaning/target`
@@ -155,7 +155,7 @@ Path to a file / directory to delete.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.cleaning/cleaning-target]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.cleaning/cleaning-target`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.cleaning#cleaning-target)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.clojure/namespaces`
@@ -172,12 +172,12 @@ List of namespaces of clojure namespaces to compile.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-external-nss]]
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-jar-nss]]
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-project-nss]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/external-nss]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/jar-nss]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/project-nss]]
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-external-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-clojure-external-nss)
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-jar-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-clojure-jar-nss)
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-clojure-project-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-clojure-project-nss)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/external-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.clojure#external-nss)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/jar-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.clojure#jar-nss)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.clojure/project-nss`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.clojure#project-nss)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.clojure/output-dir`
@@ -194,7 +194,7 @@ Directory where clojure copilation will output.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-clojure-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-clojure-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.compilation#compilation-clojure-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compilation-unit`
@@ -219,8 +219,8 @@ the .java files to compile.
 ```
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-compiler]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/make-java-compiler]]
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-java-compiler`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-java-compiler)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.java/make-java-compiler`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.java#make-java-compiler)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/compiler-classes`
@@ -266,7 +266,7 @@ path?
 ```
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-java-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.compilation/compilation-java-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.compilation#compilation-java-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java/sources`
@@ -277,12 +277,12 @@ path?
 ```
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-external-files]]
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-jar-files]]
-- [[fr.jeremyschoffen.mbt.alpha.core/compilation-java-project-files]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/external-files]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/jar-files]]
-- [[fr.jeremyschoffen.mbt.alpha.core.compilation.java/project-files]]
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-java-external-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-java-external-files)
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-java-jar-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-java-jar-files)
+- [`fr.jeremyschoffen.mbt.alpha.core/compilation-java-project-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#compilation-java-project-files)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.java/external-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.java#external-files)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.java/jar-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.java#jar-files)
+- [`fr.jeremyschoffen.mbt.alpha.core.compilation.java/project-files`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.compilation.java#project-files)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.compilation.java.file-manager/charset`
@@ -356,10 +356,10 @@ Data found in a git commit.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/git-commit!]]
-- [[fr.jeremyschoffen.mbt.alpha.core/git-last-commit]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/commit!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/last-commit]]
+- [`fr.jeremyschoffen.mbt.alpha.core/git-commit!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-commit!)
+- [`fr.jeremyschoffen.mbt.alpha.core/git-last-commit`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-last-commit)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/commit!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#commit!)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/last-commit`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#last-commit)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git/commit!`
@@ -436,8 +436,8 @@ Git prefix as in `git -C wd/ rev-parse --show-prefix`
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/git-prefix]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/prefix]]
+- [`fr.jeremyschoffen.mbt.alpha.core/git-prefix`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-prefix)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/prefix`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#prefix)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git/raw-description`
@@ -467,9 +467,9 @@ A JGit object representing a git repo.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/git-make-jgit-repo]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/make-jgit-repo]]
-- [[fr.jeremyschoffen.mbt.alpha.default.config.git/git-repo]]
+- [`fr.jeremyschoffen.mbt.alpha.core/git-make-jgit-repo`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-make-jgit-repo)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/make-jgit-repo`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#make-jgit-repo)
+- [`fr.jeremyschoffen.mbt.alpha.default.config.git/git-repo`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.git#git-repo)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git/sha`
@@ -504,17 +504,17 @@ Clojure data representing a git tag.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/git-get-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.core/git-tag!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/get-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/tag!]]
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-get-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-tag-new-version!]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/get-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/tag-new-version!]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/get-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/new-tag]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-new-version!]]
+- [`fr.jeremyschoffen.mbt.alpha.core/git-get-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-get-tag)
+- [`fr.jeremyschoffen.mbt.alpha.core/git-tag!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-tag!)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/get-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#get-tag)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/tag!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#tag!)
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-get-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-get-tag)
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-tag-new-version!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-tag-new-version!)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/get-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#get-tag)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/tag-new-version!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#tag-new-version!)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/get-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.git-state#get-tag)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/new-tag`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.git-state#new-tag)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-new-version!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.git-state#tag-new-version!)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git/tag!`
@@ -552,8 +552,8 @@ Git top level as in `git -C wd/ rev-parse --show-toplevel`.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/git-top-level]]
-- [[fr.jeremyschoffen.mbt.alpha.core.git/top-level]]
+- [`fr.jeremyschoffen.mbt.alpha.core/git-top-level`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#git-top-level)
+- [`fr.jeremyschoffen.mbt.alpha.core.git/top-level`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.git#top-level)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git-distance/number`
@@ -889,8 +889,8 @@ Name of a tag.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/tag-name]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/tag-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#tag-name)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/tag-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.git-state#tag-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.git.tag/signed?`
@@ -1008,8 +1008,8 @@ are required to use when signing.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/gpg-version]]
-- [[fr.jeremyschoffen.mbt.alpha.core.gpg/gpg-version]]
+- [`fr.jeremyschoffen.mbt.alpha.core/gpg-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#gpg-version)
+- [`fr.jeremyschoffen.mbt.alpha.core.gpg/gpg-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.gpg#gpg-version)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.gpg.sign!/in`
@@ -1039,7 +1039,7 @@ Where the signature gpg generates goes.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core.gpg/make-sign-out]]
+- [`fr.jeremyschoffen.mbt.alpha.core.gpg/make-sign-out`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.gpg#make-sign-out)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/entries`
@@ -1056,9 +1056,9 @@ A collection of jar entries.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/jar-add-srcs!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.jar/add-srcs!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.jar.temp/add-srcs!]]
+- [`fr.jeremyschoffen.mbt.alpha.core/jar-add-srcs!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#jar-add-srcs!)
+- [`fr.jeremyschoffen.mbt.alpha.core.jar/add-srcs!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.jar#add-srcs!)
+- [`fr.jeremyschoffen.mbt.alpha.core.jar.temp/add-srcs!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.jar.temp#add-srcs!)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/entry`
@@ -1078,7 +1078,7 @@ Representation of a jar entry.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/make-manifest-entry]]
+- [`fr.jeremyschoffen.mbt.alpha.default.jar/make-manifest-entry`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.jar#make-manifest-entry)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/exclude?`
@@ -1108,8 +1108,8 @@ A java nio filesystem pointing at a jar.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core.jar/writable-jar-fs]]
-- [[fr.jeremyschoffen.mbt.alpha.core.jar.fs/writable-jar-fs]]
+- [`fr.jeremyschoffen.mbt.alpha.core.jar/writable-jar-fs`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.jar#writable-jar-fs)
+- [`fr.jeremyschoffen.mbt.alpha.core.jar.fs/writable-jar-fs`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.jar.fs#writable-jar-fs)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/main-ns`
@@ -1139,8 +1139,8 @@ A jar manifest.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/manifest]]
-- [[fr.jeremyschoffen.mbt.alpha.core.jar.manifest/make-manifest]]
+- [`fr.jeremyschoffen.mbt.alpha.core/manifest`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#manifest)
+- [`fr.jeremyschoffen.mbt.alpha.core.jar.manifest/make-manifest`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.jar.manifest#make-manifest)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/output`
@@ -1170,7 +1170,7 @@ Source for a jar: source directories, other jars...
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/make-staples-entries]]
+- [`fr.jeremyschoffen.mbt.alpha.default.jar/make-staples-entries`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.jar#make-staples-entries)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/srcs`
@@ -1187,8 +1187,8 @@ Collection aof jar sources.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/simple-jar-srcs]]
-- [[fr.jeremyschoffen.mbt.alpha.default.jar/uber-jar-srcs]]
+- [`fr.jeremyschoffen.mbt.alpha.default.jar/simple-jar-srcs`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.jar#simple-jar-srcs)
+- [`fr.jeremyschoffen.mbt.alpha.default.jar/uber-jar-srcs`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.jar#uber-jar-srcs)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.jar/temp-output`
@@ -1286,7 +1286,7 @@ The name of a maven artefact (devoid of classifier).
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/artefact-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/artefact-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#artefact-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/classifier`
@@ -1334,7 +1334,7 @@ The group id for a maven artefact.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/group-id]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/group-id`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#group-id)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/local-repo`
@@ -1351,7 +1351,7 @@ Path to the local maven repo.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-local-repo]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-local-repo`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#maven-local-repo)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/scm`
@@ -1373,8 +1373,8 @@ Scm information for pom.xml files.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.maven/make-github-like-scm-map]]
-- [[fr.jeremyschoffen.mbt.alpha.default.maven.common/make-github-like-scm-map]]
+- [`fr.jeremyschoffen.mbt.alpha.default.maven/make-github-like-scm-map`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven#make-github-like-scm-map)
+- [`fr.jeremyschoffen.mbt.alpha.default.maven.common/make-github-like-scm-map`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven.common#make-github-like-scm-map)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven/server`
@@ -1527,8 +1527,8 @@ that will be installed / deployed by maven.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/maven-sign-artefact!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefact!]]
+- [`fr.jeremyschoffen.mbt.alpha.core/maven-sign-artefact!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#maven-sign-artefact!)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefact!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.common#sign-artefact!)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/artefacts`
@@ -1545,12 +1545,12 @@ Collection of maven deploy artefacts to be installed / deployed.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/maven-sign-artefacts!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefacts!]]
-- [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts]]
-- [[fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts+signatures!]]
-- [[fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts]]
-- [[fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts+signatures!]]
+- [`fr.jeremyschoffen.mbt.alpha.core/maven-sign-artefacts!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#maven-sign-artefacts!)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.common/sign-artefacts!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.common#sign-artefacts!)
+- [`fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven#make-usual-artefacts)
+- [`fr.jeremyschoffen.mbt.alpha.default.maven/make-usual-artefacts+signatures!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven#make-usual-artefacts+signatures!)
+- [`fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven.common#make-usual-artefacts)
+- [`fr.jeremyschoffen.mbt.alpha.default.maven.common/make-usual-artefacts+signatures!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.maven.common#make-usual-artefacts+signatures!)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.deploy/sign-artefacts?`
@@ -1606,7 +1606,7 @@ Directory where we want maven installation to put artefacts.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-install-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-install-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#maven-install-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/path`
@@ -1623,7 +1623,7 @@ Path to the `pom.xml` file to be used / synced.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/pom-path]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/pom-path`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#pom-path)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/properties`
@@ -1640,8 +1640,8 @@ A `pom.properties` to be put in jars.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/maven-new-pom-properties]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom-properties]]
+- [`fr.jeremyschoffen.mbt.alpha.core/maven-new-pom-properties`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#maven-new-pom-properties)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom-properties`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.pom#new-pom-properties)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.pom/xml`
@@ -1658,12 +1658,12 @@ Content of a `pom.xml` file in data form (data used by `clojure.tools.xml`).
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/maven-read-pom]]
-- [[fr.jeremyschoffen.mbt.alpha.core/maven-sync-pom!]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/read-pom]]
-- [[fr.jeremyschoffen.mbt.alpha.core.maven.pom/sync-pom!]]
-- [[fr.jeremyschoffen.mbt.alpha.default/maven-sync-pom!]]
+- [`fr.jeremyschoffen.mbt.alpha.core/maven-read-pom`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#maven-read-pom)
+- [`fr.jeremyschoffen.mbt.alpha.core/maven-sync-pom!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#maven-sync-pom!)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.pom/new-pom`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.pom#new-pom)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.pom/read-pom`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.pom#read-pom)
+- [`fr.jeremyschoffen.mbt.alpha.core.maven.pom/sync-pom!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.maven.pom#sync-pom!)
+- [`fr.jeremyschoffen.mbt.alpha.default/maven-sync-pom!`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#maven-sync-pom!)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.maven.scm/connection`
@@ -1759,7 +1759,7 @@ Location of the `settings.xml` file to use.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-settings-file]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.maven/maven-settings-file`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.maven#maven-settings-file)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/author`
@@ -1776,7 +1776,7 @@ Author of the project. Used in jar manifests.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.project/project-author]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/project-author`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#project-author)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/deps`
@@ -1797,8 +1797,8 @@ The deps map of the project.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.core/deps-get]]
-- [[fr.jeremyschoffen.mbt.alpha.core.deps/get-deps]]
+- [`fr.jeremyschoffen.mbt.alpha.core/deps-get`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#deps-get)
+- [`fr.jeremyschoffen.mbt.alpha.core.deps/get-deps`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.deps#get-deps)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/git-coords`
@@ -1815,8 +1815,8 @@ Coordinates of a project tools deps style for a git dependency.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default/deps-make-git-coords]]
-- [[fr.jeremyschoffen.mbt.alpha.default.deps/make-git-deps-coords]]
+- [`fr.jeremyschoffen.mbt.alpha.default/deps-make-git-coords`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#deps-make-git-coords)
+- [`fr.jeremyschoffen.mbt.alpha.default.deps/make-git-deps-coords`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.deps#make-git-deps-coords)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/git-url`
@@ -1879,8 +1879,8 @@ Coordinates of a project tools deps style for a maven dependency.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default/deps-make-maven-coords]]
-- [[fr.jeremyschoffen.mbt.alpha.default.deps/make-maven-deps-coords]]
+- [`fr.jeremyschoffen.mbt.alpha.default/deps-make-maven-coords`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#deps-make-maven-coords)
+- [`fr.jeremyschoffen.mbt.alpha.default.deps/make-maven-deps-coords`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.deps#make-maven-deps-coords)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/name`
@@ -1897,7 +1897,7 @@ Name of the project. Used to generate git tags and maven artefact id.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.project/project-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/project-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#project-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/output-dir`
@@ -1914,7 +1914,7 @@ The directory in which the build tool outputs stuff.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.project/output-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/output-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#output-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/version`
@@ -1931,8 +1931,8 @@ Version of the project. Used in maven related activities.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-project-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/project-version]]
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-project-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-project-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/project-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#project-version)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/working-dir`
@@ -1949,7 +1949,7 @@ Working directory / root of the project.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.project/working-dir]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/working-dir`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#working-dir)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project.deps/aliases`
@@ -1979,7 +1979,7 @@ Location of the `deps.edn` file to use.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.project/deps-file]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/deps-file`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#deps-file)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project.license/comment`
@@ -2203,7 +2203,7 @@ The base part of generated tag names, `mbt-alpha` in `mbt-alpha-vX`
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default.config.versioning/tag-base-name]]
+- [`fr.jeremyschoffen.mbt.alpha.default.config.versioning/tag-base-name`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.versioning#tag-base-name)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.versioning/version`
@@ -2220,14 +2220,14 @@ A a representation of a version generated and used by the version scheme.
 
 ### Constructors:
 
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-initial-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-last-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default/versioning-next-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/last-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/next-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning/schemes-initial-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/next-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/bump]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/current-version]]
-- [[fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/initial-version]]
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-initial-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-initial-version)
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-last-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-last-version)
+- [`fr.jeremyschoffen.mbt.alpha.default/versioning-next-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default#versioning-next-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/last-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#last-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/next-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#next-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning/schemes-initial-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning#schemes-initial-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.git-state/next-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.git-state#next-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/bump`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.schemes#bump)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/current-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.schemes#current-version)
+- [`fr.jeremyschoffen.mbt.alpha.default.versioning.schemes/initial-version`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.versioning.schemes#initial-version)
 

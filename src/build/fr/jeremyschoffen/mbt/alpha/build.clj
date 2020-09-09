@@ -31,8 +31,6 @@
              ::versioning/major  :alpha
 
              ::maven/server mbt-defaults/clojars
-             ::maven/credentials {::maven.credentials/user-name "jeremys"
-                                  ::maven.credentials/password token}
 
              ::project/licenses  [{::project.license/name "Eclipse Public License - v 2.0"
                                    ::project.license/url "https://www.eclipse.org/legal/epl-v20.html"
@@ -86,6 +84,10 @@
 
 
 (comment
+  (-> conf
+      mbt-build/next-version+1
+      str)
+
   (mbt-core/clean! conf)
 
   (bump-project!)
@@ -94,4 +96,7 @@
 
   (mbt-build/install! conf)
 
-  (mbt-build/deploy! conf))
+  (-> conf
+      (assoc ::maven/credentials {::maven.credentials/user-name "jeremys"
+                                  ::maven.credentials/password token})
+      mbt-build/deploy!))

@@ -3,11 +3,15 @@
     [clojure.spec.alpha :as s]
     [clojure.data.xml :as xml]
     [fr.jeremyschoffen.textp.alpha.lib.tag-utils :as textp-lib]
+    [fr.jeremyschoffen.textp.alpha.lib.input :as input]
+    [fr.jeremyschoffen.textp.alpha.doc.core :as tp-doc]
+
     [fr.jeremyschoffen.mbt.alpha.docs.config.data :as config-data]
     [fr.jeremyschoffen.mbt.alpha.utils :as u]))
 
 (u/pseudo-nss
-  docs.tags)
+  docs.tags
+  maven)
 
 (s/def ::config-key-args (s/cat :config-key (s/? ::textp-lib/tag-clj-arg)
                                 :doc (s/? ::textp-lib/tag-txt-arg)))
@@ -33,9 +37,12 @@
   (and (string? x)
        (empty? (clojure.string/trim x))))
 
+
 (defn config-key [& args]
   (let [{:config-key/keys [name constructors spec documentation]}
-        (config-key-args->full-description args)]
+        (config-key-args->full-description args)
+        {::maven/keys [group-id artefact-name]} input/*input*]
+
     (xml/sexp-as-element [::docs.tags/config-key
                           [:h2 (format " `%s`" name)]
 
@@ -58,4 +65,6 @@
                             (list
                               [:h3 "Constructors:"]
                               [:ul (for [c constructors]
-                                     [:li (format "[[%s]]" c)])]))])))
+                                     [:li
+                                      [:a {:href (tp-doc/cljdoc-api-link group-id artefact-name c)}
+                                       (format "`%s`" c)]])]))])))
