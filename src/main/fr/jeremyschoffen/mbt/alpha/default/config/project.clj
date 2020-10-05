@@ -71,10 +71,21 @@ Default config pertaining to general project value.
            :param {:req [::project/working-dir]}
            :ret ::project.deps/file)
 
+(defn get-deps [conf]
+  "Get the project's deps and merge into it the maven repos found in user and system deps."
+  (assoc (mbt-core/deps-get conf)
+    :mvn/repos (:mvn/repos (mbt-core/deps-get-all conf))))
+
+
+(u/spec-op get-deps
+           :deps [mbt-core/deps-get mbt-core/deps-get-all]
+           :param {:req [::project.deps/file]}
+           :ret ::project/deps)
+
 
 (def conf {::project/working-dir (impl/calc working-dir)
            ::project/output-dir (impl/calc output-dir ::project/working-dir)
            ::project/author (impl/calc project-author)
            ::project/name  (impl/calc project-name ::project/working-dir)
            ::project.deps/file (impl/calc deps-file ::project/working-dir)
-           ::project/deps (impl/calc mbt-core/deps-get-all ::project.deps/file)})
+           ::project/deps (impl/calc get-deps ::project.deps/file)})
