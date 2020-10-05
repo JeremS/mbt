@@ -26,7 +26,7 @@ Building blocks of a versioning system based on git commit distance.
                 dirty? (str "-DIRTY")))))
 
 
-(def version-regex #"(\d)+(?:-(.+))?")
+(def version-regex #"(\d+)(?:-(.+))?")
 
 
 (defn parse-version [s]
