@@ -1799,6 +1799,7 @@ The deps map of the project.
 
 - [`fr.jeremyschoffen.mbt.alpha.core/deps-get`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core#deps-get)
 - [`fr.jeremyschoffen.mbt.alpha.core.deps/get-deps`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.core.deps#get-deps)
+- [`fr.jeremyschoffen.mbt.alpha.default.config.project/get-deps`](https://cljdoc.org/d/fr.jeremyschoffen/mbt-alpha/CURRENT/api/fr.jeremyschoffen.mbt.alpha.default.config.project#get-deps)
 
 
 ##  `:fr.jeremyschoffen.mbt.alpha.project/git-coords`

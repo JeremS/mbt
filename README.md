@@ -9,15 +9,15 @@ A collection of build utilities designed to be used with [tools.deps](https://gi
 ## Installation
 Deps coords:
 ```clojure
-{fr.jeremyschoffen/mbt-alpha {:mvn/version "9"}}
+{fr.jeremyschoffen/mbt-alpha {:mvn/version "14"}}
 ```
 Lein coords:
 ```clojure
-[fr.jeremyschoffen/mbt-alpha "9"]
+[fr.jeremyschoffen/mbt-alpha "14"]
 ```
 Git coords:
 ```clojure
-{fr.jeremyschoffen/mbt-alpha {:git/url "https://github.com/JeremS/mbt", :sha "ec04c9a88be01771ba9ae9d0b0077d76ddbe5bce"}}
+{fr.jeremyschoffen/mbt-alpha {:git/url "https://github.com/JeremS/mbt", :sha "765e0974c5c1b0aa5cf76d244d09563653c5f789"}}
 ```
 
 ## Usage
